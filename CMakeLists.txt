@@ -1,7 +1,5 @@
-cmake_minimum_required(VERSION 3.22)
-project(bomberman)
-
 CMAKE_MINIMUM_REQUIRED(VERSION 3.17)
+project(bomberman)
 set(CMAKE_CXX_STANDARD 20)
 FIND_PACKAGE(raylib REQUIRED)
 add_executable(bomberman Source/main.cpp)
