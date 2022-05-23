@@ -17,7 +17,13 @@ class GFX {
         ~GFX();
 
         //settings methods
+        void init();
         void set_window_size(int width, int height);
+
+        //getting methods
+        int getWindowWidth();
+        int getWindowHeight();
+        std::string getWindowTitle();
 
         //clear and refresh methods
         void clearWindow();
