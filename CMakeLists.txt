@@ -1,7 +1,7 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.17)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.16)
 project(bomberman)
 set(CMAKE_CXX_STANDARD 20)
-FIND_PACKAGE(raylib REQUIRED)
+
 add_executable(bomberman Source/main.cpp)
 if (NOT raylib_FOUND)
     INCLUDE(FetchContent)
@@ -15,4 +15,5 @@ if (NOT raylib_FOUND)
         SET(raylib_FOUND TRUE)
     endif()
 endif()
+
 TARGET_LINK_LIBRARIES(bomberman raylib)
