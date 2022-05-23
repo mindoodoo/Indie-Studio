@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <iostream>
 #include <string>
 #include "raylib.h"
 
@@ -29,5 +30,6 @@ class GFX {
         int _screenWidth;
         int _screenHeight;
         std::string _title;
+        Camera _camera;
 };
 

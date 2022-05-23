@@ -35,5 +35,5 @@ void GFX::clearWindow()
 
 void GFX::drawText(std::string text, int x, int y, int fontsize, CLITERAL(Color) color)
 {
-    
+    DrawText(text.c_str(), x, y, fontsize, color);
 }
