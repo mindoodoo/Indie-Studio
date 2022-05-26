@@ -8,7 +8,7 @@
 #include "Window.hpp"
 
 // Construction / Destruction
-Window::Window(std::string title, Vector2 dimensions, bool initLater)
+RL::Window::Window(std::string title, Vector2 dimensions, bool initLater)
         : _dimensions(dimensions), _windowOpen(false), _logger(Logger("WindowEncapsulation"))
 {
     if (!initLater) {
@@ -17,13 +17,13 @@ Window::Window(std::string title, Vector2 dimensions, bool initLater)
     }
 }
 
-Window::~Window()
+RL::Window::~Window()
 {
     CloseWindow();
 }
 
 // Method to init window if not init on construction
-void Window::init()
+void RL::Window::init()
 {
     if (this->_windowOpen) {
         this->_logger.log("Window Encapsulation: Window is already initialized, doing nothing...");
@@ -33,7 +33,7 @@ void Window::init()
     this->_windowOpen = true;
 }
 
-void Window::init(Vector2 dimensions, std::string title)
+void RL::Window::init(Vector2 dimensions, std::string title)
 {
     if (this->_windowOpen) {
         this->_logger.log("Window Encapsulation: Window is already initialized, doing nothing...");
@@ -47,7 +47,7 @@ void Window::init(Vector2 dimensions, std::string title)
     this->_windowOpen = true;
 }
 
-void Window::close()
+void RL::Window::close()
 {
     if (!this->checkWindowOpen())
         return;
@@ -57,7 +57,7 @@ void Window::close()
 }
 
 // Display Methods
-void Window::clearWindow(Color color)
+void RL::Window::clearWindow(Color color)
 {
     if (!this->checkWindowOpen())
         return;
@@ -65,7 +65,7 @@ void Window::clearWindow(Color color)
 }
 
 // Returns true if open, false otherwise
-bool Window::checkWindowOpen() const {
+bool RL::Window::checkWindowOpen() const {
     if (!this->_windowOpen) {
         this->_logger.log("Window Encapsulation: No window is open, doing nothing...");
         return false;
@@ -74,14 +74,14 @@ bool Window::checkWindowOpen() const {
 }
 
 // Setters
-void Window::setDimensions(const Vector2 &dimensions)
+void RL::Window::setDimensions(const Vector2 &dimensions)
 {
     if (this->_windowOpen)
         this->_logger.log("Window Encapsulation: Window is already open, changes will only apply if restarted");
     this->_dimensions = dimensions;
 }
 
-void Window::setTitle(const std::string &title)
+void RL::Window::setTitle(const std::string &title)
 {
     if (this->_windowOpen)
         this->_logger.log("Window Encapsulation: Window is already open, changes will only apply if restarted");
@@ -89,17 +89,17 @@ void Window::setTitle(const std::string &title)
 }
 
 // Getters
-const Vector2 &Window::getDimensions() const
+const Vector2 &RL::Window::getDimensions() const
 {
     return this->_dimensions;
 }
 
-const std::string &Window::getTitle() const
+const std::string &RL::Window::getTitle() const
 {
     return this->_title;
 }
 
-bool Window::isWindowOpen() const
+bool RL::Window::isWindowOpen() const
 {
     return this->_windowOpen;
 }
