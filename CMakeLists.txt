@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 if (WIN32)
     set( CMAKE_CXX_COMPILER "/pathto/g++" )
     set( CMAKE_C_COMPILER "/pathto/gcc" )
+    message(windoofs erkannt)
 endif()
 
 
