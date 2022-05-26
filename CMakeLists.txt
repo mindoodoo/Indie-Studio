@@ -2,6 +2,12 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.16)
 project(bomberman)
 set(CMAKE_CXX_STANDARD 20)
 
+if (WIN32)
+    set( CMAKE_CXX_COMPILER "/pathto/g++" )
+    set( CMAKE_C_COMPILER "/pathto/gcc" )
+endif()
+
+
 add_executable(bomberman Source/main.cpp)
 if (NOT raylib_FOUND)
     INCLUDE(FetchContent)
