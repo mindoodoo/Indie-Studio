@@ -1,62 +1,118 @@
-//g++ main.cpp -o main -O1 -Wall  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread
+//g++ testmain.cpp GFX.cpp -o main -O1 -Wall  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread
 
 #include "GFX.hpp"
 
-int main() {
+// int main() {
 
-    GFX GraphicsClass("TESTWINDOW");
+//     GFX GraphicsClass("TESTWINDOW");
 
-    Vector2 ballPosition = { GraphicsClass.getWindowWidth() / 2.0f, GraphicsClass.getWindowHeight() / 2.0f };
-    Vector2 ballSpeed = { 5.0f, 4.0f };
-    float ballRadius = 20;
+//     Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
+
+//     Vector3 camPos = { 0.0f, 10.0f, 10.0f };
+//     Vector3 camTar = { 0.0f, 0.0f, 0.0f };
+//     Vector3 camHeight = { 0.0f, 1.0f, 0.0f };
+//     float camFov = 45.0f; 
     
+//     GraphicsClass.init();
+//     GraphicsClass.setCameraPosition(camPos, camTar, camHeight, camFov);
+
+
+//     //SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
+//     //----------------------------------------------------------
+
+//     // Main game loop
+//     while (!WindowShouldClose())    // Detect window close button or ESC key
+//     {
+//         // Update
+//         // Draw
+//         //-----------------------------------------------------
+//         BeginDrawing();
+//             GraphicsClass.clearWindow();
+
+//             BeginMode3D(GraphicsClass.getCamera()); 
+//                 DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
+//                 DrawCubeWires(cubePosition, 2.0f, 2.0f, 2.0f, MAROON);
+//                 DrawGrid(10, 1.0f);
+//             EndMode3D();
+
+//             GraphicsClass.drawText("LOLILOL", 200, 200, 20, RED);
+//         if (IsKeyPressed(KEY_V))
+//         {
+//             if (IsWindowState(FLAG_VSYNC_HINT)) ClearWindowState(FLAG_VSYNC_HINT);
+//             else SetWindowState(FLAG_VSYNC_HINT);
+//         }
+
+//         if (IsKeyPressed(KEY_R))
+//         {
+//             std::cout << "LOL" << std::endl;
+//             GraphicsClass.set_window_size(1000,1000);
+//             GraphicsClass.init();
+//         }       
+
+//         EndDrawing();
+//         //-----------------------------------------------------
+//     }
+
+//     // De-Initialization
+//     //---------------------------------------------------------
+//     CloseWindow();        // Close window and OpenGL context
+//     //----------------------------------------------------------
+
+//     return 0;
+// }
+
+int main(void)
+{
+    // Initialization
+    //--------------------------------------------------------------------------------------
+    const int screenWidth = 800;
+    const int screenHeight = 450;
+
+    //InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera mode");
+    GFX GraphicsClass("TESTWINDOW");
     GraphicsClass.init();
 
+    // Define the camera to look into our 3d world
+    Camera3D camera = { 0 };
+    camera.position = (Vector3){ 0.0f, 10.0f, 10.0f };  // Camera position
+    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
+    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
+    camera.fovy = 45.0f;                                // Camera field-of-view Y
+    camera.projection = CAMERA_PERSPECTIVE;             // Camera mode type
 
-    //SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
-    //----------------------------------------------------------
+    Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
+
+         // Set our game to run at 60 frames-per-second
+    //--------------------------------------------------------------------------------------
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        void BeginMode3D(Camera3D camera); 
         // Update
-        GraphicsClass.clearWindow();
-
-        ballPosition.x += ballSpeed.x;
-        ballPosition.y += ballSpeed.y;
-        if ((ballPosition.x >= (GraphicsClass.getWindowWidth() - ballRadius)) || (ballPosition.x <= ballRadius)) ballSpeed.x *= -1.0f;
-        if ((ballPosition.y >= (GraphicsClass.getWindowHeight() - ballRadius)) || (ballPosition.y <= ballRadius)) ballSpeed.y *= -1.0f;
+        //----------------------------------------------------------------------------------
+        // TODO: Update your variables here
+        //----------------------------------------------------------------------------------
 
         // Draw
-        //-----------------------------------------------------
+        //----------------------------------------------------------------------------------
         BeginDrawing();
 
-        GraphicsClass.drawText("LOLILOL", 200, 200, 20, RED);
-        DrawCircleV(ballPosition, ballRadius, MAROON);
-        if (IsKeyPressed(KEY_V))
-        {
-            if (IsWindowState(FLAG_VSYNC_HINT)) ClearWindowState(FLAG_VSYNC_HINT);
-            else SetWindowState(FLAG_VSYNC_HINT);
-        }
+            GraphicsClass.clearWindow();
 
-        if (IsKeyPressed(KEY_R))
-        {
-            std::cout << "LOL" << std::endl;
-            GraphicsClass.set_window_size(1000,1000);
-            GraphicsClass.init();
-        }
+            GraphicsClass.begin3D();
 
-        
+                GraphicsClass.draw3DObject();
+
+            GraphicsClass.end3D();
 
         EndDrawing();
-        //-----------------------------------------------------
+        //----------------------------------------------------------------------------------
     }
 
     // De-Initialization
-    //---------------------------------------------------------
-    CloseWindow();        // Close window and OpenGL context
-    //----------------------------------------------------------
+    //--------------------------------------------------------------------------------------
+    GraphicsClass.closeWindow();     // Close window and OpenGL context
+    //--------------------------------------------------------------------------------------
 
     return 0;
 }
