@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2022
 ** indie_studio
 ** File description:
-** GFX
+** Window
 */
 
 #pragma once
@@ -11,6 +11,7 @@
 #include <string>
 #include <raylib.h>
 #include "Logger.hpp"
+#include "RaylibTypeEncaps.hpp"
 
 namespace RL {
     class Window {

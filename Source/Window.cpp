@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2022
 ** indie_studio
 ** File description:
-** GFX
+** Window
 */
 
 #include "Window.hpp"
