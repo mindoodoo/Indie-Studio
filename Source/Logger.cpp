@@ -14,3 +14,11 @@ void Logger::log(std::string msg) const
     else
         std::cerr << "\033[1;33m" << this->_sectionName << ": " << "\033[0m" << msg << std::endl;
 }
+
+const std::string &Logger::getSectionName() const {
+    return _sectionName;
+}
+
+void Logger::setSectionName(const std::string &sectionName) {
+    _sectionName = sectionName;
+}

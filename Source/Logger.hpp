@@ -14,6 +14,9 @@ public:
 
     void log(std::string msg) const;
 
+    const std::string &getSectionName() const;
+    void setSectionName(const std::string &sectionName);
+
 private:
     std::string _sectionName;
     bool _standardOutput;
