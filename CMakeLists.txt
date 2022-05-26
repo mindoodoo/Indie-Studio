@@ -4,7 +4,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(bomberman
         Source/main.cpp
-        Source/Window.cpp)
+        Source/Window.cpp
+        Source/Logger.cpp)
 if (NOT raylib_FOUND)
     INCLUDE(FetchContent)
     FetchContent_Declare(raylib URL https://github.com/raysan5/raylib/archive/refs/tags/4.0.0.tar.gz)
