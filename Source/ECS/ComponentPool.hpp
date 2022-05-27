@@ -17,23 +17,22 @@ class ComponentPool
         ComponentPool(size_t elementsize)
         {
             elementSize = elementsize;
-            pData = new char[elementSize * MAX_ENTITIES];
+            data = new char[elementSize * MAX_ENTITIES];
         }
 
         ~ComponentPool()
         {
-            delete[] pData;
+            delete[] data;
         }
 
         void *get(size_t index)
         {
-            // looking up the component at the desired index
-            return pData + index * elementSize;
+            return data + index * elementSize;
         }
 
     private:
-        char *pData{nullptr};
-        size_t elementSize{0};
+        char *data;
+        size_t elementSize;
 };
 
 #endif /* !COMPONENTPOOL_HPP_ */

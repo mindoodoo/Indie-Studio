@@ -11,16 +11,16 @@
 #include "EntityManager.hpp"
 
 template<typename... ComponentTypes>
-class SceneView
+class EntityViewer
 {
     public:
-        SceneView(EntityManager& scene) : entityManager(&scene) 
+        EntityViewer(EntityManager& scene) : entityManager(&scene), all(false)
         {
             if (sizeof...(ComponentTypes) == 0)
                 all = true;
             else {
                 // Unpack the template parameters into an initializer list
-                int componentIds[] = { 0, GetId<ComponentTypes>() ... };
+                int componentIds[] = { 0, GetNewId<ComponentTypes>() ... };
                 for (int i = 1; i < (sizeof...(ComponentTypes) + 1); i++)
                     componentMask.set(componentIds[i]);
             }
@@ -29,12 +29,12 @@ class SceneView
         class Iterator
         {
             public:
-                Iterator(Scene* entityManager, EntityIndex index, ComponentMask mask, bool all) 
+                Iterator(EntityManager* entityManager, EntityIndex index, ComponentMask mask, bool all) 
                     : entityManagerI(entityManager), index(index), mask(mask), all(all) {}
 
                 EntityID operator*() const
                 {
-                    return entityManagerI->entities[index].id;
+                    return entityManagerI->getEntities()[index].id;
                 }
                 
                 bool operator==(const Iterator& other) const
@@ -44,20 +44,22 @@ class SceneView
 
                 bool operator!=(const Iterator& other) const
                 {
-                    return index != other.index && index != entityManagerI->entities.size();
+                    return index != other.index && index != entityManagerI->getEntities().size();
                 }
 
                 bool ValidIndex()
                 {
-                    bool validEntityID = IsEntityValid(entityManagerI->entities[index].id);
-                    bool correctComponentMask = (all || mask == (mask & entityManagerI->entities[index].mask))
+                    bool validEntityID = IsEntityValid(entityManagerI->getEntities()[index].id);
+                    bool correctComponentMask = (all || mask == (mask & entityManagerI->getEntities()[index].mask));
                     return validEntityID && correctComponentMask;
                 }
 
                 Iterator& operator++()
                 {
-                    while (index < entityManagerI->entities.size() && !ValidIndex())
+                    do {
                         index++;
+                    } while (index < entityManagerI->getEntities().size() && !ValidIndex());
+                    std::cout << "Iterator increased: " << index << std::endl;
                     return *this;
                 }
             
@@ -71,25 +73,26 @@ class SceneView
         const Iterator begin() const
         {
             int firstIndex = 0;
-            while (firstIndex < entityManager->entities.size() &&
-                (componentMask != (componentMask & entityManager->entities[firstIndex].mask) 
-                || !IsEntityValid(entityManager->entities[firstIndex].id))) 
+            while (firstIndex < entityManager->getEntities().size() &&
+                (componentMask != (componentMask & entityManager->getEntities()[firstIndex].mask) 
+                || !IsEntityValid(entityManager->getEntities()[firstIndex].id))) 
             {
                 firstIndex++;
             }
+            std::cout << "from entityViewer begin(), index: " << firstIndex << std::endl;
             return Iterator(entityManager, firstIndex, componentMask, all);
         }
 
         const Iterator end() const
         {
-            return Iterator(pScene, EntityIndex(pScene->entities.size()), componentMask, all);
+            return Iterator(entityManager, EntityIndex(entityManager->getEntities().size()), componentMask, all);
         }
 
     private:
-        EntityManager* entityManager{ nullptr };
+        EntityManager* entityManager;
         ComponentMask componentMask;
         // will iterate all entities if no ComponentType specified
-        bool all{ false };
+        bool all;
 };
 
 

@@ -32,13 +32,13 @@ With the entity viewer, you can iterate over components of a specific type:
 ```
 for (EntityID ent : EntityViewer<Pos, Score>(entityManager))
 {
-    Pos* playerPos = scene.Get<Pos>(ent);
-    Score* playerScore = scene.Get<Score>(ent);
+    Pos* playerPos = entityManager.Get<Pos>(ent);
+    Score* playerScore = entityManager.Get<Score>(ent);
 
     // Do stuff
 }
 ```
 or all components:
 ```
-EntityViewer<Pos, Score>(entityManager)
+EntityViewer<>(entityManager)
 ```

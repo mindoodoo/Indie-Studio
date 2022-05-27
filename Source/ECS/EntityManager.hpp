@@ -21,22 +21,69 @@ class EntityManager
             EntityID id;
             ComponentMask mask;
         };
-        EntityManager();
-        ~EntityManager();
+        EntityManager() {};
+        ~EntityManager() {};
 
-        EntityID CreateNewEntity();
-        void DestroyEntity(EntityID id);
+        EntityID CreateNewEntity() {
+            if (!freeEntities.empty()) {
+                EntityIndex newIndex = freeEntities.back();
+                freeEntities.pop_back();
+                EntityID newID = CreateEntityId(newIndex, GetEntityVersion(entities[newIndex].id));
+                entities[newIndex].id = newID;
+                return entities[newIndex].id;
+            }
+            entities.push_back({ CreateEntityId(EntityIndex(entities.size()), 0), ComponentMask() });
+            return entities.back().id;
+        }
+        void DestroyEntity(EntityID id) {
+            EntityID newID = CreateEntityId(EntityIndex(-1), GetEntityVersion(id) + 1);
+            entities[GetEntityIndex(id)].id = newID;
+            entities[GetEntityIndex(id)].mask.reset(); 
+            freeEntities.push_back(GetEntityIndex(id));
+        }
 
         template<typename T>
-        T* Assign(EntityID id);
+        T* Assign(EntityID id) {
+            int componentId = GetNewId<T>();
+
+            if (componentPools.size() <= componentId) // Not enough component pool
+                componentPools.resize(componentId + 1);
+            if (componentPools[componentId] == nullptr) // New component, make a new pool
+                componentPools[componentId] = new ComponentPool(sizeof(T));
+
+            // Looks up the component in the pool, and initializes it with placement new
+            T *pComponent = new (componentPools[componentId]->get(GetEntityIndex(id))) T();
+
+            // Set the bit for this component to true and return the created component
+            entities[GetEntityIndex(id)].mask.set(componentId);
+            return pComponent;
+        }
+
         template<typename T>
-        T* Get(EntityID id);
+        T* Get(EntityID id) {
+            int componentId = GetNewId<T>();
+            if (!entities[GetEntityIndex(id)].mask.test(componentId))
+                return nullptr;
+
+            T *pComponent = static_cast<T *>(componentPools[componentId]->get(GetEntityIndex(id)));
+            return pComponent;
+        }
         template<typename T>
-        void Remove(EntityID id);
+        void Remove(EntityID id) {
+            // ensures you're not accessing an entity that has been deleted
+            if (entities[GetEntityIndex(id)].id != id)
+                return;
+
+            int componentId = GetNewId<T>();
+            entities[GetEntityIndex(id)].mask.reset(componentId);
+        }
+
+        std::vector<EntityDesc> getEntities() { return entities; };
+        std::vector<ComponentPool *> getComponentPools() { return componentPools; };
 
     private:
         std::vector<EntityDesc> entities;
-        std::vector<ComponentPool> componentPools;
+        std::vector<ComponentPool *> componentPools;
         std::vector<EntityIndex> freeEntities;
 
 };
