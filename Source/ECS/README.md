@@ -1,0 +1,44 @@
+# WIKI FOR ECS USAGE
+
+## Components
+
+Components can be any data, example:
+```
+struct Pos {
+    int x;
+    int y;
+}
+struct Score {
+    std::size_t score;
+}
+```
+
+## EntityManager
+
+The entity manager contains and manages all components. You can create new entities and assign components to it.
+
+```
+EntityManager em;
+
+EntityID player = em.CreateNewEntity();
+Pos *playerPos = em.Assign<Pos>(player);
+Score *playerScore = em.Assign<Score>(player);
+```
+
+## EntityViewer
+
+With the entity viewer, you can iterate over components of a specific type:
+
+```
+for (EntityID ent : EntityViewer<Pos, Score>(entityManager))
+{
+    Pos* playerPos = scene.Get<Pos>(ent);
+    Score* playerScore = scene.Get<Score>(ent);
+
+    // Do stuff
+}
+```
+or all components:
+```
+EntityViewer<Pos, Score>(entityManager)
+```
