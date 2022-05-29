@@ -14,7 +14,7 @@ GFX::GFX(std::string title)
     _screenWidth = 800;
     _title = title;
     _camera = { 0 };
-    _camera.position = (Vector3){ 0.0f, 10.0f, 10.0f };  // Camera position
+    _camera.position = (Vector3){ 0.0f, 15.0f, 15.0f };  // Camera position
     _camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
     _camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
     _camera.fovy = 45.0f;                                // Camera field-of-view Y
@@ -101,10 +101,14 @@ void GFX::drawText(std::string text, int x, int y, int fontsize, CLITERAL(Color)
 
 void GFX::draw3DObject()
 {
-    Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
-    DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
-    DrawCubeWires(cubePosition, 2.0f, 2.0f, 2.0f, MAROON);
+    // Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
+    // DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
+    // DrawCubeWires(cubePosition, 2.0f, 2.0f, 2.0f, MAROON);
 
-    DrawGrid(10, 1.0f);
+    // Vector3 centerPos = {5.0f, 5.0f, 5.0f};
+    // float radius = 3.0f;
+    // DrawSphere(centerPos, radius, BLUE); 
+
+    DrawGrid(20, 1.0f);
 
 }

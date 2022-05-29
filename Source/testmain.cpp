@@ -82,6 +82,13 @@ int main(void)
 
     Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
 
+
+    Model skullmodel = LoadModel("./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj");
+    Texture2D skulltexture = LoadTexture("./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/Skull.png");
+    SetMaterialTexture(&skullmodel.materials[0], MATERIAL_MAP_DIFFUSE, skulltexture);
+
+    Vector3 skullposition = { 0.0f, 0.0f, 0.0f };
+
          // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
@@ -102,7 +109,7 @@ int main(void)
             GraphicsClass.begin3D();
 
                 GraphicsClass.draw3DObject();
-
+                DrawModel(skullmodel, skullposition, 0.2f, WHITE);
             GraphicsClass.end3D();
 
         EndDrawing();
