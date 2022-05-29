@@ -1,6 +1,6 @@
 //g++ testmain.cpp GFX.cpp -o main -O1 -Wall  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread
 
-#include "GFX.hpp"
+#include "Window.hpp"
 
 // int main() {
 
