@@ -21,8 +21,8 @@ The entity manager contains and manages all components. You can create new entit
 EntityManager em;
 
 EntityID player = em.CreateNewEntity();
-Pos *playerPos = em.Assign<Pos>(player);
-Score *playerScore = em.Assign<Score>(player);
+Pos *playerPos = em.Assign<Pos>(player, Pos{2,3});
+Score *playerScore = em.Assign<Score>(player, Score{1});
 ```
 
 ## EntityViewer

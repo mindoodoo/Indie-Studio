@@ -43,7 +43,7 @@ class EntityManager
         }
 
         template<typename T>
-        T* Assign(EntityID id) {
+        T* Assign(EntityID id, T value) {
             int componentId = GetNewId<T>();
 
             if (componentPools.size() <= componentId) // Not enough component pool
@@ -52,7 +52,7 @@ class EntityManager
                 componentPools[componentId] = new ComponentPool(sizeof(T));
 
             // Looks up the component in the pool, and initializes it with placement new
-            T *pComponent = new (componentPools[componentId]->get(GetEntityIndex(id))) T();
+            T *pComponent = new (componentPools[componentId]->get(GetEntityIndex(id))) T(value);
 
             // Set the bit for this component to true and return the created component
             entities[GetEntityIndex(id)].mask.set(componentId);

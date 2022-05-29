@@ -39,7 +39,7 @@ class EntityViewer
                 
                 bool operator==(const Iterator& other) const
                 {
-                    return index == other.index || index == entityManagerI->entities.size();
+                    return index == other.index || index == entityManagerI->getEntities().size();
                 }
 
                 bool operator!=(const Iterator& other) const
@@ -59,7 +59,6 @@ class EntityViewer
                     do {
                         index++;
                     } while (index < entityManagerI->getEntities().size() && !ValidIndex());
-                    std::cout << "Iterator increased: " << index << std::endl;
                     return *this;
                 }
             
@@ -74,12 +73,11 @@ class EntityViewer
         {
             int firstIndex = 0;
             while (firstIndex < entityManager->getEntities().size() &&
-                (componentMask != (componentMask & entityManager->getEntities()[firstIndex].mask) 
-                || !IsEntityValid(entityManager->getEntities()[firstIndex].id))) 
+                (componentMask != (componentMask & entityManager->getEntities()[firstIndex].mask)
+                || !IsEntityValid(entityManager->getEntities()[firstIndex].id)))
             {
                 firstIndex++;
             }
-            std::cout << "from entityViewer begin(), index: " << firstIndex << std::endl;
             return Iterator(entityManager, firstIndex, componentMask, all);
         }
 

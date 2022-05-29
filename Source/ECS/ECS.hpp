@@ -10,6 +10,7 @@
 
 #include <bitset>
 
+int counter;
 const int MAX_COMPONENTS = 32;
 const int MAX_ENTITIES = 5000;
 typedef unsigned int EntityIndex;
@@ -20,8 +21,8 @@ typedef std::bitset<MAX_COMPONENTS> ComponentMask;
 template <class T>
 int GetNewId()
 {
-    static int curCounter = 0;
-    return curCounter++;
+    static int curCounter = counter++;
+    return curCounter;
 }
 
 inline EntityID CreateEntityId(EntityIndex index, EntityVersion version)
