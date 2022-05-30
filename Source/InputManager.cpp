@@ -17,6 +17,8 @@ RL::InputManager::~InputManager()
 {
 }
 
+
+// -4 = UP ; -3 = LEFT ; -2 = DOWN ; -1 = RIGHT
 int RL::InputManager::recordInput()
 {
     if (IsKeyPressed(KEY_UP))

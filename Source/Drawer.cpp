@@ -16,9 +16,12 @@ RL::Drawer::~Drawer()
 {
 }
 
-void RL::Drawer::draw_text(std::string text, Color color)
+void RL::Drawer::draw_text(std::string text, Color color, int x, int y)
 {
-    DrawText(text.c_str(), 230, 300, 20, color);
+    DrawText(text.c_str(), x, y, 20, color);
+
+    //use this function when we get font handled
+    //DrawTextEx(Font font, const char *text, Vector2 position, float fontSize, float spacing, Color tint);
 }
 
 void RL::Drawer::draw_3D_model(Model model, float x, float y, float z)
@@ -30,12 +33,17 @@ void RL::Drawer::draw_3D_model(Model model, float x, float y, float z)
 
 }
 
+void RL::Drawer::draw_2D_model(Texture2D texture, int x, int y)
+{
+    DrawTexture(texture, x, y, WHITE);
+}
+
 //to implement as argument, the path to or the actual map
 // so that we can parse it and draw the 3dobjects on the grid at their coordinates
 void RL::Drawer::draw_map()
 {
     //to change with
-    DrawGrid(20, 1.0f);
+    DrawGrid(15, 1.0f);
 }
 
 void RL::Drawer::clearBackground()

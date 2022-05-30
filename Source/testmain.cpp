@@ -25,18 +25,25 @@ int main(void)
 
     // Define the camera to look into our 3d world
     Camera3D camera = { 0 };
-    camera.position = (Vector3){ 0.0f, 10.0f, 10.0f };  // Camera position
+    camera.position = (Vector3){ 0.0f, 15.0f, 13.0f };  // Camera position
     camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
-    camera.up = (Vector3){ 0.0f, 0.50f, 0.0f };          // Camera up vector (rotation towards target)
+    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
     camera.fovy = 45.0f;                                // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;             // Camera mode type
 
     Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
 
-
+    //required steps to load a 3d model (no animation)
     Model skullmodel = LoadModel("./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj");
     Texture2D skulltexture = LoadTexture("./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/Skull.png");
     SetMaterialTexture(&skullmodel.materials[0], MATERIAL_MAP_DIFFUSE, skulltexture);
+
+    //required steps to load a 2dicon through load as image process
+    Image playerIconIMG = LoadImage("./2d_models/FrogIcon/frog-prince.png");
+    ImageResize(&playerIconIMG, 50, 50);    
+    Texture2D playerIcon = LoadTextureFromImage(playerIconIMG);
+    UnloadImage(playerIconIMG);
+
 
     Vector3 skullposition = { 0.0f, 0.0f, 0.0f };
     float rotationangle = 0.0f;
@@ -51,7 +58,14 @@ int main(void)
         if ((keystroke = InputManager.recordInput()) != 0)
             std::cout << keystroke << std::endl;
 
-        if (InputManager.isMouseLeftClicked())
+        
+        if (keystroke == -4)
+            skullposition.z -= 0.1f;
+        if (keystroke == -3)
+            skullposition.x -= 0.1f;
+        if (keystroke == -2)
+            skullposition.z += 0.1f;
+        if (keystroke == -1)
             skullposition.x += 0.1f;
 
         //std::cout << InputManager.getMousePosition().x << " " << InputManager.getMousePosition().y << std::endl;
@@ -65,13 +79,15 @@ int main(void)
 
             Drawer.clearBackground();
 
-            Drawer.draw_text("TestText", RED);
 
             Drawer.begin3DMode(camera);
                 Drawer.draw_3D_model(skullmodel, skullposition.x, skullposition.y, skullposition.z);
                 Drawer.draw_map();
                 //DrawModelEx(skullmodel, skullposition, (Vector3){ 1.0f, 0.0f, 0.0f }, rotationangle, (Vector3){ 0.1f, 0.1f, 0.1f }, WHITE);
             Drawer.end3DMode();
+
+            Drawer.draw_2D_model(playerIcon, 100, 150);
+            Drawer.draw_text("Player 1", RED, 100 , 150 + playerIcon.height);
 
         Drawer.endDrawing();
         //----------------------------------------------------------------------------------

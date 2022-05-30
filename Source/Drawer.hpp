@@ -25,13 +25,13 @@ namespace RL {
             ~Drawer();
             void clearBackground();
             void draw_3D_model(Model model, float x, float y, float z);
-            void draw_2D_model(int twodmodeltemplatearg, int x, int y);
+            void draw_2D_model(Texture2D texture, int x, int y);
             void draw_map();
             void begin3DMode(Camera camera);
             void beginDrawing();
             void end3DMode();
             void endDrawing();
-            void draw_text(std::string text, Color color); // temporary, should create text class with font and size
+            void draw_text(std::string text, Color color, int x, int y); // temporary, should create text class with font and size
 
         private:
         std::string _name;
