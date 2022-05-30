@@ -16,6 +16,11 @@ RL::Drawer::~Drawer()
 {
 }
 
+void RL::Drawer::draw_text(std::string text, Color color)
+{
+    DrawText(text.c_str(), 230, 300, 20, color);
+}
+
 void RL::Drawer::draw_3D_model(Model model, float x, float y, float z)
 {
     Vector3 position = { x, y, z };
@@ -31,5 +36,30 @@ void RL::Drawer::draw_map()
 {
     //to change with
     DrawGrid(20, 1.0f);
+}
+
+void RL::Drawer::clearBackground()
+{
+    ClearBackground(RAYWHITE);
+}
+
+void RL::Drawer::begin3DMode(Camera camera)
+{
+    BeginMode3D(camera);
+}
+
+void RL::Drawer::end3DMode()
+{
+    EndMode3D();
+}
+
+void RL::Drawer::beginDrawing()
+{
+    BeginDrawing();
+}
+
+void RL::Drawer::endDrawing()
+{
+    EndDrawing();
 }
 

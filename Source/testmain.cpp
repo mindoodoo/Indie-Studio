@@ -2,12 +2,11 @@
 
 #include <raylib.h>
 #include "InputManager.hpp"
-#include "Window.hpp"
+//#include "Window.hpp"
 #include "Drawer.hpp"
 
 int main(void)
 {
-    //gRayLib GFX();
     RL::InputManager InputManager("TESTINPUTMANAGER");
     RL::Drawer Drawer("TESTDRAWER");
     //RL::Window Window("TESTMAIN");
@@ -46,7 +45,7 @@ int main(void)
     //--------------------------------------------------------------------------------------
 
     // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
+    while (!WindowShouldClose())    // Detect window close button or ESC key ,add to Window Class
     {
         // Update
         if ((keystroke = InputManager.recordInput()) != 0)
@@ -62,22 +61,25 @@ int main(void)
 
         // Draw
         //----------------------------------------------------------------------------------
-        BeginDrawing();
+        Drawer.beginDrawing();
 
-            ClearBackground(RAYWHITE);
+            Drawer.clearBackground();
 
-            BeginMode3D(camera);
+            Drawer.draw_text("TestText", RED);
+
+            Drawer.begin3DMode(camera);
                 Drawer.draw_3D_model(skullmodel, skullposition.x, skullposition.y, skullposition.z);
+                Drawer.draw_map();
                 //DrawModelEx(skullmodel, skullposition, (Vector3){ 1.0f, 0.0f, 0.0f }, rotationangle, (Vector3){ 0.1f, 0.1f, 0.1f }, WHITE);
-            EndMode3D();
+            Drawer.end3DMode();
 
-        EndDrawing();
+        Drawer.endDrawing();
         //----------------------------------------------------------------------------------
     }
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    CloseWindow();
+    CloseWindow(); //Add to window Class
     //--------------------------------------------------------------------------------------
 
     return 0;
