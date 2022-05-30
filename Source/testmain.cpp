@@ -1,67 +1,7 @@
 //g++ testmain.cpp GFX.cpp InputManager.cpp -o main -O1 -Wall  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread
 
 #include <raylib.h>
-//#include "RayLib.hpp"
 #include "InputManager.hpp"
-
-// int main() {
-
-//     GFX GraphicsClass("TESTWINDOW");
-
-//     Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
-
-//     Vector3 camPos = { 0.0f, 10.0f, 10.0f };
-//     Vector3 camTar = { 0.0f, 0.0f, 0.0f };
-//     Vector3 camHeight = { 0.0f, 1.0f, 0.0f };
-//     float camFov = 45.0f; 
-    
-//     GraphicsClass.init();
-//     GraphicsClass.setCameraPosition(camPos, camTar, camHeight, camFov);
-
-
-//     //SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
-//     //----------------------------------------------------------
-
-//     // Main game loop
-//     while (!WindowShouldClose())    // Detect window close button or ESC key
-//     {
-//         // Update
-//         // Draw
-//         //-----------------------------------------------------
-//         BeginDrawing();
-//             GraphicsClass.clearWindow();
-
-//             BeginMode3D(GraphicsClass.getCamera()); 
-//                 DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
-//                 DrawCubeWires(cubePosition, 2.0f, 2.0f, 2.0f, MAROON);
-//                 DrawGrid(10, 1.0f);
-//             EndMode3D();
-
-//             GraphicsClass.drawText("LOLILOL", 200, 200, 20, RED);
-//         if (IsKeyPressed(KEY_V))
-//         {
-//             if (IsWindowState(FLAG_VSYNC_HINT)) ClearWindowState(FLAG_VSYNC_HINT);
-//             else SetWindowState(FLAG_VSYNC_HINT);
-//         }
-
-//         if (IsKeyPressed(KEY_R))
-//         {
-//             std::cout << "LOL" << std::endl;
-//             GraphicsClass.set_window_size(1000,1000);
-//             GraphicsClass.init();
-//         }       
-
-//         EndDrawing();
-//         //-----------------------------------------------------
-//     }
-
-//     // De-Initialization
-//     //---------------------------------------------------------
-//     CloseWindow();        // Close window and OpenGL context
-//     //----------------------------------------------------------
-
-//     return 0;
-// }
 
 int main(void)
 {
