@@ -2,7 +2,7 @@
 
 #include <raylib.h>
 #include "InputManager.hpp"
-//#include "Window.hpp"
+#include "Window.hpp"
 #include "Drawer.hpp"
 
 int main(void)
