@@ -32,11 +32,23 @@ int RL::InputManager::recordInput()
 }
 
 
-RL::Vector2i RL::InputManager::getMousePosition()
-{
-    RL::Vector2i mousePosition;
-    mousePosition.x = GetMouseX();
-    mousePosition.y = GetMouseY();
+// RL::Vector2i RL::InputManager::getMousePosition()
+// {
+//     RL::Vector2i mousePosition;
+//     mousePosition.x = GetMouseX();
+//     mousePosition.y = GetMouseY();
 
-    return mousePosition;
+//     return mousePosition;
+// }
+
+bool RL::InputManager::isMouseLeftClicked()
+{
+    return IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+
+}
+
+bool RL::InputManager::isMouseRightClicked()
+{
+    return IsMouseButtonPressed(MOUSE_BUTTON_RIGHT);
+
 }

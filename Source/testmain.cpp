@@ -1,12 +1,18 @@
-//g++ testmain.cpp GFX.cpp InputManager.cpp -o main -O1 -Wall  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread
+//g++ testmain.cpp InputManager.cpp -o main -O1 -Wall  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread
 
 #include <raylib.h>
 #include "InputManager.hpp"
+//#include "Window.hpp"
+#include "Drawer.hpp"
 
 int main(void)
 {
     //gRayLib GFX();
-    RL::InputManager InputManager("IMANAGER");
+    RL::InputManager InputManager("TESTINPUTMANAGER");
+    RL::Drawer Drawer("TESTDRAWER");
+    //RL::Window Window("TESTMAIN");
+
+    //Window.init();
 
     int keystroke;
     
@@ -22,7 +28,7 @@ int main(void)
     Camera3D camera = { 0 };
     camera.position = (Vector3){ 0.0f, 10.0f, 10.0f };  // Camera position
     camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
-    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
+    camera.up = (Vector3){ 0.0f, 0.50f, 0.0f };          // Camera up vector (rotation towards target)
     camera.fovy = 45.0f;                                // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;             // Camera mode type
 
@@ -46,7 +52,10 @@ int main(void)
         if ((keystroke = InputManager.recordInput()) != 0)
             std::cout << keystroke << std::endl;
 
-        std::cout << InputManager.getMousePosition().x << " " << InputManager.getMousePosition().y << std::endl;
+        if (InputManager.isMouseLeftClicked())
+            skullposition.x += 0.1f;
+
+        //std::cout << InputManager.getMousePosition().x << " " << InputManager.getMousePosition().y << std::endl;
         //----------------------------------------------------------------------------------
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------
@@ -58,7 +67,8 @@ int main(void)
             ClearBackground(RAYWHITE);
 
             BeginMode3D(camera);
-                DrawModelEx(skullmodel, skullposition, (Vector3){ 1.0f, 0.0f, 0.0f }, rotationangle, (Vector3){ 0.1f, 0.1f, 0.1f }, WHITE);
+                Drawer.draw_3D_model(skullmodel, skullposition.x, skullposition.y, skullposition.z);
+                //DrawModelEx(skullmodel, skullposition, (Vector3){ 1.0f, 0.0f, 0.0f }, rotationangle, (Vector3){ 0.1f, 0.1f, 0.1f }, WHITE);
             EndMode3D();
 
         EndDrawing();
