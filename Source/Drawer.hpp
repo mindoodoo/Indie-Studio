@@ -31,10 +31,10 @@ namespace RL {
             void beginDrawing();
             void end3DMode();
             void endDrawing();
-            void draw_text(std::string text, Color color, int x, int y); // temporary, should create text class with font and size
+            void draw_text(std::string text, Color color, int x, int y, Font font); // temporary, should create text class with font and size
 
         private:
-        std::string _name;
+            std::string _name;
     };   
 }
 

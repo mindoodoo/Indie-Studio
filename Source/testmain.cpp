@@ -44,6 +44,10 @@ int main(void)
     Texture2D playerIcon = LoadTextureFromImage(playerIconIMG);
     UnloadImage(playerIconIMG);
 
+    //required for text and font
+    Font SquidFont = LoadFontEx("./Fonts/Game_Of_Squids.ttf", 20, 0, 250);
+
+
 
     Vector3 skullposition = { 0.0f, 0.0f, 0.0f };
     float rotationangle = 0.0f;
@@ -87,7 +91,7 @@ int main(void)
             Drawer.end3DMode();
 
             Drawer.draw_2D_model(playerIcon, 100, 150);
-            Drawer.draw_text("Player 1", RED, 100 , 150 + playerIcon.height);
+            Drawer.draw_text("Player 1", RED, 100 , 150 + playerIcon.height, SquidFont);
 
         Drawer.endDrawing();
         //----------------------------------------------------------------------------------
