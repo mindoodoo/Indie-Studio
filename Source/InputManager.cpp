@@ -31,3 +31,12 @@ int RL::InputManager::recordInput()
     return GetCharPressed();
 }
 
+
+RL::Vector2i RL::InputManager::getMousePosition()
+{
+    RL::Vector2i mousePosition;
+    mousePosition.x = GetMouseX();
+    mousePosition.y = GetMouseY();
+
+    return mousePosition;
+}

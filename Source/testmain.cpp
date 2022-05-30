@@ -105,6 +105,8 @@ int main(void)
         // Update
         if ((keystroke = InputManager.recordInput()) != 0)
             std::cout << keystroke << std::endl;
+
+        std::cout << InputManager.getMousePosition().x << " " << InputManager.getMousePosition().y << std::endl;
         //----------------------------------------------------------------------------------
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------

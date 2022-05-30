@@ -10,6 +10,7 @@
 #include <string> 
 #include <raylib.h>
 #include <iostream>
+#include "RaylibTypeEncaps.hpp"
 
 
 namespace RL {
@@ -19,7 +20,7 @@ namespace RL {
         InputManager(std::string name);
         ~InputManager();
         int recordInput();
-        int getMousePosition();
+        Vector2i getMousePosition();
 
     private:
         std::string _name;
