@@ -1,4 +1,4 @@
-//g++ testmain.cpp GFX.cpp -o main -O1 -Wall  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread
+//g++ testmain.cpp GFX.cpp InputManager.cpp -o main -O1 -Wall  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread
 
 #include <raylib.h>
 //#include "RayLib.hpp"
