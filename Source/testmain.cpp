@@ -1,6 +1,8 @@
 //g++ testmain.cpp GFX.cpp -o main -O1 -Wall  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread
 
-#include "Window.hpp"
+#include <raylib.h>
+//#include "RayLib.hpp"
+#include "InputManager.hpp"
 
 // int main() {
 
@@ -63,14 +65,16 @@
 
 int main(void)
 {
+    //RayLib GFX();
+    RL::InputManager InputManager("IMANAGER");
+    
     // Initialization
     //--------------------------------------------------------------------------------------
     const int screenWidth = 800;
     const int screenHeight = 450;
 
-    //InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera mode");
-    GFX GraphicsClass("TESTWINDOW");
-    GraphicsClass.init();
+    InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera mode");
+    
 
     // Define the camera to look into our 3d world
     Camera3D camera = { 0 };
@@ -88,6 +92,7 @@ int main(void)
     SetMaterialTexture(&skullmodel.materials[0], MATERIAL_MAP_DIFFUSE, skulltexture);
 
     Vector3 skullposition = { 0.0f, 0.0f, 0.0f };
+    float rotationangle = 0.0f;
 
          // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -96,6 +101,7 @@ int main(void)
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         // Update
+        std::cout << InputManager.recordInput() << std::endl;
         //----------------------------------------------------------------------------------
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------
@@ -104,13 +110,11 @@ int main(void)
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-            GraphicsClass.clearWindow();
+            ClearBackground(RAYWHITE);
 
-            GraphicsClass.begin3D();
-
-                GraphicsClass.draw3DObject();
-                DrawModel(skullmodel, skullposition, 0.2f, WHITE);
-            GraphicsClass.end3D();
+            BeginMode3D(camera);
+                DrawModelEx(skullmodel, skullposition, (Vector3){ 1.0f, 0.0f, 0.0f }, rotationangle, (Vector3){ 0.1f, 0.1f, 0.1f }, WHITE);
+            EndMode3D();
 
         EndDrawing();
         //----------------------------------------------------------------------------------
@@ -118,7 +122,7 @@ int main(void)
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    GraphicsClass.closeWindow();     // Close window and OpenGL context
+    CloseWindow();
     //--------------------------------------------------------------------------------------
 
     return 0;

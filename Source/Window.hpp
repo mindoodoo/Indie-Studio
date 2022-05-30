@@ -45,6 +45,7 @@ namespace RL {
         Logger _logger;
         std::string _title;
         bool _windowOpen;
+        
     };
 }
 
