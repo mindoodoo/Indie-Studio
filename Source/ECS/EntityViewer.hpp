@@ -20,7 +20,7 @@ class EntityViewer
                 all = true;
             else {
                 // Unpack the template parameters into an initializer list
-                int componentIds[] = { 0, GetNewId<ComponentTypes>() ... };
+                int componentIds[] = { 0, GetId<ComponentTypes>() ... };
                 for (int i = 1; i < (sizeof...(ComponentTypes) + 1); i++)
                     componentMask.set(componentIds[i]);
             }

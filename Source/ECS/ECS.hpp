@@ -19,7 +19,7 @@ typedef unsigned long long EntityID;
 typedef std::bitset<MAX_COMPONENTS> ComponentMask;
 
 template <class T>
-int GetNewId()
+int GetId()
 {
     static int curCounter = counter++;
     return curCounter;

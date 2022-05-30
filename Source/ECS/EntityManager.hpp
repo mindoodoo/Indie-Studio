@@ -44,7 +44,7 @@ class EntityManager
 
         template<typename T>
         T* Assign(EntityID id, T value) {
-            int componentId = GetNewId<T>();
+            int componentId = GetId<T>();
 
             if (componentPools.size() <= componentId) // Not enough component pool
                 componentPools.resize(componentId + 1);
@@ -61,7 +61,7 @@ class EntityManager
 
         template<typename T>
         T* Get(EntityID id) {
-            int componentId = GetNewId<T>();
+            int componentId = GetId<T>();
             if (!entities[GetEntityIndex(id)].mask.test(componentId))
                 return nullptr;
 
@@ -74,7 +74,7 @@ class EntityManager
             if (entities[GetEntityIndex(id)].id != id)
                 return;
 
-            int componentId = GetNewId<T>();
+            int componentId = GetId<T>();
             entities[GetEntityIndex(id)].mask.reset(componentId);
         }
 
