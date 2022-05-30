@@ -16,6 +16,7 @@ enum UserInput {
     DOWN,
     LEFT,
     RIGHT,
+    LAY_BOMB,
     CLOSED_WINDOW,
     NONE
 };
@@ -39,8 +40,13 @@ struct Skillset {
 };
 
 struct Pos {
-    int x;
-    int y;
+    float x;
+    float y;
+};
+
+struct Input {
+    UserInput pressedKey; // walk in direction, lay bombs
+    // user power ups
 };
 
 struct Score {
@@ -49,6 +55,11 @@ struct Score {
 
 struct Health {
     int health;
+};
+
+// ?
+struct Sprite {
+    std::string filePath;
 };
 
 // replace by marc map

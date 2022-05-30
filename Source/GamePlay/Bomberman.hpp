@@ -9,20 +9,23 @@
 #define BOMBERMAN_HPP_
 
 #include <vector>
-#include "Player.hpp"
+#include "ISystem.hpp"
+#include "MovementSystem.hpp"
 
 class Bomberman {
     public:
         Bomberman();
         ~Bomberman();
 
+        void createPlayer(Pos pos);
         void runFrame();
         void checkGameEnd();
 
     protected:
     private:
         UserInput _event;
-        std::vector<Player> _player;
+        std::vector<std::shared_ptr<ISystem>> _systems;
+        std::vector<EntityID> _player;
         Map _map;
         std::shared_ptr<EntityManager> _em;
 };
