@@ -1,5 +1,4 @@
-#ifndef BOMBERMAN_VECTORTYPES_HPP
-#define BOMBERMAN_VECTORTYPES_HPP
+#pragma once
 
 #include <type_traits>
 #include <raylib.h>
@@ -63,7 +62,5 @@ namespace RL {
     typedef Vector2<float> Vector2f;
     typedef Vector3<float> Vector3f;
 }
-
-#endif
 
 // operator conversion
