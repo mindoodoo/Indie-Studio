@@ -65,8 +65,10 @@
 
 int main(void)
 {
-    //RayLib GFX();
+    //gRayLib GFX();
     RL::InputManager InputManager("IMANAGER");
+
+    int keystroke;
     
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -101,7 +103,8 @@ int main(void)
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         // Update
-        std::cout << InputManager.recordInput() << std::endl;
+        if ((keystroke = InputManager.recordInput()) != 0)
+            std::cout << keystroke << std::endl;
         //----------------------------------------------------------------------------------
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------
