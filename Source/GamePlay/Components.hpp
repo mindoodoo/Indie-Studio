@@ -27,6 +27,17 @@ enum MapTranslation {
     BREAKABLE_OBJECT = 3
 };
 
+struct Level {
+    std::size_t level;
+};
+
+struct Skillset {
+    std::size_t bombUp;
+    std::size_t speedUp;
+    std::size_t fireUp;
+    bool wallPass;
+};
+
 struct Pos {
     int x;
     int y;

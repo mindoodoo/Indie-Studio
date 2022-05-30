@@ -12,6 +12,8 @@ struct Score {
     std::size_t score;
 };
 
+int counter;
+
 int main() {
     EntityManager em;
 

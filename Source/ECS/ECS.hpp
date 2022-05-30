@@ -10,7 +10,7 @@
 
 #include <bitset>
 
-int counter;
+extern int counter;
 const int MAX_COMPONENTS = 32;
 const int MAX_ENTITIES = 5000;
 typedef unsigned int EntityIndex;
