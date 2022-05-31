@@ -65,13 +65,12 @@ void RL::Drawer::draw_map(RL::Map Map)
             }
         }
     }
-    std::cout <<"END MAP"<< std::endl;
 }
 
 float RL::Drawer::translateCoordinatestoWorld(int pos, int borderSize)
 {
     float newpos = pos - (borderSize / 2);
-    newpos += 0.5;
+    //newpos += 0.5;
 
     return newpos;
 }
