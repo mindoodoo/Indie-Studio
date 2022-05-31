@@ -23,7 +23,7 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera mode");
     
 
-    // Define the camera to look into our 3d world
+    // Define the camera to look into our 3d world, this settings work ok with the grid
     Camera3D camera = { 0 };
     camera.position = (Vector3){ 0.0f, 15.0f, 13.0f };  // Camera position
     camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point

@@ -26,7 +26,7 @@ namespace RL {
             void clearBackground();
             void draw_3D_model(Model model, float x, float y, float z);
             void draw_2D_model(Texture2D texture, int x, int y);
-            void draw_map();
+            void draw_map(); //should take map class as parameter, map class containing  each tile and its asset
             void begin3DMode(Camera camera);
             void beginDrawing();
             void end3DMode();
