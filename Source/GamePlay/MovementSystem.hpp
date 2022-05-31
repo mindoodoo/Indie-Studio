@@ -19,51 +19,51 @@ class MovementSystem : public ISystem {
         ~MovementSystem() {};
 
         void update(float deltaTime) override {
-            // use deltaTime
-            for (EntityID ent : EntityViewer<Pos, Input>(*_em.get())) {
+            for (EntityID ent : EntityViewer<Pos, Velocity, Input>(*_em.get())) {
                 Pos* playerPos = _em->Get<Pos>(ent);
+                Velocity* playerVel = _em->Get<Velocity>(ent);
                 Input* playerMovement = _em->Get<Input>(ent);
 
                 switch (playerMovement->pressedKey) {
                     case UP:
-                        moveUp(playerPos);
+                        moveUp(playerPos, (*playerVel) * deltaTime);
                         break;
                     case DOWN:
-                        moveDown(playerPos);
+                        moveDown(playerPos, (*playerVel) * deltaTime);
                         break;
                     case LEFT:
-                        moveLeft(playerPos);
+                        moveLeft(playerPos, (*playerVel) * deltaTime);
                         break;
                     case RIGHT:
-                        moveRight(playerPos);
+                        moveRight(playerPos, (*playerVel) * deltaTime);
                         break;
                 }
             }
         };
 
         // check for collision with objects in other system
-        void moveLeft(Pos *pos)
+        void moveLeft(Pos *pos, Velocity vel)
         {
-            if (pos->x > 0 && _map.map[pos->y][pos->x - 1] == PATH)
-                pos->x -= 1;
+            if (pos->x >= vel.x && _map.map[pos->y][pos->x - vel.x] == PATH)
+                pos->x -= vel.x;
         };
 
-        void moveRight(Pos *pos)
+        void moveRight(Pos *pos, Velocity vel)
         {
-            if (pos->x + 1 < _map.map[pos->y].size() && _map.map[pos->y][pos->x + 1] == PATH)
-                pos->x += 1;
+            if (pos->x + vel.x < _map.map[pos->y].size() && _map.map[pos->y][pos->x + vel.x] == PATH)
+                pos->x += vel.x;
         };
 
-        void moveUp(Pos *pos)
+        void moveUp(Pos *pos, Velocity vel)
         {
-            if (pos->y > 0 && _map.map[pos->y - 1][pos->x] == PATH)
-                pos->y -= 1;
+            if (pos->y >= vel.y && _map.map[pos->y - vel.y][pos->x] == PATH)
+                pos->y -= vel.y;
         };
 
-        void moveDown(Pos *pos)
+        void moveDown(Pos *pos, Velocity vel)
         {
-            if (pos->y + 1 < _map.map.size() && _map.map[pos->y + 1][pos->x] == PATH)
-                pos->y += 1;
+            if (pos->y + vel.y < _map.map.size() && _map.map[pos->y + vel.y][pos->x] == PATH)
+                pos->y += vel.y;
         };
 
     private:

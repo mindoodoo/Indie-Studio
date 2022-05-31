@@ -24,6 +24,7 @@ void Bomberman::createPlayer(Pos pos)
     EntityID id = _em->CreateNewEntity();
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
+    _em->Assign<Velocity>(id, {1,1});
     _em->Assign<Score>(id, Score{0});
     _em->Assign<Health>(id, Health{100});
 }

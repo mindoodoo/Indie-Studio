@@ -39,10 +39,27 @@ struct Skillset {
     bool wallPass;
 };
 
+struct BombCapacity {
+    std::size_t totalAmount;
+    std::size_t curCapacity;
+};
+
 struct Pos {
     float x;
     float y;
 };
+
+struct Velocity {
+    float x;
+    float y;
+
+    Velocity operator*(const float &factor) {
+        this->x *= factor;
+        this->y *= factor;
+        return *this;
+    }
+};
+
 
 struct Input {
     UserInput pressedKey; // walk in direction, lay bombs
