@@ -44,25 +44,37 @@ void RL::Drawer::draw_map(RL::Map Map)
 {
 
     //mock cubes to be replaced with MAp._mapstaticAssets
-    Vector3 WallBoxPos = { 0.0f, 0.0f, 0.0f };
+    Vector3 WallBoxPos = { 0.0f, 0.5f, 0.0f };
     Vector3 WallBoxSize = { 1.0f, 1.0f, 1.0f };
 
     Vector2 size = {float(Map.getMapWidth()), float(Map.getMapDepth())};
 
-    DrawGrid(10.0f, 1.0f);
+    //DrawGrid(10.0f, 1.0f);
     DrawPlane({0, 0 ,0}, size, BLUE);
 
     for (int i = 0; i < Map.getMapDepth(); i++) {
         for (int j = 0; j < Map.getMapWidth(); j++) {
             if (Map.getParsedMap()[i][j].tile == 1) {
                 std::cout << "I SHOULD DRAW A WALL AT COORDINATES: " << i << " " << j << std::endl;
-                WallBoxPos.x = i;
-                WallBoxPos.z = j;
+                
+                // here convert CSV positions into 3d WORLD positions. need to translate with origin 0!!
+
+                WallBoxPos.x = translateCoordinatestoWorld(j, Map.getMapWidth());
+                WallBoxPos.z = translateCoordinatestoWorld(i, Map.getMapDepth());
                 DrawCube(WallBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, RED);
+                DrawCube({0, 0, 0}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, BLACK);
             }
         }
     }
     std::cout <<"END MAP"<< std::endl;
+}
+
+int RL::Drawer::translateCoordinatestoWorld(int pos, int borderSize)
+{
+    int middle = borderSize / 2;
+    int newpos = pos - middle;
+
+    return newpos;
 }
 
 void RL::Drawer::clearBackground()
