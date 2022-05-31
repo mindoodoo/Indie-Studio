@@ -43,10 +43,26 @@ void RL::Drawer::draw_2D_model(Texture2D texture, int x, int y)
 void RL::Drawer::draw_map(RL::Map Map)
 {
 
+    //mock cubes to be replaced with MAp._mapstaticAssets
+    Vector3 WallBoxPos = { 0.0f, 0.0f, 0.0f };
+    Vector3 WallBoxSize = { 1.0f, 1.0f, 1.0f };
+
     Vector2 size = {float(Map.getMapWidth()), float(Map.getMapDepth())};
-    //to change with
-    //DrawGrid(10.0f, 1.0f);
-    DrawPlane({0, 0 ,0}, size, BLUE); 
+
+    DrawGrid(10.0f, 1.0f);
+    DrawPlane({0, 0 ,0}, size, BLUE);
+
+    for (int i = 0; i < Map.getMapDepth(); i++) {
+        for (int j = 0; j < Map.getMapWidth(); j++) {
+            if (Map.getParsedMap()[i][j].tile == 1) {
+                std::cout << "I SHOULD DRAW A WALL AT COORDINATES: " << i << " " << j << std::endl;
+                WallBoxPos.x = i;
+                WallBoxPos.z = j;
+                DrawCube(WallBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, RED);
+            }
+        }
+    }
+    std::cout <<"END MAP"<< std::endl;
 }
 
 void RL::Drawer::clearBackground()

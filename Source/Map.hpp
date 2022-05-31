@@ -30,9 +30,11 @@ namespace RL {
         //getters
         int getMapWidth();
         int getMapDepth();
-        std::vector<std::vector<gfx_tile_t>> _parsedMap;
+        std::vector<std::vector<gfx_tile_t>> getParsedMap();
+
 
     private:
+        std::vector<std::vector<gfx_tile_t>> _parsedMap;
         //std::vector<IDRAWABLE_3DMODEL> _mapStaticAssets;
         std::vector<Model> _mapStaticAssets;
         int mapWidth;

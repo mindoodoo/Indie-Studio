@@ -126,4 +126,9 @@ int RL::Map::getMapDepth()
     return this->mapDepth;    
 }
 
+std::vector<std::vector<gfx_tile_t>> RL::Map::getParsedMap()
+{
+    return this->_parsedMap;
+}
+
 

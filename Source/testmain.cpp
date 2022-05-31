@@ -57,16 +57,16 @@ int main(void)
          // Set our game to run at 60 frames-per-second
     SetTargetFPS(60);
 
-    std::cout << Map._parsedMap.size() << std::endl;
-    std::cout << Map._parsedMap[0].size() << std::endl;
+    // std::cout << Map._parsedMap.size() << std::endl;
+    // std::cout << Map._parsedMap[0].size() << std::endl;
 
-    for (int i = 0; i < Map._parsedMap.size(); i++) {
-        for (int j = 0; j < Map._parsedMap[i].size(); j++) {
-            std::cout << Map._parsedMap[i][j].tile << " ";
-        }
-        std::cout << std::endl;
+    // for (int i = 0; i < Map._parsedMap.size(); i++) {
+    //     for (int j = 0; j < Map._parsedMap[i].size(); j++) {
+    //         std::cout << Map._parsedMap[i][j].tile << " ";
+    //     }
+    //     std::cout << std::endl;
 
-    }
+    // }
 
     //--------------------------------------------------------------------------------------
 
