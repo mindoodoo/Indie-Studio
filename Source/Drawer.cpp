@@ -49,8 +49,8 @@ void RL::Drawer::draw_map(RL::Map Map)
 
     Vector2 size = {float(Map.getMapWidth()), float(Map.getMapDepth())};
 
-    //DrawGrid(10.0f, 1.0f);
-    DrawPlane({0, 0 ,0}, size, BLUE);
+    DrawGrid(16.0f, 1.0f);
+    //DrawPlane({0, 0 ,0}, size, BLUE);
 
     for (int i = 0; i < Map.getMapDepth(); i++) {
         for (int j = 0; j < Map.getMapWidth(); j++) {
@@ -59,21 +59,46 @@ void RL::Drawer::draw_map(RL::Map Map)
                 
                 // here convert CSV positions into 3d WORLD positions. need to translate with origin 0!!
 
-                WallBoxPos.x = translateCoordinatestoWorld(j, Map.getMapWidth());
-                WallBoxPos.z = translateCoordinatestoWorld(i, Map.getMapDepth());
-                DrawCube(WallBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, RED);
-                DrawCube({0, 0, 0}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, BLACK);
+                WallBoxPos.x = translateWidthCoordinatestoWorld(j, Map.getMapWidth());
+                WallBoxPos.z = translateDepthCoordinatestoWorld(i, Map.getMapDepth());
+                //DrawCube(WallBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, GREEN);
+                //DrawCube({translateWidthCoordinatestoWorld(0, Map.getMapDepth()), 0, translateDepthCoordinatestoWorld(2, Map.getMapWidth())}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, BLACK);
+                DrawCube({translateWidthCoordinatestoWorld(1, Map.getMapWidth()), 1, translateDepthCoordinatestoWorld(2, Map.getMapDepth())}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, BLACK);
             }
         }
     }
     std::cout <<"END MAP"<< std::endl;
 }
 
-int RL::Drawer::translateCoordinatestoWorld(int pos, int borderSize)
+float RL::Drawer::translateWidthCoordinatestoWorld(int pos, int borderSize)
 {
     int middle = borderSize / 2;
-    int newpos = pos - middle;
+    float newpos = pos - middle;
+    
+    if ( newpos < 0) {
+        newpos += 0.5;
+        return newpos;
+    }
+    if ( newpos > 0) {
+        newpos -= 0.5;
+    }
+    return newpos;
+}
 
+float RL::Drawer::translateDepthCoordinatestoWorld(int pos, int borderSize)
+{
+    int middle = borderSize / 2;
+    float newpos = pos - middle;
+    
+    if ( newpos < 0) {
+        //newpos *= -1;
+        newpos -= 0.5;
+        return newpos;
+    }
+    if ( newpos > 0) {
+        //newpos *= -1;
+        newpos += 0.5;
+    }
     return newpos;
 }
 

@@ -28,7 +28,8 @@ namespace RL {
             void draw_3D_model(Model model, float x, float y, float z);
             void draw_2D_model(Texture2D texture, int x, int y);
             void draw_map(RL::Map Map); //should take map class as parameter, map class containing  each tile and its asset
-            int translateCoordinatestoWorld(int pos, int borderSize);
+            float translateWidthCoordinatestoWorld(int pos, int borderSize);
+            float translateDepthCoordinatestoWorld(int pos, int borderSize);
             void begin3DMode(Camera camera);
             void beginDrawing();
             void end3DMode();
