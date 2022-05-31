@@ -49,25 +49,19 @@ void RL::Drawer::draw_map(RL::Map Map)
 
     Vector2 size = {float(Map.getMapWidth()), float(Map.getMapDepth())};
 
-    DrawGrid(16.0f, 1.0f);
+    //DrawGrid(16.0f, 1.0f);
     DrawPlane({0, 0 ,0}, size, BLUE);
 
     for (int i = 0; i < Map.getMapDepth(); i++) {
         for (int j = 0; j < Map.getMapWidth(); j++) {
             if (Map.getParsedMap()[i][j].tile == 1) {
-                std::cout << "I SHOULD DRAW A WALL AT COORDINATES: " << i << " " << j << std::endl;
                 
                 // here convert CSV positions into 3d WORLD positions. need to translate with origin 0!!
-
                 WallBoxPos.x = translateCoordinatestoWorld(j, Map.getMapWidth());
                 WallBoxPos.z = translateCoordinatestoWorld(i, Map.getMapDepth());
+                //temporarily draw cubes, but we will drap the 3D_Drawable that represents a wall
                 DrawCube(WallBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, GREEN);
-                // DrawCube({0, 0, 0}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, BLACK);
-                // DrawCube({8, 0, 0}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, BLACK);
-                // DrawCube({-7.5, 0, -2.5}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, GREEN);
-                // DrawCube({7.5, 0, 2.5}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, YELLOW);
-                // DrawCube({translateWidthCoordinatestoWorld(0, Map.getMapWidth()), 0.5, translateDepthCoordinatestoWorld(0, Map.getMapDepth())}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, RED);
-                // DrawCube({translateWidthCoordinatestoWorld(16, Map.getMapWidth()), 0.5, translateDepthCoordinatestoWorld(6, Map.getMapDepth())}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, RED);
+                //we can also draw anything else if its in the drawables of the map. we can actually add anything here and draw it while its in the list              
             }
         }
     }
