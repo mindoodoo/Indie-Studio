@@ -1,15 +1,17 @@
-//g++ testmain.cpp InputManager.cpp -o main -O1 -Wall  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread
+//g++ testmain.cpp InputManager.cpp Drawer.cpp -o main -O1  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread -std=c++2a 
 
 #include <raylib.h>
 #include "InputManager.hpp"
 //#include "Window.hpp"
 #include "Drawer.hpp"
+#include "Map.hpp"
 
 int main(void)
 {
     RL::InputManager InputManager("TESTINPUTMANAGER");
     RL::Drawer Drawer("TESTDRAWER");
     //RL::Window Window("TESTMAIN");
+    RL::Map Map("./Maps/TestMap/test.csv");
 
     //Window.init();
 
@@ -37,6 +39,7 @@ int main(void)
     Model skullmodel = LoadModel("./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj");
     Texture2D skulltexture = LoadTexture("./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/Skull.png");
     SetMaterialTexture(&skullmodel.materials[0], MATERIAL_MAP_DIFFUSE, skulltexture);
+    Vector3 skullposition = { 0.0f, 0.0f, 0.0f };
 
     //required steps to load a 2dicon through load as image process
     Image playerIconIMG = LoadImage("./2d_models/FrogIcon/frog-prince.png");
@@ -49,10 +52,22 @@ int main(void)
 
 
 
-    Vector3 skullposition = { 0.0f, 0.0f, 0.0f };
     float rotationangle = 0.0f;
 
          // Set our game to run at 60 frames-per-second
+    SetTargetFPS(60);
+
+    std::cout << Map._parsedMap.size() << std::endl;
+    std::cout << Map._parsedMap[0].size() << std::endl;
+
+    for (int i = 0; i < Map._parsedMap.size(); i++) {
+        for (int j = 0; j < Map._parsedMap[i].size(); j++) {
+            std::cout << Map._parsedMap[i][j].tile << " ";
+        }
+        std::cout << std::endl;
+
+    }
+
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -60,9 +75,7 @@ int main(void)
     {
         // Update
         if ((keystroke = InputManager.recordInput()) != 0)
-            std::cout << keystroke << std::endl;
-
-        
+            std::cout << keystroke << std::endl;        
         if (keystroke == -4)
             skullposition.z -= 0.1f;
         if (keystroke == -3)
@@ -86,7 +99,7 @@ int main(void)
 
             Drawer.begin3DMode(camera);
                 Drawer.draw_3D_model(skullmodel, skullposition.x, skullposition.y, skullposition.z);
-                Drawer.draw_map();
+                Drawer.draw_map(Map);
                 //DrawModelEx(skullmodel, skullposition, (Vector3){ 1.0f, 0.0f, 0.0f }, rotationangle, (Vector3){ 0.1f, 0.1f, 0.1f }, WHITE);
             Drawer.end3DMode();
 

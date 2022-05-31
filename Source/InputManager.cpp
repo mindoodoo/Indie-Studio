@@ -21,13 +21,13 @@ RL::InputManager::~InputManager()
 // -4 = UP ; -3 = LEFT ; -2 = DOWN ; -1 = RIGHT
 int RL::InputManager::recordInput()
 {
-    if (IsKeyPressed(KEY_UP))
+    if (IsKeyDown(KEY_UP))
         return -4;
-    if (IsKeyPressed(KEY_DOWN))
+    if (IsKeyDown(KEY_DOWN))
     return -2;
-    if (IsKeyPressed(KEY_LEFT))
+    if (IsKeyDown(KEY_LEFT))
     return -3;
-    if (IsKeyPressed(KEY_RIGHT))
+    if (IsKeyDown(KEY_RIGHT))
     return -1;
 
     return GetCharPressed();

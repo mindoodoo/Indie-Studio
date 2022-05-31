@@ -40,10 +40,13 @@ void RL::Drawer::draw_2D_model(Texture2D texture, int x, int y)
 
 //to implement as argument, the path to or the actual map
 // so that we can parse it and draw the 3dobjects on the grid at their coordinates
-void RL::Drawer::draw_map()
+void RL::Drawer::draw_map(RL::Map Map)
 {
+
+    Vector2 size = {float(Map.getMapWidth()), float(Map.getMapDepth())};
     //to change with
-    DrawGrid(15, 1.0f);
+    //DrawGrid(10.0f, 1.0f);
+    DrawPlane({0, 0 ,0}, size, BLUE); 
 }
 
 void RL::Drawer::clearBackground()
