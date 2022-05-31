@@ -1,5 +1,4 @@
-//g++ testmain.cpp InputManager.cpp Drawer.cpp -o main -O1  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread -std=c++2a 
-
+//g++ testmain.cpp InputManager.cpp Drawer.cpp Map.cpp -o main -O1  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread -std=c++2a 
 #include <raylib.h>
 #include "InputManager.hpp"
 //#include "Window.hpp"

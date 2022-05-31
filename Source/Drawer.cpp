@@ -50,7 +50,7 @@ void RL::Drawer::draw_map(RL::Map Map)
     Vector2 size = {float(Map.getMapWidth()), float(Map.getMapDepth())};
 
     DrawGrid(16.0f, 1.0f);
-    //DrawPlane({0, 0 ,0}, size, BLUE);
+    DrawPlane({0, 0 ,0}, size, BLUE);
 
     for (int i = 0; i < Map.getMapDepth(); i++) {
         for (int j = 0; j < Map.getMapWidth(); j++) {
@@ -59,46 +59,26 @@ void RL::Drawer::draw_map(RL::Map Map)
                 
                 // here convert CSV positions into 3d WORLD positions. need to translate with origin 0!!
 
-                WallBoxPos.x = translateWidthCoordinatestoWorld(j, Map.getMapWidth());
-                WallBoxPos.z = translateDepthCoordinatestoWorld(i, Map.getMapDepth());
-                //DrawCube(WallBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, GREEN);
-                //DrawCube({translateWidthCoordinatestoWorld(0, Map.getMapDepth()), 0, translateDepthCoordinatestoWorld(2, Map.getMapWidth())}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, BLACK);
-                DrawCube({translateWidthCoordinatestoWorld(1, Map.getMapWidth()), 1, translateDepthCoordinatestoWorld(2, Map.getMapDepth())}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, BLACK);
+                WallBoxPos.x = translateCoordinatestoWorld(j, Map.getMapWidth());
+                WallBoxPos.z = translateCoordinatestoWorld(i, Map.getMapDepth());
+                DrawCube(WallBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, GREEN);
+                // DrawCube({0, 0, 0}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, BLACK);
+                // DrawCube({8, 0, 0}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, BLACK);
+                // DrawCube({-7.5, 0, -2.5}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, GREEN);
+                // DrawCube({7.5, 0, 2.5}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, YELLOW);
+                // DrawCube({translateWidthCoordinatestoWorld(0, Map.getMapWidth()), 0.5, translateDepthCoordinatestoWorld(0, Map.getMapDepth())}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, RED);
+                // DrawCube({translateWidthCoordinatestoWorld(16, Map.getMapWidth()), 0.5, translateDepthCoordinatestoWorld(6, Map.getMapDepth())}, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, RED);
             }
         }
     }
     std::cout <<"END MAP"<< std::endl;
 }
 
-float RL::Drawer::translateWidthCoordinatestoWorld(int pos, int borderSize)
+float RL::Drawer::translateCoordinatestoWorld(int pos, int borderSize)
 {
-    int middle = borderSize / 2;
-    float newpos = pos - middle;
-    
-    if ( newpos < 0) {
-        newpos += 0.5;
-        return newpos;
-    }
-    if ( newpos > 0) {
-        newpos -= 0.5;
-    }
-    return newpos;
-}
+    float newpos = pos - (borderSize / 2);
+    newpos += 0.5;
 
-float RL::Drawer::translateDepthCoordinatestoWorld(int pos, int borderSize)
-{
-    int middle = borderSize / 2;
-    float newpos = pos - middle;
-    
-    if ( newpos < 0) {
-        //newpos *= -1;
-        newpos -= 0.5;
-        return newpos;
-    }
-    if ( newpos > 0) {
-        //newpos *= -1;
-        newpos += 0.5;
-    }
     return newpos;
 }
 
