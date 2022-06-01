@@ -51,8 +51,6 @@ void RL::Renderer::draw_map(RL::Map Map)
     //DrawGrid(16.0f, 1.0f);
     DrawPlane({0, 0 ,0}, size, BLUE);
     
-    //mock texture to be implemented in Map
-    Texture2D wall = LoadTexture("./Maps/TestMap/TEST_WALL.png");
 
     for (int i = 0; i < Map.getMapDepth(); i++) {
         for (int j = 0; j < Map.getMapWidth(); j++) {
@@ -61,9 +59,7 @@ void RL::Renderer::draw_map(RL::Map Map)
                 // here convert CSV positions into 3d WORLD positions. need to translate with origin 0!!
                 WallBoxPos.x = translateCoordinatestoWorld(j, Map.getMapWidth());
                 WallBoxPos.z = translateCoordinatestoWorld(i, Map.getMapDepth());
-                //temporarily draw cubes, but we will drap the 3D_Drawable that represents a wall
-                //DrawCube(WallBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, GREEN);
-                DrawCubeTexture(wall, WallBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, WHITE);
+                DrawCubeTexture(Map.getwallModel().getTexture(), WallBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, WHITE);
                 //we can also draw anything else if its in the drawables of the map. we can actually add anything here and draw it while its in the list              
             }
         }

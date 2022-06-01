@@ -7,13 +7,13 @@
 
 #include "Map.hpp"
 
-RL::Map::Map(std::string mapCSVPath, std::string wallTexturePath)
+RL::Map::Map(std::string mapCSVPath, std::string wallTexturePath, std::string floorTexturePath)
+:_wallModel(Drawable3D(wallTexturePath, "", 1.0, RL::WALL)), _floorModel(RL::Drawable3D(floorTexturePath, "", 1.0, RL::FLOOR))
 {
     this->_parsedMap = parseMap(mapCSVPath);
     this->mapDepth = _parsedMap.size();
     this->mapWidth = _parsedMap[0].size();
     this->_wallTexturepath = wallTexturePath;
-    //this->_wallTexture = LoadTexture
 }
 
 RL::Map::~Map()
@@ -116,6 +116,44 @@ std::vector<std::vector<gfx_tile_t>> RL::Map::parseMap(const std::string &path)
     return map;
 }
 
+//drawing the map from MAP Class
+
+void RL::Map::draw_map()
+{
+       //mock cubes to be replaced with MAp._mapstaticAssets
+    Vector3 WallBoxPos = { 0.0f, 0.5f, 0.0f };
+    Vector3 WallBoxSize = { 1.0f, 1.0f, 1.0f };
+    Vector3 FloorBoxPos = { 0.0f, -0.5f, 0.0f };
+
+    Vector2 size = {float(mapWidth), float(mapDepth)};
+
+    //DrawGrid(16.0f, 1.0f);
+    //DrawPlane({0, 0 ,0}, size, BLUE);
+    
+
+    for (int i = 0; i < mapDepth; i++) {
+        for (int j = 0; j < mapWidth; j++) {
+            WallBoxPos.x = translateCoordinatestoWorld(j, mapWidth);
+            WallBoxPos.z = translateCoordinatestoWorld(i, mapDepth);
+            if (_parsedMap[i][j].tile == 1) { // each if here can represend the drawable u want in the map  
+                DrawCubeTexture(_wallModel.getTexture(), WallBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, WHITE);
+                //we can also draw anything else if its in the drawables of the map. we can actually add anything here and draw it while its in the list              
+            }
+            FloorBoxPos.x = translateCoordinatestoWorld(j, mapWidth);
+            FloorBoxPos.z = translateCoordinatestoWorld(i, mapDepth);
+            DrawCubeTexture(_floorModel.getTexture(), FloorBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, WHITE);
+        }
+    }
+}
+
+float RL::Map::translateCoordinatestoWorld(int pos, int borderSize)
+{
+    float newpos = pos - (borderSize / 2);
+    if (borderSize % 2 == 0)
+        newpos += 0.5;
+    return newpos;
+}
+
 //Getters
 
 int RL::Map::getMapWidth()
@@ -133,4 +171,7 @@ std::vector<std::vector<gfx_tile_t>> RL::Map::getParsedMap()
     return this->_parsedMap;
 }
 
-
+RL::Drawable3D RL::Map::getwallModel()
+{
+    return this->_wallModel;
+}

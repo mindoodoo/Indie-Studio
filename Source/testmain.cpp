@@ -4,14 +4,17 @@
 //#include "Window.hpp"
 #include "Renderer.hpp"
 #include "Map.hpp"
-//#include "./Drawables/Drawable3D.hpp"
+#include "Drawable3D.hpp"
 
 int main(void)
 {
-    RL::InputManager InputManager("TESTINPUTMANAGER");
-    RL::Renderer Drawer("TESTDRAWER");
+
+    std::string skulltex = "./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/Skull.png";
+    std::string skullmod = "./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj";
+
+    
     //RL::Window Window("TESTMAIN");
-    RL::Map Map("./Maps/TestMap/test.csv", "LOL");
+    
 
     //Window.init();
 
@@ -23,6 +26,17 @@ int main(void)
     const int screenHeight = 450;
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera mode");
+
+    //for everything to work, we need to init everything else AFTER THE WINDOW
+    RL::InputManager InputManager("TESTINPUTMANAGER");
+
+    RL::Renderer Drawer("TESTDRAWER");
+
+    RL::Map Map("./Maps/TestMap/test.csv", "./Maps/TestMap/TEST_WALL.png", "./Maps/TestMap/Floor.png" );
+
+    RL::Drawable3D Skull(skulltex, skullmod, 0.1, RL::MODEL);
+    Skull.setPosition(5, 0.5, 5);
+    Vector3 SkullPosition;
     
 
     // Define the camera to look into our 3d world, this settings work ok with the grid
@@ -36,10 +50,10 @@ int main(void)
     Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
 
     //required steps to load a 3d model (no animation)
-    Model skullmodel = LoadModel("./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj");
-    Texture2D skulltexture = LoadTexture("./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/Skull.png");
-    SetMaterialTexture(&skullmodel.materials[0], MATERIAL_MAP_DIFFUSE, skulltexture);
-    Vector3 skullposition = { 0.0f, 0.0f, 0.0f };
+    // Model skullmodel = LoadModel("./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj");
+    // Texture2D skulltexture = LoadTexture("./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/Skull.png");
+    // SetMaterialTexture(&skullmodel.materials[0], MATERIAL_MAP_DIFFUSE, skulltexture);
+    // Vector3 skullposition = { 0.0f, 0.0f, 0.0f };
 
     //required steps to load a 2dicon through load as image process
     Image playerIconIMG = LoadImage("./2d_models/FrogIcon/frog-prince.png");
@@ -76,14 +90,26 @@ int main(void)
         // Update
         if ((keystroke = InputManager.recordInput()) != 0)
             std::cout << keystroke << std::endl;        
-        if (keystroke == -4)
-            skullposition.z -= 0.1f;
-        if (keystroke == -3)
-            skullposition.x -= 0.1f;
-        if (keystroke == -2)
-            skullposition.z += 0.1f;
-        if (keystroke == -1)
-            skullposition.x += 0.1f;
+        if (keystroke == -4){
+            SkullPosition = Skull.getPosition();
+            SkullPosition.z -= 0.1f;
+            Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
+        }
+        if (keystroke == -3){
+            SkullPosition = Skull.getPosition();
+            SkullPosition.x -= 0.1f;
+            Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
+        }
+        if (keystroke == -2){
+            SkullPosition = Skull.getPosition();
+            SkullPosition.z += 0.1f;
+            Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
+        }
+        if (keystroke == -1){
+            SkullPosition = Skull.getPosition();
+            SkullPosition.x += 0.1f;
+            Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
+        }
 
         //std::cout << InputManager.getMousePosition().x << " " << InputManager.getMousePosition().y << std::endl;
         //----------------------------------------------------------------------------------
@@ -98,8 +124,10 @@ int main(void)
 
 
             Drawer.begin3DMode(camera);
-                Drawer.draw_3D_model(skullmodel, skullposition.x, skullposition.y, skullposition.z);
-                Drawer.draw_map(Map);
+                Skull.draw();
+                //Drawer.draw_3D_model(skullmodel, skullposition.x, skullposition.y, skullposition.z);
+                //Drawer.draw_map(Map);
+                Map.draw_map();
                 //DrawModelEx(skullmodel, skullposition, (Vector3){ 1.0f, 0.0f, 0.0f }, rotationangle, (Vector3){ 0.1f, 0.1f, 0.1f }, WHITE);
             Drawer.end3DMode();
 
