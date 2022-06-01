@@ -7,17 +7,19 @@
 
 #include "Map.hpp"
 
-RL::Map::Map(std::string mapCSVPath)
+RL::Map::Map(std::string mapCSVPath, std::string wallTexturePath)
 {
     this->_parsedMap = parseMap(mapCSVPath);
     this->mapDepth = _parsedMap.size();
     this->mapWidth = _parsedMap[0].size();
+    this->_wallTexturepath = wallTexturePath;
+    //this->_wallTexture = LoadTexture
 }
 
 RL::Map::~Map()
 {
     this->_parsedMap.clear();
-    this->_mapStaticAssets.clear();
+    //this->_mapStaticAssets.clear();
 }
 
 std::vector<std::string> csv_read_row(const std::string &line)

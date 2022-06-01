@@ -4,13 +4,14 @@
 //#include "Window.hpp"
 #include "Drawer.hpp"
 #include "Map.hpp"
+//#include "./Drawables/Drawable3D.hpp"
 
 int main(void)
 {
     RL::InputManager InputManager("TESTINPUTMANAGER");
     RL::Drawer Drawer("TESTDRAWER");
     //RL::Window Window("TESTMAIN");
-    RL::Map Map("./Maps/TestMap/test.csv");
+    RL::Map Map("./Maps/TestMap/test.csv", "LOL");
 
     //Window.init();
 

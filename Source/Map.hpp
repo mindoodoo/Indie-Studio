@@ -13,6 +13,7 @@
 #include <vector>
 #include <iterator>
 #include <cstring>
+#include "./Drawables/Drawable3D.hpp"
 
 typedef struct
 {
@@ -23,7 +24,7 @@ typedef struct
 namespace RL {
     class Map {
     public:
-        Map(std::string mapCSVPath);
+        Map(std::string mapCSVPath, std::string wallTexturePath);
         ~Map();
         std::vector<std::vector<gfx_tile_t>> parseMap(const std::string &path);
 
@@ -35,8 +36,10 @@ namespace RL {
 
     private:
         std::vector<std::vector<gfx_tile_t>> _parsedMap;
-        //std::vector<IDRAWABLE_3DMODEL> _mapStaticAssets;
-        std::vector<Model> _mapStaticAssets;
+        //std::vector<RL::Drawable3D> _mapStaticAssets;
+        std::string _wallTexturepath;
+        Texture2D _wallTexture;
+        //std::vector<Model> _mapStaticAssets;
         int mapWidth;
         int mapDepth;
     };
