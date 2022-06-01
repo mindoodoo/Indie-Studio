@@ -28,6 +28,15 @@ enum MapTranslation {
     BREAKABLE_OBJECT = 3
 };
 
+// dont change order, it defines their dying priority
+enum CollisionObjectType {
+    ITEM,
+    BREAKABLE_BLOCK,
+    PLAYER,
+    MONSTER,
+    BOMB
+};
+
 struct Level {
     std::size_t level;
 };
@@ -37,11 +46,24 @@ struct Skillset {
     std::size_t speedUp;
     std::size_t fireUp;
     bool wallPass;
+
+    Skillset operator+=(const Skillset &other) {
+        bombUp += other.bombUp;
+        speedUp += other.speedUp;
+        fireUp += other.fireUp;
+        if (!wallPass && other.wallPass)
+            wallPass = true;
+        return *this;
+    };
 };
 
 struct BombCapacity {
     std::size_t totalAmount;
     std::size_t curCapacity;
+};
+
+struct BombOwner {
+    EntityID id;
 };
 
 struct Pos {

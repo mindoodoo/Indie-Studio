@@ -11,6 +11,7 @@
 #include <vector>
 #include "ISystem.hpp"
 #include "MovementSystem.hpp"
+#include "CollisionSystem.hpp"
 
 class Bomberman {
     public:
@@ -18,6 +19,9 @@ class Bomberman {
         ~Bomberman();
 
         void createPlayer(Pos pos);
+        void createItem(Pos pos);
+        void createMonster(Pos pos);
+        void createBomb(Pos pos, EntityID bombOwner);
         void runFrame();
         void checkGameEnd();
 
