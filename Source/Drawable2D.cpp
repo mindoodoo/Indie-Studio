@@ -19,7 +19,9 @@ RL::Drawable2D::~Drawable2D()
 
 void RL::Drawable2D::draw()
 {
+    BeginDrawing();
     DrawTexture(this->_texture, this->_position.x, this->_position.y, this->_tint);
+    EndDrawing();
 }
 
 void RL::Drawable2D::loadImage(std::string assetPath)
