@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 
 #include "IDrawable.hpp"
-#include "RaylibTypeEncaps.hpp"
+//#include "RaylibTypeEncaps.hpp"
 
 namespace RL {
     class Drawable2D: public IDrawable {
@@ -28,16 +28,20 @@ namespace RL {
             // Image Loading / Manipulation methods
             void loadImage(std::string assetPath);
             void unloadAll();
-            void resize(Vector2i newSize);
+            void resize(Vector2 newSize);
 
             // Getters and setters
             bool isImageLoaded() const;
             void setTint(Color newTint);
 
+            void setPosition(float x, float y, float z);
+            Vector3 getPosition();
+
+            Texture2D getTexture();
         protected:
             // These initializations will not work
-            Vector3i _position = {0, 0, 0};
-            Vector2i _size = {0, 0};
+            Vector3 _position = {0, 0, 0};
+            Vector2 _size = {0, 0};
 
             bool _imageLoaded = false;
             Image _img;

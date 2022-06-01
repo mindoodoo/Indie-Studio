@@ -1,10 +1,11 @@
-//g++ testmain.cpp InputManager.cpp Drawer.cpp Map.cpp -o main -O1  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread -std=c++2a 
+//g++ testmain.cpp InputManager.cpp Renderer.cpp Map.cpp Drawable3D.cpp Drawable2D.cpp -o main -O1  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread -std=c++2a -g3
 #include <raylib.h>
 #include "InputManager.hpp"
 //#include "Window.hpp"
 #include "Renderer.hpp"
 #include "Map.hpp"
 #include "Drawable3D.hpp"
+#include "Drawable2D.hpp"
 
 int main(void)
 {
@@ -37,6 +38,15 @@ int main(void)
     RL::Drawable3D Skull(skulltex, skullmod, 0.1, RL::MODEL);
     Skull.setPosition(5, 0.5, 5);
     Vector3 SkullPosition;
+
+    RL::Drawable2D playerIcon("./2d_models/FrogIcon/frog-prince.png");
+    Vector2 newSize = {50, 50};
+    playerIcon.resize(newSize);
+    playerIcon.setPosition(80, 150, 0);
+
+    int text_x = playerIcon.getPosition().x;
+    int text_y = playerIcon.getPosition().y;
+    int player_height = playerIcon.getTexture().height;
     
 
     // Define the camera to look into our 3d world, this settings work ok with the grid
@@ -56,10 +66,10 @@ int main(void)
     // Vector3 skullposition = { 0.0f, 0.0f, 0.0f };
 
     //required steps to load a 2dicon through load as image process
-    Image playerIconIMG = LoadImage("./2d_models/FrogIcon/frog-prince.png");
-    ImageResize(&playerIconIMG, 50, 50);    
-    Texture2D playerIcon = LoadTextureFromImage(playerIconIMG);
-    UnloadImage(playerIconIMG);
+    // Image playerIconIMG = LoadImage("./2d_models/FrogIcon/frog-prince.png");
+    // ImageResize(&playerIconIMG, 50, 50);    
+    // Texture2D playerIcon = LoadTextureFromImage(playerIconIMG);
+    // UnloadImage(playerIconIMG);
 
     //required for text and font
     Font SquidFont = LoadFontEx("./Fonts/Game_Of_Squids.ttf", 20, 0, 250);
@@ -131,8 +141,10 @@ int main(void)
                 //DrawModelEx(skullmodel, skullposition, (Vector3){ 1.0f, 0.0f, 0.0f }, rotationangle, (Vector3){ 0.1f, 0.1f, 0.1f }, WHITE);
             Drawer.end3DMode();
 
-            Drawer.draw_2D_model(playerIcon, 100, 150);
-            Drawer.draw_text("Player 1", RED, 100 , 150 + playerIcon.height, SquidFont);
+            playerIcon.draw();
+            //Drawer.draw_2D_model(playerIcon, 100, 150);
+             
+            Drawer.draw_text("Player 1", RED, text_x  , text_y + player_height , SquidFont);
 
         Drawer.endDrawing();
         //----------------------------------------------------------------------------------

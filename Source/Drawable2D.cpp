@@ -19,9 +19,9 @@ RL::Drawable2D::~Drawable2D()
 
 void RL::Drawable2D::draw()
 {
-    BeginDrawing();
+    //BeginDrawing();
     DrawTexture(this->_texture, this->_position.x, this->_position.y, this->_tint);
-    EndDrawing();
+    //EndDrawing();
 }
 
 void RL::Drawable2D::loadImage(std::string assetPath)
@@ -48,7 +48,7 @@ void RL::Drawable2D::unloadAll()
     this->_imageLoaded = false;
 }
 
-void RL::Drawable2D::resize(Vector2i newSize)
+void RL::Drawable2D::resize(Vector2 newSize)
 {
     if (!this->_imageLoaded)
         return;
@@ -66,3 +66,22 @@ void RL::Drawable2D::setTint(Color newTint)
 {
     this->_tint = newTint;
 }
+
+void RL::Drawable2D::setPosition(float x, float y, float z)
+{
+    this->_position.x = x;
+    this->_position.y = y;
+    this->_position.z = z;
+}
+
+Vector3 RL::Drawable2D::getPosition()
+ {
+     return this->_position;
+ }
+
+ Texture2D RL::Drawable2D::getTexture()
+ {
+     return this->_texture;
+ }
+
+
