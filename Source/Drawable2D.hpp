@@ -25,17 +25,23 @@ namespace RL {
             void draw();
             // void reset();
 
-            // Image Loading methods
+            // Image Loading / Manipulation methods
             void loadImage(std::string assetPath);
+            void unloadAll();
+            void resize(Vector2i newSize);
 
             // Getters and setters
             bool isImageLoaded() const;
+            void setTint(Color newTint);
 
         protected:
+            // These initializations will not work
             Vector3i _position = {0, 0, 0};
+            Vector2i _size = {0, 0};
 
-            bool _imageLoaded;
+            bool _imageLoaded = false;
             Image _img;
             Texture2D _texture;
+            Color _tint = WHITE;
     };
 }

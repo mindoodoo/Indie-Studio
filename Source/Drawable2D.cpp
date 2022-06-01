@@ -9,17 +9,17 @@
 
 RL::Drawable2D::Drawable2D(std::string assetPath)
 {
-
+    this->loadImage(assetPath);
 }
 
 RL::Drawable2D::~Drawable2D()
 {
-
+    this->unloadAll();
 }
 
 void RL::Drawable2D::draw()
 {
-    
+    DrawTexture(this->_texture, this->_position.x, this->_position.y, this->_tint);
 }
 
 void RL::Drawable2D::loadImage(std::string assetPath)
@@ -30,12 +30,37 @@ void RL::Drawable2D::loadImage(std::string assetPath)
         throw std::invalid_argument("Asset path is invalid");
     if (S_ISDIR(sb.st_mode))
         throw std::invalid_argument("Asset path is a directory");
+    if (this->_imageLoaded)
+        this->unloadAll();
     this->_img = LoadImage(assetPath.c_str());
     this->_texture = LoadTextureFromImage(this->_img);
     this->_imageLoaded = true;
 }
 
+void RL::Drawable2D::unloadAll()
+{
+    if (!this->_imageLoaded)
+        return;
+    UnloadImage(this->_img);
+    UnloadTexture(this->_texture);
+    this->_imageLoaded = false;
+}
+
+void RL::Drawable2D::resize(Vector2i newSize)
+{
+    if (!this->_imageLoaded)
+        return;
+    ImageResize(&this->_img, newSize.x, newSize.y);
+    UnloadTexture(this->_texture);
+    this->_texture = LoadTextureFromImage(this->_img);
+}
+
 bool RL::Drawable2D::isImageLoaded() const
 {
     return this->_imageLoaded;
+}
+
+void RL::Drawable2D::setTint(Color newTint)
+{
+    this->_tint = newTint;
 }
