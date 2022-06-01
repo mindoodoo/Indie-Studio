@@ -2,14 +2,14 @@
 #include <raylib.h>
 #include "InputManager.hpp"
 //#include "Window.hpp"
-#include "Drawer.hpp"
+#include "Renderer.hpp"
 #include "Map.hpp"
 //#include "./Drawables/Drawable3D.hpp"
 
 int main(void)
 {
     RL::InputManager InputManager("TESTINPUTMANAGER");
-    RL::Drawer Drawer("TESTDRAWER");
+    RL::Renderer Drawer("TESTDRAWER");
     //RL::Window Window("TESTMAIN");
     RL::Map Map("./Maps/TestMap/test.csv", "LOL");
 
