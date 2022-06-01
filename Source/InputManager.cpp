@@ -46,11 +46,11 @@ int RL::InputManager::recordInput()
 bool RL::InputManager::isMouseLeftClicked()
 {
     return IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
-
+    // Need click position
 }
 
 bool RL::InputManager::isMouseRightClicked()
 {
     return IsMouseButtonPressed(MOUSE_BUTTON_RIGHT);
-
+    // Need click position
 }

@@ -65,7 +65,9 @@ void RL::Window::clearWindow(Color color)
 }
 
 // Returns true if open, false otherwise
-bool RL::Window::checkWindowOpen() const {
+bool RL::Window::checkWindowOpen() const
+{
+    // Implement shouldWindowClose method from raylib ?
     if (!this->_windowOpen) {
         this->_logger.log("Window Encapsulation: No window is open, doing nothing...");
         return false;
