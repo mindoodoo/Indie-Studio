@@ -35,7 +35,7 @@ namespace RL {
         // Getters
         const Vector2i &getDimensions() const;
         const std::string &getTitle() const;
-        bool isWindowOpen() const;
+        bool isWindowOpen();
 
     private:
         bool checkWindowOpen() const;
