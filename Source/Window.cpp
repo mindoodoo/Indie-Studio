@@ -72,6 +72,8 @@ bool RL::Window::checkWindowOpen() const
         this->_logger.log("Window Encapsulation: No window is open, doing nothing...");
         return false;
     }
+    if (WindowShouldClose())
+        return false;
     return true;
 }
 
@@ -101,7 +103,9 @@ const std::string &RL::Window::getTitle() const
     return this->_title;
 }
 
-bool RL::Window::isWindowOpen() const
+bool RL::Window::isWindowOpen()
 {
+    this->_windowOpen = this->checkWindowOpen();
+
     return this->_windowOpen;
 }
