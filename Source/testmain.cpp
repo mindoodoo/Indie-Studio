@@ -1,4 +1,4 @@
-//g++ testmain.cpp InputManager.cpp Renderer.cpp Map.cpp Drawable3D.cpp Drawable2D.cpp -o main -O1  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread -std=c++2a -g3
+//g++ testmain.cpp InputManager.cpp Renderer.cpp Map.cpp Drawable3D.cpp Drawable2D.cpp Window.cpp Logger.cpp -o main -O1  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread -std=c++2a -g3
 #include <raylib.h>
 #include "InputManager.hpp"
 #include "Window.hpp"
@@ -13,11 +13,6 @@ int main(void)
     std::string skulltex = "./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/Skull.png";
     std::string skullmod = "./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj";
 
-    
-    
-
-    //Window.init();
-
     int keystroke;
     
     // Initialization
@@ -26,8 +21,6 @@ int main(void)
     const int screenHeight = 450;
 
     RL::Window Window("TESTMAIN");
-    //InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera mode");
-    Window.init();
 
     //for everything to work, we need to init everything else AFTER THE WINDOW
     RL::InputManager InputManager("TESTINPUTMANAGER");
