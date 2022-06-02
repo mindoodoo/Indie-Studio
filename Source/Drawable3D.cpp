@@ -41,7 +41,7 @@ void RL::Drawable3D::load3DModel(std::string texturePath, std::string modelPath)
         this->unloadAll();
     this->_img = LoadImage(texturePath.c_str());
     this->_texture = LoadTextureFromImage(this->_img);
-    if (this->_type == RL::MODEL || this->_type == RL::FLOOR) {
+    if (this->_type == RL::MODEL) {
         this->_model = LoadModel(modelPath.c_str());
         SetMaterialTexture(&this->_model.materials[0], MATERIAL_MAP_DIFFUSE, this->_texture);
     }
