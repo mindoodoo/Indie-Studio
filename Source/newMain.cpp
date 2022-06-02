@@ -8,14 +8,13 @@
 // g++ newMain.cpp Drawable2D.cpp Renderer.cpp Window.cpp Logger.cpp -std=c++20 -L ./lib/ -lraylib -ldl -pthread
 
 #include "Drawable2D.hpp"
-#include "Renderer.hpp"
 #include "Window.hpp"
 #include "InputManager.hpp"
+#include "RaylibTypeEncaps.hpp"
 
 int main()
 {
     RL::Window win("New Window");
-    RL::Renderer render("Empty");
     RL::Drawable2D yay("2d_models/FrogIcon/frog-prince.png");
     RL::InputManager im("Fuck these names my guy");
     
