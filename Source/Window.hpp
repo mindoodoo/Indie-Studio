@@ -11,36 +11,36 @@
 #include <string>
 #include <raylib.h>
 #include "Logger.hpp"
-#include "RaylibTypeEncaps.hpp"
+//#include "RaylibTypeEncaps.hpp"
 
 namespace RL {
     class Window {
     public:
-        Window(std::string title, Vector2i dimensions = {1920, 1080},
+        Window(std::string title, Vector2 dimensions = {1920, 1080},
                bool initLater = false);
         ~Window();
 
         // Init and Close Methods
         void init();
-        void init(Vector2i dimensions, std::string title);
+        void init(Vector2 dimensions, std::string title);
         void close();
 
         // Display Methods
         void clearWindow(Color color);
 
         // Setters
-        void setDimensions(const Vector2i &dimensions);
+        void setDimensions(const Vector2 &dimensions);
         void setTitle(const std::string &title);
 
         // Getters
-        const Vector2i &getDimensions() const;
+        const Vector2 &getDimensions() const;
         const std::string &getTitle() const;
         bool isWindowOpen();
 
     private:
         bool checkWindowOpen() const;
 
-        Vector2i _dimensions;
+        Vector2 _dimensions;
 
         Logger _logger;
         std::string _title;

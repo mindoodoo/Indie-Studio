@@ -1,7 +1,7 @@
 //g++ testmain.cpp InputManager.cpp Renderer.cpp Map.cpp Drawable3D.cpp Drawable2D.cpp -o main -O1  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread -std=c++2a -g3
 #include <raylib.h>
 #include "InputManager.hpp"
-//#include "Window.hpp"
+#include "Window.hpp"
 #include "Renderer.hpp"
 #include "Map.hpp"
 #include "Drawable3D.hpp"
@@ -14,7 +14,6 @@ int main(void)
     std::string skullmod = "./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj";
 
     
-    //RL::Window Window("TESTMAIN");
     
 
     //Window.init();
@@ -26,7 +25,9 @@ int main(void)
     const int screenWidth = 800;
     const int screenHeight = 450;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera mode");
+    RL::Window Window("TESTMAIN");
+    //InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera mode");
+    Window.init();
 
     //for everything to work, we need to init everything else AFTER THE WINDOW
     RL::InputManager InputManager("TESTINPUTMANAGER");
@@ -59,17 +60,6 @@ int main(void)
 
     Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
 
-    //required steps to load a 3d model (no animation)
-    // Model skullmodel = LoadModel("./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj");
-    // Texture2D skulltexture = LoadTexture("./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/Skull.png");
-    // SetMaterialTexture(&skullmodel.materials[0], MATERIAL_MAP_DIFFUSE, skulltexture);
-    // Vector3 skullposition = { 0.0f, 0.0f, 0.0f };
-
-    //required steps to load a 2dicon through load as image process
-    // Image playerIconIMG = LoadImage("./2d_models/FrogIcon/frog-prince.png");
-    // ImageResize(&playerIconIMG, 50, 50);    
-    // Texture2D playerIcon = LoadTextureFromImage(playerIconIMG);
-    // UnloadImage(playerIconIMG);
 
     //required for text and font
     Font SquidFont = LoadFontEx("./Fonts/Game_Of_Squids.ttf", 20, 0, 250);
@@ -78,21 +68,9 @@ int main(void)
 
     float rotationangle = 0.0f;
 
-         // Set our game to run at 60 frames-per-second
+    // Set our game to run at 60 frames-per-second
     SetTargetFPS(60);
 
-    // std::cout << Map._parsedMap.size() << std::endl;
-    // std::cout << Map._parsedMap[0].size() << std::endl;
-
-    // for (int i = 0; i < Map._parsedMap.size(); i++) {
-    //     for (int j = 0; j < Map._parsedMap[i].size(); j++) {
-    //         std::cout << Map._parsedMap[i][j].tile << " ";
-    //     }
-    //     std::cout << std::endl;
-
-    // }
-
-    //--------------------------------------------------------------------------------------
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key ,add to Window Class
@@ -120,30 +98,18 @@ int main(void)
             SkullPosition.x += 0.1f;
             Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
         }
-
-        //std::cout << InputManager.getMousePosition().x << " " << InputManager.getMousePosition().y << std::endl;
-        //----------------------------------------------------------------------------------
-        // TODO: Update your variables here
-        //----------------------------------------------------------------------------------
-
         // Draw
         //----------------------------------------------------------------------------------
         Drawer.beginDrawing();
 
             Drawer.clearBackground();
 
-
             Drawer.begin3DMode(camera);
                 Skull.draw();
-                //Drawer.draw_3D_model(skullmodel, skullposition.x, skullposition.y, skullposition.z);
-                //Drawer.draw_map(Map);
                 Map.draw_map();
-                //DrawModelEx(skullmodel, skullposition, (Vector3){ 1.0f, 0.0f, 0.0f }, rotationangle, (Vector3){ 0.1f, 0.1f, 0.1f }, WHITE);
             Drawer.end3DMode();
 
-            playerIcon.draw();
-            //Drawer.draw_2D_model(playerIcon, 100, 150);
-             
+            playerIcon.draw();             
             Drawer.draw_text("Player 1", RED, text_x  , text_y + player_height , SquidFont);
 
         Drawer.endDrawing();
@@ -152,8 +118,22 @@ int main(void)
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    CloseWindow(); //Add to window Class
+    Window.close();
     //--------------------------------------------------------------------------------------
 
     return 0;
 }
+
+
+
+    //required steps to load a 3d model (no animation)
+    // Model skullmodel = LoadModel("./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj");
+    // Texture2D skulltexture = LoadTexture("./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/Skull.png");
+    // SetMaterialTexture(&skullmodel.materials[0], MATERIAL_MAP_DIFFUSE, skulltexture);
+    // Vector3 skullposition = { 0.0f, 0.0f, 0.0f };
+
+    //required steps to load a 2dicon through load as image process
+    // Image playerIconIMG = LoadImage("./2d_models/FrogIcon/frog-prince.png");
+    // ImageResize(&playerIconIMG, 50, 50);    
+    // Texture2D playerIcon = LoadTextureFromImage(playerIconIMG);
+    // UnloadImage(playerIconIMG);

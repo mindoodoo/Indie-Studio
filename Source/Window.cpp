@@ -8,7 +8,7 @@
 #include "Window.hpp"
 
 // Construction / Destruction
-RL::Window::Window(std::string title, Vector2i dimensions, bool initLater)
+RL::Window::Window(std::string title, Vector2 dimensions, bool initLater)
     : _dimensions(dimensions), _windowOpen(false), _logger(Logger("WindowEncapsulation"))
 {
     if (!initLater) {
@@ -33,7 +33,7 @@ void RL::Window::init()
     this->_windowOpen = true;
 }
 
-void RL::Window::init(Vector2i dimensions, std::string title)
+void RL::Window::init(Vector2 dimensions, std::string title)
 {
     if (this->_windowOpen) {
         this->_logger.log("Window Encapsulation: Window is already initialized, doing nothing...");
@@ -78,7 +78,7 @@ bool RL::Window::checkWindowOpen() const
 }
 
 // Setters
-void RL::Window::setDimensions(const Vector2i &dimensions)
+void RL::Window::setDimensions(const Vector2 &dimensions)
 {
     if (this->_windowOpen)
         this->_logger.log("Window Encapsulation: Window is already open, changes will only apply if restarted");
@@ -93,7 +93,7 @@ void RL::Window::setTitle(const std::string &title)
 }
 
 // Getters
-const RL::Vector2i &RL::Window::getDimensions() const
+const Vector2 &RL::Window::getDimensions() const
 {
     return this->_dimensions;
 }
