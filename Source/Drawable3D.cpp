@@ -31,6 +31,7 @@ void RL::Drawable3D::draw()
         DrawCubeTexture(this->_texture, this->_position, 1.0f, 1.0f, 1.0f, WHITE);
     if (this->_type == RL::MODEL)
         DrawModel(this->_model, this->_position, this->_scale, WHITE);
+        DrawSphere(this->_position, 0.5f, WHITE);
     //EndDrawing();
 }
 
@@ -51,16 +52,33 @@ void RL::Drawable3D::load3DModel(std::string texturePath, std::string modelPath)
         SetMaterialTexture(&this->_model.materials[0], MATERIAL_MAP_DIFFUSE, this->_texture);
     }
     this->_imageLoaded = true;
+    setBoundingBox();
 }
 
 void RL::Drawable3D::setBoundingBox()
 {
     if (this->_type == RL::MODEL)
-        this->_boundingBox = GetModelBoundingBox(this->_model);
-    
-    //if (this->_type == RL::WALL || this->_type == RL::FLOOR)
-        //this->_boundingBox = {(Vector3) {this->_position.x - this->_model., this->_position.y, this->_position.z}}
+        this->_boundingBox.max.x = this->_position.x - 0.5f;
+        this->_boundingBox.max.y = this->_position.y - 0.5f;
+        this->_boundingBox.max.z = this->_position.z - 0.5f;
+        this->_boundingBox.min.x = this->_position.x + 0.5f;
+        this->_boundingBox.min.y = this->_position.y + 0.5f;
+        this->_boundingBox.min.z = this->_position.z + 0.5f;
 
+    
+    if (this->_type == RL::WALL || this->_type == RL::FLOOR)
+        this->_boundingBox = {(Vector3) {this->_position.x - (this->_boxSize.x ) / 2,
+                                         this->_position.y - (this->_boxSize.y ) / 2,
+                                         this->_position.z - (this->_boxSize.z ) / 2} ,
+                              (Vector3) {this->_position.x + (this->_boxSize.x ) / 2,
+                                         this->_position.y + (this->_boxSize.y ) / 2,
+                                         this->_position.z + (this->_boxSize.z ) / 2}
+                                         };
+}
+
+BoundingBox RL::Drawable3D::getBoundingBox()
+{
+    return this->_boundingBox;
 }
 
 void RL::Drawable3D::unloadAll()
@@ -92,6 +110,8 @@ void RL::Drawable3D::setPosition(float x, float y, float z)
     this->_position.x = x;
     this->_position.y = y;
     this->_position.z = z;
+
+    setBoundingBox();
 }
 
 Vector3 RL::Drawable3D::getPosition()

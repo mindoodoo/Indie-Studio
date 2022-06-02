@@ -135,6 +135,7 @@ void RL::Map::draw_map()
             WallBoxPos.z = translateCoordinatestoWorld(i, mapDepth);
             if (_parsedMap[i][j].tile == 1) { // each if here can represend the drawable u want in the map  
                 DrawCubeTexture(_wallModel.getTexture(), WallBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, WHITE);
+                DrawSphere(WallBoxPos, 0.5f, WHITE);
                 //we can also draw anything else if its in the drawables of the map. we can actually add anything here and draw it while its in the list              
             }
             FloorBoxPos.x = translateCoordinatestoWorld(j, mapWidth);

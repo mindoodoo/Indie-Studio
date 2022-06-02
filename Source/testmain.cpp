@@ -7,6 +7,23 @@
 #include "Drawable3D.hpp"
 #include "Drawable2D.hpp"
 
+float translateCoordinatestoWorld(int pos, int borderSize)
+{
+    float newpos = pos - (borderSize / 2);
+    if (borderSize % 2 == 0)
+        newpos += 0.5;
+    return newpos;
+}
+
+bool do_collision_walls(RL::Drawable3D Model, int i, int j , RL::Map Map)
+{
+    float x = translateCoordinatestoWorld(j, Map.getMapWidth());
+    float z = translateCoordinatestoWorld(i, Map.getMapDepth());
+    if (CheckCollisionSpheres(Model.getPosition(), 0.5f, Vector3{x, 0.5f, z}, 0.5f))
+        return true;
+    return false;
+}
+
 int main(void)
 {
 
@@ -14,6 +31,7 @@ int main(void)
     std::string skullmod = "./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj";
 
     int keystroke;
+    bool collision = false;
     
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -29,8 +47,8 @@ int main(void)
 
     RL::Map Map("./Maps/TestMap/test.csv", "./Maps/TestMap/TEST_WALL.png", "./Maps/TestMap/Floor.png" );
 
-    RL::Drawable3D Skull(skulltex, skullmod, 0.1, RL::MODEL);
-    Skull.setPosition(0, 1.6f, 0); //add 3dmodel_getmodel
+    RL::Drawable3D Skull(skulltex, skullmod, 0.04, RL::MODEL);
+    Skull.setPosition(0, 1.0f, 0); //add 3dmodel_getmodel
     Vector3 SkullPosition;
 
     RL::Drawable2D playerIcon("./2d_models/FrogIcon/frog-prince.png");
@@ -48,10 +66,15 @@ int main(void)
     // Set our game to run at 60 frames-per-second
     SetTargetFPS(60);
 
+    
+
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key ,add to Window Class
     {
+
+        //collisions
+
         // Update
         if ((keystroke = InputManager.recordInput()) != 0)
             std::cout << keystroke << std::endl;        
@@ -89,10 +112,21 @@ int main(void)
             playerIcon.draw();             
             Drawer.draw_text("Player 1", RED, text_x  , text_y + player_height , SquidFont);
 
+            collision = false;
+            for (int i = 0; i < Map.getMapDepth(); i++) {
+                for (int j = 0; j < Map.getMapWidth(); j++) {
+                    if (Map.getParsedMap()[i][j].tile == 1) {
+                        //COLLISION HANDLER 
+                        collision = do_collision_walls(Skull, i, j, Map);
+                        if (collision)
+                            Drawer.draw_text("COLLISION DETECTED", BLUE, 500, 500, SquidFont);
+                    }
+;   
+                }
+            }
         Drawer.endDrawing();
         //----------------------------------------------------------------------------------
     }
-
     // De-Initialization
     //--------------------------------------------------------------------------------------
     Window.close();

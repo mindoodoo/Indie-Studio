@@ -51,6 +51,7 @@ namespace RL {
             Texture2D getTexture();
 
             void setBoundingBox();
+            BoundingBox getBoundingBox();
 
         protected:
             // These initializations will not work

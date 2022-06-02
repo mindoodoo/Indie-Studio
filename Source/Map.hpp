@@ -16,12 +16,13 @@
 #include "Drawable3D.hpp"
 
 typedef struct
-{
-    int tile;
-    int orientation;
-} gfx_tile_t;
+    {
+        int tile;
+        int orientation;
+    } gfx_tile_t;
 
 namespace RL {
+    
     class Map {
     public:
         Map(std::string mapCSVPath, std::string wallTexturePath, std::string floorTexturePath);
@@ -47,7 +48,6 @@ namespace RL {
         RL::Drawable3D _floorModel;
         RL::Drawable3D _wallModel;
         std::string _wallTexturepath;
-        //std::vector<Model> _mapStaticAssets;
         int mapWidth;
         int mapDepth;
     };
