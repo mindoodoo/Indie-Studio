@@ -31,7 +31,7 @@ void RL::Drawable3D::draw()
         DrawCubeTexture(this->_texture, this->_position, 1.0f, 1.0f, 1.0f, WHITE);
     if (this->_type == RL::MODEL)
         DrawModel(this->_model, this->_position, this->_scale, WHITE);
-        DrawSphere(this->_position, 0.5f, WHITE);
+        DrawSphere(this->_position, 0.5f, RED);
     //EndDrawing();
 }
 

@@ -26,7 +26,7 @@ RL::Window::Window(std::string title, Vector2 dimensions, bool initLater)
 
 RL::Window::~Window()
 {
-    //CloseWindow();
+    CloseWindow();
 }
 
 // Method to init window if not init on construction

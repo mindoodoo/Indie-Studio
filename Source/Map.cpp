@@ -124,9 +124,9 @@ void RL::Map::draw_map()
     Vector3 WallBoxSize = this->getwallModel().getBoxSize();
     Vector3 FloorBoxPos = { 0.0f, -0.25f, 0.0f };
 
-    Vector2 size = {float(mapWidth), float(mapDepth)};
+    Vector2 size = {20.0f, 20.0f};
     //DrawGrid(16.0f, 1.0f);
-    //DrawPlane({0, 0 ,0}, size, BLUE);
+    DrawPlane({0, 0 ,0}, size, BLUE);
     
 
     for (int i = 0; i < mapDepth; i++) {
@@ -135,7 +135,7 @@ void RL::Map::draw_map()
             WallBoxPos.z = translateCoordinatestoWorld(i, mapDepth);
             if (_parsedMap[i][j].tile == 1) { // each if here can represend the drawable u want in the map  
                 DrawCubeTexture(_wallModel.getTexture(), WallBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, WHITE);
-                DrawSphere(WallBoxPos, 0.5f, WHITE);
+                //DrawSphere(WallBoxPos, 0.5f, WHITE);
                 //we can also draw anything else if its in the drawables of the map. we can actually add anything here and draw it while its in the list              
             }
             FloorBoxPos.x = translateCoordinatestoWorld(j, mapWidth);
