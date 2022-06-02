@@ -30,7 +30,7 @@ int main(void)
     RL::Map Map("./Maps/TestMap/test.csv", "./Maps/TestMap/TEST_WALL.png", "./Maps/TestMap/Floor.png" );
 
     RL::Drawable3D Skull(skulltex, skullmod, 0.1, RL::MODEL);
-    Skull.setPosition(5, 0.5, 5);
+    Skull.setPosition(0, 1.6f, 0); //add 3dmodel_getmodel
     Vector3 SkullPosition;
 
     RL::Drawable2D playerIcon("./2d_models/FrogIcon/frog-prince.png");
@@ -42,24 +42,8 @@ int main(void)
     int text_y = playerIcon.getPosition().y;
     int player_height = playerIcon.getTexture().height;
     
-
-    // Define the camera to look into our 3d world, this settings work ok with the grid
-    Camera3D camera = { 0 };
-    camera.position = (Vector3){ 0.0f, 16.0f, 7.5f };  // Camera position
-    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
-    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
-    camera.fovy = 45.0f;                                // Camera field-of-view Y
-    camera.projection = CAMERA_PERSPECTIVE;             // Camera mode type
-
-    Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
-
-
     //required for text and font
     Font SquidFont = LoadFontEx("./Fonts/Game_Of_Squids.ttf", 20, 0, 250);
-
-
-
-    float rotationangle = 0.0f;
 
     // Set our game to run at 60 frames-per-second
     SetTargetFPS(60);
@@ -97,7 +81,7 @@ int main(void)
 
             Drawer.clearBackground();
 
-            Drawer.begin3DMode(camera);
+            Drawer.begin3DMode(Window.getCamera());
                 Skull.draw();
                 Map.draw_map();
             Drawer.end3DMode();

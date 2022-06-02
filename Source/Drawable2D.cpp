@@ -14,7 +14,7 @@ RL::Drawable2D::Drawable2D(std::string assetPath)
 
 RL::Drawable2D::~Drawable2D()
 {
-    this->unloadAll();
+    //this->unloadAll();
 }
 
 void RL::Drawable2D::draw()

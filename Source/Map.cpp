@@ -123,7 +123,7 @@ void RL::Map::draw_map()
        //mock cubes to be replaced with MAp._mapstaticAssets
     Vector3 WallBoxPos = { 0.0f, 0.5f, 0.0f };
     Vector3 WallBoxSize = { 1.0f, 1.0f, 1.0f };
-    Vector3 FloorBoxPos = { 0.0f, -0.5f, 0.0f };
+    Vector3 FloorBoxPos = { 0.0f, -0.25f, 0.0f };
 
     Vector2 size = {float(mapWidth), float(mapDepth)};
 
@@ -141,7 +141,7 @@ void RL::Map::draw_map()
             }
             FloorBoxPos.x = translateCoordinatestoWorld(j, mapWidth);
             FloorBoxPos.z = translateCoordinatestoWorld(i, mapDepth);
-            DrawCubeTexture(_floorModel.getTexture(), FloorBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, WHITE);
+            DrawCubeTexture(_floorModel.getTexture(), FloorBoxPos, WallBoxSize.x, WallBoxSize.y - 0.5f, WallBoxSize.z, WHITE);
         }
     }
 }
