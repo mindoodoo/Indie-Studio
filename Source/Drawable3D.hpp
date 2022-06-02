@@ -46,11 +46,16 @@ namespace RL {
             void setPosition(float x, float y, float z);
             Vector3 getPosition();
 
+            Vector3 getBoxSize();
+
             Texture2D getTexture();
+
+            void setBoundingBox();
 
         protected:
             // These initializations will not work
             Vector3 _position = {0, 0, 0};
+            Vector3 _boxSize;
 
             bool _imageLoaded = false;
             Image _img;

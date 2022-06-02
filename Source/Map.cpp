@@ -120,13 +120,11 @@ std::vector<std::vector<gfx_tile_t>> RL::Map::parseMap(const std::string &path)
 
 void RL::Map::draw_map()
 {
-       //mock cubes to be replaced with MAp._mapstaticAssets
     Vector3 WallBoxPos = { 0.0f, 0.5f, 0.0f };
-    Vector3 WallBoxSize = { 1.0f, 1.0f, 1.0f };
+    Vector3 WallBoxSize = this->getwallModel().getBoxSize();
     Vector3 FloorBoxPos = { 0.0f, -0.25f, 0.0f };
 
     Vector2 size = {float(mapWidth), float(mapDepth)};
-
     //DrawGrid(16.0f, 1.0f);
     //DrawPlane({0, 0 ,0}, size, BLUE);
     
