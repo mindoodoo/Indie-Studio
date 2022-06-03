@@ -2,7 +2,12 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.16)
 project(bomberman)
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(bomberman Source/main.cpp)
+include_directories(Source)
+add_executable(bomberman
+        Source/main.cpp
+        Source/Window.cpp
+        Source/Logger.cpp
+        Source/RaylibTypeEncaps.hpp)
 if (NOT raylib_FOUND)
     INCLUDE(FetchContent)
     FetchContent_Declare(raylib URL https://github.com/raysan5/raylib/archive/refs/tags/4.0.0.tar.gz)
