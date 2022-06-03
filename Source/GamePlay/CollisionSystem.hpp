@@ -9,12 +9,13 @@
 #define COLLISIONSYSTEM_HPP_
 
 #include "ISystem.hpp"
+#include "../Map.hpp"
 
 class CollisionSystem : public ISystem {
     public:
-        CollisionSystem(std::shared_ptr<EntityManager> em, Map map) {
+        CollisionSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Map> map) : _map(map)
+        {
             _em = em;
-            _map = map;
         };
         ~CollisionSystem() {};
 
@@ -75,7 +76,7 @@ class CollisionSystem : public ISystem {
         };
 
     private:
-        Map _map;
+        std::shared_ptr<RL::Map> _map;
 };
 
 #endif /* !COLLISIONSYSTEM_HPP_ */

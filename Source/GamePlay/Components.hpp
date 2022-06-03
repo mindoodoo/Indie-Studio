@@ -7,25 +7,26 @@
 
 #ifndef COMPONENTS_HPP_
 #define COMPONENTS_HPP_
-
 #include <memory>
 #include <vector>
 
+#include "../Drawable3D.hpp"
+
 enum UserInput {
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
+    CLOSED_WINDOW = -5,
+    UP = -4,
+    LEFT = -3,
+    DOWN = -2,
+    RIGHT = -1,
     LAY_BOMB,
-    CLOSED_WINDOW,
     NONE
 };
 
 enum MapTranslation {
-    UNKNOWN = 0,
+    UNKNOWN = -1,
+    PATH = 0,
     WALL = 1,
-    PATH = 2,
-    BREAKABLE_OBJECT = 3
+    BREAKABLE_OBJECT = 2
 };
 
 // dont change order, it defines their dying priority
@@ -69,15 +70,18 @@ struct BombOwner {
 struct Pos {
     float x;
     float y;
+    float z;
 };
 
 struct Velocity {
     float x;
     float y;
+    float z;
 
     Velocity operator*(const float &factor) {
         this->x *= factor;
         this->y *= factor;
+        this->z *= factor;  // is it necessary to change the z coordinate?
         return *this;
     }
 };
@@ -98,7 +102,7 @@ struct Health {
 
 // ?
 struct Sprite {
-    std::string filePath;
+    RL::Drawable3D model;
 };
 
 // replace by marc map
