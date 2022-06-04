@@ -15,7 +15,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _systems.push_back(std::make_shared<MovementSystem>(_em, _map));
     _systems.push_back(std::make_shared<CollisionSystem>(_em, _map));
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map, _drawer));
-    createPlayer({5, 5});
+    createPlayer({1, 1});
 }
 
 Bomberman::~Bomberman()
@@ -55,7 +55,7 @@ void Bomberman::createMonster(Pos pos)
 {
     EntityID id = _em->CreateNewEntity();
     _em->Assign<Pos>(id, pos);
-    _em->Assign<Velocity>(id, {1,1});
+    _em->Assign<Velocity>(id, {0.1,0.1});
     _em->Assign<Score>(id, Score{0}); //defines how player score increases when killing monster
     _em->Assign<Health>(id, Health{100});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{MONSTER});

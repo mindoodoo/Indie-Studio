@@ -60,7 +60,7 @@ class MovementSystem : public ISystem {
             }
         };
 
-        void moveDown(Pos *pos, Velocity vel, Sprite *playerSprite)
+        void moveUp(Pos *pos, Velocity vel, Sprite *playerSprite)
         {
             if (pos->y >= vel.y && _map->getParsedMap()[pos->y - vel.y][pos->x].tile == PATH) {
                 pos->y -= vel.y;
@@ -68,7 +68,7 @@ class MovementSystem : public ISystem {
             }
         };
 
-        void moveUp(Pos *pos, Velocity vel, Sprite *playerSprite)
+        void moveDown(Pos *pos, Velocity vel, Sprite *playerSprite)
         {
             if (pos->y + vel.y < _map->getParsedMap().size() && _map->getParsedMap()[pos->y + vel.y][pos->x].tile == PATH) {
                 pos->y += vel.y;

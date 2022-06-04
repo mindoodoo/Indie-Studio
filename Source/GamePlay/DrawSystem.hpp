@@ -22,9 +22,23 @@ class DrawSystem : public ISystem {
         void update(float deltaTime) override {
             _map->draw_map();
             for (EntityID ent : EntityViewer<Pos, Sprite>(*_em.get())) {
+                Pos *objectPos = _em->Get<Pos>(ent);
                 Sprite *objectSprite = _em->Get<Sprite>(ent);
+                objectSprite->model.setPosition(
+                    translateCoordinates(objectPos->x, _map->getMapWidth()),
+                    0.4f,
+                    translateCoordinates(objectPos->y, _map->getMapDepth())
+                );
                 objectSprite->model.draw();
             }
+        }
+
+        float translateCoordinates(float pos, int borderSize)
+        {
+            float newpos = pos - (borderSize / 2);
+            if (borderSize % 2 == 0)
+                newpos += 0.5;
+            return newpos;
         }
 
     private:
