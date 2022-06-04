@@ -15,7 +15,7 @@
 #include "IDrawable.hpp"
 //#include "RaylibTypeEncaps.hpp"
 
-
+#define MODEL_RADIUS = 0.45f
 
 namespace RL {
     enum ModelType {
@@ -24,6 +24,7 @@ namespace RL {
         MODEL,
         FLOOR
     };
+
 
     class Drawable3D: public IDrawable {
         public:
