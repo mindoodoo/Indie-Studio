@@ -39,9 +39,8 @@ bool do_collision_walls(Vector3 ModelPos, int i, int j , RL::Map Map)
                                         z + 0.90f/2 }};
 
 
-    std::cout << "wallbound" << wallbound.max.x << " " << wallbound.max.y << " " << wallbound.max.z << std::endl;
-    //if (CheckCollisionBoxSphere(wallbound,ModelPos, 0.40f))
-    if (CheckCollisionSpheres(ModelPos, 0.45f, (Vector3){x, 0.5f, z}, 0.48f ))
+    //if (CheckCollisionSpheres(ModelPos, 0.45f, (Vector3){x, 0.5f, z}, 0.48f ))
+    if (CheckCollisionBoxSphere(wallbound,ModelPos, 0.40f))
         return true;
     return false;
 
@@ -65,7 +64,7 @@ bool RL::CollisionManager::collisionsWithWalls(Vector3 ModelPos, RL::Map Map)
 
 bool RL::CollisionManager::collisionsWithModels(Vector3 MovingPos, RL::Drawable3D Model2)
 {
-    bool collision = CheckCollisionSpheres(MovingPos, 0.45f, Model2.getPosition(), 0.45f);
+    bool collision = CheckCollisionSpheres(MovingPos, 0.45f, Model2.getPosition(), 0.49f);
 
     //if model.IS_TRAVERSIBLE == TRUE then
     // collision == false;

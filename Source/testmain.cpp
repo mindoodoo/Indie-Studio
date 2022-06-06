@@ -1,4 +1,4 @@
-//g++ testmain.cpp InputManager.cpp Renderer.cpp Map.cpp Drawable3D.cpp Drawable2D.cpp Window.cpp Logger.cpp -o main -O1  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread -std=c++2a -g3
+//g++ testmain.cpp InputManager.cpp Renderer.cpp Map.cpp Drawable3D.cpp Drawable2D.cpp Window.cpp Logger.cpp CollisionManager.cpp SoundManager.cpp -o main -O1  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread -std=c++2a -g3
 #include <raylib.h>
 #include "InputManager.hpp"
 #include "Window.hpp"
@@ -7,6 +7,7 @@
 #include "Drawable3D.hpp"
 #include "Drawable2D.hpp"
 #include "CollisionManager.hpp"
+#include "SoundManager.hpp"
 
 int main(void)
 {
@@ -15,7 +16,6 @@ int main(void)
     std::string skullmod = "./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj";
 
     int keystroke;
-    bool collision = false;
     
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -28,6 +28,8 @@ int main(void)
     RL::InputManager InputManager("TESTINPUTMANAGER");
 
     RL::Renderer Drawer("TESTDRAWER");
+
+    RL::SoundManager SoundManager;
 
     RL::Map Map("./Maps/TestMap/test.csv", "./Maps/TestMap/TEST_WALL.png", "./Maps/TestMap/Floor.png" );
 
@@ -63,6 +65,7 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key ,add to Window Class
     {
+        SoundManager.updateMusicStream();
 
         //collisions
 
@@ -101,6 +104,21 @@ int main(void)
                 Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
             }
         }
+        
+        //MUSIC HANDLING
+        if (keystroke == 'p')
+            SoundManager.playSpecificMusic("SeruGemû");
+        if (keystroke == 'o')
+            SoundManager.playSpecificMusic("RestuSen");
+        if (keystroke == 'k')
+            SoundManager.playSpecificMusic("MiraiKaraNoShonen");
+        if (keystroke == 'm')
+            SoundManager.playSpecificMusic("MiraiKaraKitaShonen");
+        
+        if (keystroke == 'l')
+            SoundManager.pauseOrPlayMusic();
+        if (keystroke == 'r')
+            SoundManager.enableDisableShuffle();
         // Draw
         //----------------------------------------------------------------------------------
         Drawer.beginDrawing();
@@ -116,18 +134,13 @@ int main(void)
             playerIcon.draw();             
             Drawer.draw_text("Player 1", RED, text_x  , text_y + player_height , SquidFont);
 
-            collision = false;
-//             for (int i = 0; i < Map.getMapDepth(); i++) {
-//                 for (int j = 0; j < Map.getMapWidth(); j++) {
-//                     if (Map.getParsedMap()[i][j].tile == 1) {
-//                         //COLLISION HANDLER 
-//                         collision = do_collision_walls(Skull, i, j, Map);
-//                         if (collision)
-//                             Drawer.draw_text("COLLISION DETECTED", BLUE, 500, 500, SquidFont);
-//                     }
-// ;   
-//                 }
-//             }
+
+            Drawer.draw_text("Press r to enable/disable shuffle", BLUE, 600  , text_y + player_height -200, SquidFont);
+            Drawer.draw_text("Press m to play Mirai Kara Kita Shonen song", RED, 600  , text_y + player_height -180, SquidFont);
+            Drawer.draw_text("Press k to play Mirai Kara no Shonen song", RED, 600  , text_y + player_height -160, SquidFont);
+            Drawer.draw_text("Press l to PAUSE/PLAY Current music", BLACK, 600  , text_y + player_height-140 , SquidFont);
+            Drawer.draw_text("Press o to play Restu Sen song", RED, 600  , text_y + player_height -120 , SquidFont);
+            Drawer.draw_text("Press p to play Seru Gemû song", RED, 600  , text_y + player_height -100, SquidFont);
         Drawer.endDrawing();
         //----------------------------------------------------------------------------------
     }
