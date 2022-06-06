@@ -37,19 +37,19 @@ void RL::SoundManager::loadMusic(std::string folderPath)
     musicFile_t thisSong;
 
     dp = opendir( folderPath.c_str() );
-    if (dp == NULL) {
+    if (dp == NULL)
         std::cout << "Error(" << errno << ") opening " << folderPath << std::endl;
-    }
 
     while ((dirp = readdir( dp ))) {
         filepath = folderPath + "/" + dirp->d_name;
         songName = dirp->d_name;
 
         // If the file is a directory (or is in some way invalid) we'll skip it 
-        if (stat( filepath.c_str(), &filestat )) continue;
-        if (S_ISDIR( filestat.st_mode ))         continue;
+        if (stat( filepath.c_str(), &filestat ))
+            continue;
+        if (S_ISDIR( filestat.st_mode ))
+            continue;
 
-         // Endeavor to read a single number from the file and display it
         thisSong._song = LoadMusicStream(filepath.c_str());
         std::cout << filepath.erase(filepath.find_last_of("."), std::string::npos) << std::endl;
 
@@ -57,8 +57,7 @@ void RL::SoundManager::loadMusic(std::string folderPath)
 
         this->_songs.push_back(thisSong);
     }
-
-    closedir( dp );
+    closedir(dp);
 }
 
 void RL::SoundManager::enableDisableShuffle()
@@ -90,8 +89,6 @@ void RL::SoundManager::updateMusicStream()
 
 void RL::SoundManager::playRandomMusic()
 {
-
-
     bool isAlreadyPlayed = true;
 
     std::srand(std::time(nullptr));
