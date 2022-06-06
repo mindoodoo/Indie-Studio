@@ -66,13 +66,16 @@ int main(void)
     while (!WindowShouldClose())    // Detect window close button or ESC key ,add to Window Class
     {
         SoundManager.updateMusicStream();
+        InputManager.recordInputs();
 
-        //collisions
+ 
 
-        // Update
-        if ((keystroke = InputManager.recordInput()) != 0)
-            std::cout << keystroke << std::endl;        
-        if (keystroke == -4){
+
+        for (int i = 0; i < InputManager.getInputs().size(); i++)
+            std::cout << InputManager.getInputs()[i] << std::endl;
+
+
+        if (InputManager.playerHasPressedKeyAsChar(-4)){
                 SkullPosition = Skull.getPosition();
                 SkullPosition.z -= 0.05f;
             if (ColMan.collisionsWithWalls(SkullPosition, Map) == false &&
@@ -80,7 +83,7 @@ int main(void)
                 Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
             }
         }
-        if (keystroke == -3){
+        if (InputManager.playerHasPressedKeyAsChar(-3)){
                 SkullPosition = Skull.getPosition();
                 SkullPosition.x -= 0.05f;
             if (ColMan.collisionsWithWalls(SkullPosition, Map) == false &&
@@ -88,7 +91,7 @@ int main(void)
                 Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
             }
         }
-        if (keystroke == -2){
+        if (InputManager.playerHasPressedKeyAsChar(-2)){
                 SkullPosition = Skull.getPosition();
                 SkullPosition.z += 0.05f;
             if (ColMan.collisionsWithWalls(SkullPosition, Map) == false &&
@@ -96,7 +99,7 @@ int main(void)
                 Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
             }
         }
-        if (keystroke == -1){
+        if (InputManager.playerHasPressedKeyAsChar(-1)){
                 SkullPosition = Skull.getPosition();
                 SkullPosition.x += 0.05f;
             if (ColMan.collisionsWithWalls(SkullPosition, Map) == false &&
@@ -106,18 +109,18 @@ int main(void)
         }
         
         //MUSIC HANDLING
-        if (keystroke == 'p')
+        if (InputManager.playerHasPressedKeyAsChar('p'))
             SoundManager.playSpecificMusic("SeruGemû");
-        if (keystroke == 'o')
+        if (InputManager.playerHasPressedKeyAsChar('o'))
             SoundManager.playSpecificMusic("RestuSen");
-        if (keystroke == 'k')
+        if (InputManager.playerHasPressedKeyAsChar('k'))
             SoundManager.playSpecificMusic("MiraiKaraNoShonen");
-        if (keystroke == 'm')
+        if (InputManager.playerHasPressedKeyAsChar('m'))
             SoundManager.playSpecificMusic("MiraiKaraKitaShonen");
         
-        if (keystroke == 'l')
+        if (InputManager.playerHasPressedKeyAsChar('l'))
             SoundManager.pauseOrPlayMusic();
-        if (keystroke == 'r')
+        if (InputManager.playerHasPressedKeyAsChar('r'))
             SoundManager.enableDisableShuffle();
         // Draw
         //----------------------------------------------------------------------------------
@@ -143,6 +146,8 @@ int main(void)
             Drawer.draw_text("Press p to play Seru Gemû song", RED, 600  , text_y + player_height -100, SquidFont);
         Drawer.endDrawing();
         //----------------------------------------------------------------------------------
+
+        InputManager.popInputs();
     }
     // De-Initialization
     //--------------------------------------------------------------------------------------
