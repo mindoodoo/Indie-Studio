@@ -140,16 +140,16 @@ int main(void)
             Drawer.end3DMode();
 
             playerIcon.draw();             
-            Drawer.draw_text("Player 1", RED, text_x  , text_y + player_height , SquidFont);
+            Drawer.draw_text("Player 1", RED, text_x  , text_y + player_height , SquidFont, 20.0f);
 
 
-            Drawer.draw_text("Press r to enable/disable shuffle", BLUE, 600  , text_y + player_height -60, SquidFont);
-            Drawer.draw_text("Press m to play Mirai Kara Kita Shonen song", RED, 600  , text_y + player_height -140, SquidFont);
-            Drawer.draw_text("Press k to play Mirai Kara no Shonen song", RED, 600  , text_y + player_height -160, SquidFont);
-            Drawer.draw_text("Press l to PAUSE/PLAY Current music", BLACK, 600  , text_y + player_height-180 , SquidFont);
-            Drawer.draw_text("Press o to play Restu Sen song", RED, 600  , text_y + player_height -120 , SquidFont);
-            Drawer.draw_text("Press p to play Seru Gemû song", RED, 600  , text_y + player_height -100, SquidFont);
-            Drawer.draw_text("Press e to play Explosion1 sound effect", GREEN, 600  , text_y + player_height -80, SquidFont);
+            Drawer.draw_text("Press r to enable/disable shuffle", BLUE, 600  , text_y + player_height -60, SquidFont, 20.0f);
+            Drawer.draw_text("Press m to play Mirai Kara Kita Shonen song", RED, 600  , text_y + player_height -140, SquidFont, 20.0f);
+            Drawer.draw_text("Press k to play Mirai Kara no Shonen song", RED, 600  , text_y + player_height -160, SquidFont, 20.0f);
+            Drawer.draw_text("Press l to PAUSE/PLAY Current music", BLACK, 600  , text_y + player_height-180 , SquidFont, 20.0f);
+            Drawer.draw_text("Press o to play Restu Sen song", RED, 600  , text_y + player_height -120 , SquidFont, 20.0f);
+            Drawer.draw_text("Press p to play Seru Gemû song", RED, 600  , text_y + player_height -100, SquidFont, 20.0f);
+            Drawer.draw_text("Press e to play Explosion1 sound effect", GREEN, 600  , text_y + player_height -80, SquidFont, 20.0f);
         Drawer.endDrawing();
         //----------------------------------------------------------------------------------
 
