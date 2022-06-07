@@ -68,9 +68,6 @@ int main(void)
         SoundManager.updateMusicStream();
         InputManager.recordInputs();
 
- 
-
-
         for (int i = 0; i < InputManager.getInputs().size(); i++)
             std::cout << InputManager.getInputs()[i] << std::endl;
 
@@ -122,6 +119,9 @@ int main(void)
             SoundManager.pauseOrPlayMusic();
         if (InputManager.playerHasPressedKeyAsChar('r'))
             SoundManager.enableDisableShuffle();
+
+        if (InputManager.playerHasPressedKeyAsChar('e'))
+            SoundManager.playSpecificSoundFx("Explosion1");
         // Draw
         //----------------------------------------------------------------------------------
         Drawer.beginDrawing();
@@ -139,11 +139,12 @@ int main(void)
 
 
             Drawer.draw_text("Press r to enable/disable shuffle", BLUE, 600  , text_y + player_height -200, SquidFont);
-            Drawer.draw_text("Press m to play Mirai Kara Kita Shonen song", RED, 600  , text_y + player_height -180, SquidFont);
+            Drawer.draw_text("Press m to play Mirai Kara Kita Shonen song", RED, 600  , text_y + player_height -140, SquidFont);
             Drawer.draw_text("Press k to play Mirai Kara no Shonen song", RED, 600  , text_y + player_height -160, SquidFont);
-            Drawer.draw_text("Press l to PAUSE/PLAY Current music", BLACK, 600  , text_y + player_height-140 , SquidFont);
+            Drawer.draw_text("Press l to PAUSE/PLAY Current music", BLACK, 600  , text_y + player_height-180 , SquidFont);
             Drawer.draw_text("Press o to play Restu Sen song", RED, 600  , text_y + player_height -120 , SquidFont);
             Drawer.draw_text("Press p to play Seru Gemû song", RED, 600  , text_y + player_height -100, SquidFont);
+            Drawer.draw_text("Press e to play Explosion1 sound effect", GREEN, 600  , text_y + player_height -80, SquidFont);
         Drawer.endDrawing();
         //----------------------------------------------------------------------------------
 

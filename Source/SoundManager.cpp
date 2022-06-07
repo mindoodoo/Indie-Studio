@@ -11,6 +11,7 @@ RL::SoundManager::SoundManager()
 {
     InitAudioDevice();
     loadMusic("./audio_assets/Music");
+    loadAudioEffects("./audio_assets/Effects");
     this->_currentSongPlaying = -1;
     this->_musicPaused = false;
     this->_songTimePlayed = 0.0f;
@@ -22,6 +23,11 @@ RL::SoundManager::~SoundManager()
     for (std::size_t i = 0; i < this->_songs.size(); ++i) {
         UnloadMusicStream(this->_songs[i]._song);
     }
+
+    for (std::size_t i = 0; i < this->_soundfx.size(); ++i) {
+        UnloadSound(this->_soundfx[i]._soundEffect);
+    }
+    StopSoundMulti();
 
     CloseAudioDevice();    
 }
@@ -56,6 +62,40 @@ void RL::SoundManager::loadMusic(std::string folderPath)
         thisSong._name = songName.erase(songName.find_last_of("."), std::string::npos);
 
         this->_songs.push_back(thisSong);
+    }
+    closedir(dp);
+}
+
+void RL::SoundManager::loadAudioEffects(std::string folderPath)
+{
+    std::ifstream fin;
+    std::string  filepath;
+    std::string EffectName;
+    DIR *dp;
+    struct dirent *dirp;
+    struct stat filestat;
+    soundEffectFile_t thisEffect;
+
+    dp = opendir( folderPath.c_str() );
+    if (dp == NULL)
+        std::cout << "Error(" << errno << ") opening " << folderPath << std::endl;
+
+    while ((dirp = readdir( dp ))) {
+        filepath = folderPath + "/" + dirp->d_name;
+        EffectName = dirp->d_name;
+
+        // If the file is a directory (or is in some way invalid) we'll skip it 
+        if (stat( filepath.c_str(), &filestat ))
+            continue;
+        if (S_ISDIR( filestat.st_mode ))
+            continue;
+
+        thisEffect._soundEffect = LoadSound(filepath.c_str());
+        std::cout << filepath.erase(filepath.find_last_of("."), std::string::npos) << std::endl;
+
+        thisEffect._name = EffectName.erase(EffectName.find_last_of("."), std::string::npos);
+
+        this->_soundfx.push_back(thisEffect);
     }
     closedir(dp);
 }
@@ -129,6 +169,22 @@ void RL::SoundManager::playSpecificMusic(std::string songName)
             std::cout << "Im playing this song : " << this->_songs[i]._name << std::endl;
             PlayMusicStream(this->_songs[i]._song);
             this->_currentSongPlaying = i;
+            return;
+        }
+    }
+}
+
+void RL::SoundManager::playSpecificSoundFx(std::string EffectName)
+{
+    std::cout << "Im Gonna play a specific EFFECT!!" << std::endl;
+    // if (this->_currentSongPlaying != -1)
+    //     StopMusicStream(this->_songs[_currentSongPlaying]._song);
+
+    for (std::size_t i = 0; i < this->_soundfx.size(); ++i) {
+        if (this->_soundfx[i]._name == EffectName) {
+            std::cout << "Im playing this sound effect : " << this->_soundfx[i]._name << std::endl;
+            PlaySoundMulti(this->_soundfx[i]._soundEffect);
+            //this->_currentSongPlaying = i;
             return;
         }
     }

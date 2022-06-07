@@ -56,6 +56,7 @@ namespace RL {
             //playing methods
             void playRandomMusic();
             void playSpecificMusic(std::string songName);
+            void playSpecificSoundFx(std::string EffectName);
             void pauseOrPlayMusic();
 
             void enableDisableShuffle();
