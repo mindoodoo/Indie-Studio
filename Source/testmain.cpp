@@ -15,6 +15,8 @@ int main(void)
     std::string skulltex = "./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/Skull.png";
     std::string skullmod = "./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj";
 
+    std::string SpeedUpTex = "./PowerUps/Speed.png";
+
     int keystroke;
     
     // Initialization
@@ -42,6 +44,9 @@ int main(void)
 
     RL::Drawable3D TestMOB(skulltex, skullmod, 0.04, RL::MODEL);
     TestMOB.setPosition(5, 1.0f, 2);
+
+    RL::Drawable3D SpeedUp(SpeedUpTex, "", 1, RL::POWER);
+    SpeedUp.setPosition(5, 1.0f, 2);
 
 
     RL::Drawable2D playerIcon("./2d_models/FrogIcon/frog-prince.png");
@@ -134,9 +139,12 @@ int main(void)
             Drawer.clearBackground();
 
             Drawer.begin3DMode(Window.getCamera());
-                TestMOB.draw();
+                //TestMOB.draw();
                 Skull.draw();
+                SpeedUp.drawPower();
+                std::cout << SpeedUp.getPosition().y <<std::endl;
                 Map.draw_map();
+
             Drawer.end3DMode();
 
             playerIcon.draw();             

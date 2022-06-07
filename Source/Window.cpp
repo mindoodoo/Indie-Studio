@@ -16,7 +16,7 @@ RL::Window::Window(std::string title, Vector2 dimensions, bool initLater)
         this->_windowOpen = true;
     }
     this->_camera = {0};
-    this->_camera.position = (Vector3){ 0.0f, 21.0f, 4.0f };  // Camera position
+    this->_camera.position = (Vector3){ 0.0f, 17.0f, 6.0f };  // Camera position
     this->_camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
     this->_camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
     this->_camera.fovy = 45.0f;                                // Camera field-of-view Y

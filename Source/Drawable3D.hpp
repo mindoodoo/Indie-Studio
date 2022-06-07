@@ -35,6 +35,7 @@ namespace RL {
 
             // IDrawable methods
             void draw();
+            void drawPower();
             // void reset();
 
             // Image Loading / Manipulation methods
@@ -69,5 +70,6 @@ namespace RL {
             float _scale;
             ModelType _type;
             BoundingBox _boundingBox;
+            int up;
     };
 }
