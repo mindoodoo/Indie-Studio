@@ -122,6 +122,11 @@ int main(void)
 
         if (InputManager.playerHasPressedKeyAsChar('e'))
             SoundManager.playSpecificSoundFx("Explosion1");
+        
+        if (InputManager.playerHasPressedKeyAsChar('+'))
+            SoundManager.increaseMusicVolume();
+        if (InputManager.playerHasPressedKeyAsChar('-'))
+            SoundManager.decreaseMusicVolume();
         // Draw
         //----------------------------------------------------------------------------------
         Drawer.beginDrawing();
@@ -138,7 +143,7 @@ int main(void)
             Drawer.draw_text("Player 1", RED, text_x  , text_y + player_height , SquidFont);
 
 
-            Drawer.draw_text("Press r to enable/disable shuffle", BLUE, 600  , text_y + player_height -200, SquidFont);
+            Drawer.draw_text("Press r to enable/disable shuffle", BLUE, 600  , text_y + player_height -60, SquidFont);
             Drawer.draw_text("Press m to play Mirai Kara Kita Shonen song", RED, 600  , text_y + player_height -140, SquidFont);
             Drawer.draw_text("Press k to play Mirai Kara no Shonen song", RED, 600  , text_y + player_height -160, SquidFont);
             Drawer.draw_text("Press l to PAUSE/PLAY Current music", BLACK, 600  , text_y + player_height-180 , SquidFont);

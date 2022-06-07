@@ -15,14 +15,16 @@
 #include "IDrawable.hpp"
 //#include "RaylibTypeEncaps.hpp"
 
-#define MODEL_RADIUS = 0.45f
+
 
 namespace RL {
     enum ModelType {
+        MCGUYVER,
         WALL,
         CRATE,
         MODEL,
-        FLOOR
+        FLOOR,
+        POWER
     };
 
 

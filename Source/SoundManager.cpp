@@ -16,6 +16,8 @@ RL::SoundManager::SoundManager()
     this->_musicPaused = false;
     this->_songTimePlayed = 0.0f;
     this->_shuffleEnabled = false;
+    this->_musicVolume = 0.6f;
+    this->_soundEffectVolume = 0.6f;
 }
 
 RL::SoundManager::~SoundManager()
@@ -31,6 +33,7 @@ RL::SoundManager::~SoundManager()
 
     CloseAudioDevice();    
 }
+
 
 void RL::SoundManager::loadMusic(std::string folderPath)
 {
@@ -169,6 +172,7 @@ void RL::SoundManager::playSpecificMusic(std::string songName)
             std::cout << "Im playing this song : " << this->_songs[i]._name << std::endl;
             PlayMusicStream(this->_songs[i]._song);
             this->_currentSongPlaying = i;
+            SetMusicVolume(this->_songs[_currentSongPlaying]._song, this->_musicVolume);
             return;
         }
     }
@@ -184,6 +188,7 @@ void RL::SoundManager::playSpecificSoundFx(std::string EffectName)
         if (this->_soundfx[i]._name == EffectName) {
             std::cout << "Im playing this sound effect : " << this->_soundfx[i]._name << std::endl;
             PlaySoundMulti(this->_soundfx[i]._soundEffect);
+            SetSoundVolume(this->_soundfx[i]._soundEffect, this->_soundEffectVolume);
             //this->_currentSongPlaying = i;
             return;
         }
@@ -206,6 +211,38 @@ void RL::SoundManager::pauseOrPlayMusic()
     }
 }
 
+void RL::SoundManager::increaseMusicVolume()
+{
+    if (this->_musicVolume >= 1.0f)
+        return;
+    this->_musicVolume += 0.1f;
+    SetMusicVolume(this->_songs[_currentSongPlaying]._song, this->_musicVolume);
+    std::cout << "Music Volume: " << this->_musicVolume << std::endl;
+}
+
+void RL::SoundManager::decreaseMusicVolume()
+{
+    if (this->_musicVolume <= 0.0f)
+        return;
+    this->_musicVolume -= 0.1f;
+    SetMusicVolume(this->_songs[_currentSongPlaying]._song, this->_musicVolume);
+    std::cout << "Music Volume: " << this->_musicVolume << std::endl;
+}
+
+void RL::SoundManager::increaseSoundEffectVolume()
+{
+    if (this->_soundEffectVolume >= 1.0f)
+        return;
+    this->_soundEffectVolume += 0.1f;  
+}
+
+void RL::SoundManager::decreaseSoundEffectVolume()
+{
+    if (this->_soundEffectVolume <= 1.0f)
+        return;
+    this->_soundEffectVolume -= 0.1f;    
+}
+
 
 //getters
 
@@ -223,5 +260,15 @@ musicFile_t RL::SoundManager::getSong(std::string songName)
     }
         //add an special song in first place of the list to make sue we can play this song
     return this->_songs[0];    
+}
+
+float RL::SoundManager::getMusicVolume()
+{
+    return this->_musicVolume;
+}
+
+float RL::SoundManager::getSoundEffectVolume()
+{
+    return this->_soundEffectVolume;
 }
 
