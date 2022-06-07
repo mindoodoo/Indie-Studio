@@ -40,16 +40,16 @@ void RL::Drawable3D::draw()
 
 void RL::Drawable3D::drawPower()
 {
-    if (this->_position.y >= 0.39f && this->up == 0) {
+    if (this->_position.y >= 0.59f && this->up == 0) {
         this->_position.y -= 0.01f;
-        DrawCubeTexture(this->_texture, this->_position, 0.4f, 0.4f, 0.4f, WHITE);
-        if (this->_position.y <= 0.4f)
+        DrawCubeTexture(this->_texture, this->_position, 0.6f, 0.6f, 0.6f, WHITE);
+        if (this->_position.y <= 0.6f)
             this->up = 1;
         }
-    if (this->_position.y <= 1.61f && this->up == 1) {
+    if (this->_position.y <= 1.41f && this->up == 1) {
         this->_position.y += 0.01f;
-        DrawCubeTexture(this->_texture, this->_position, 0.4f, 0.4f, 0.4f, WHITE);
-        if (this->_position.y >= 1.6f)
+        DrawCubeTexture(this->_texture, this->_position, 0.6f, 0.6f, 0.6f, WHITE);
+        if (this->_position.y >= 1.4f)
             this->up = 0;
         }
 
