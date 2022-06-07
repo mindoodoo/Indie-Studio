@@ -10,6 +10,8 @@
 #include <string> 
 #include <raylib.h>
 #include <iostream>
+#include <thread>
+#include <queue>
 //#include "RaylibTypeEncaps.hpp"
 
 
@@ -20,12 +22,17 @@ namespace RL {
         InputManager(std::string name);
         ~InputManager();
         int recordInput();
-        //RL::Vector2i getMousePosition();
+        void recordInputs();
+        void popInputs();
+        bool playerHasPressedKeyAsChar(int key); // use like this : pHPKAC('p') or pHPKAC('w') or pHPKAC('-4') for up arrow
+
+        std::vector<int> getInputs();
+        Vector2 getMousePosition();
         bool isMouseLeftClicked();
         bool isMouseRightClicked();
 
     private:
         std::string _name;
-        // RL::Vector2i _mousePosition;
+        std::vector<int> _inputQueue;
     };    
 }

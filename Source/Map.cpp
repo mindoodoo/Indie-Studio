@@ -126,7 +126,7 @@ void RL::Map::draw_map()
 
     Vector2 size = {20.0f, 20.0f};
     //DrawGrid(16.0f, 1.0f);
-    DrawPlane({0, 0 ,0}, size, BLUE);
+    //DrawPlane({0, 0 ,0}, size, BLUE);
     
 
     for (int i = 0; i < mapDepth; i++) {

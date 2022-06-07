@@ -1,4 +1,4 @@
-//g++ testmain.cpp InputManager.cpp Renderer.cpp Map.cpp Drawable3D.cpp Drawable2D.cpp Window.cpp Logger.cpp -o main -O1  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread -std=c++2a -g3
+//g++ testmain.cpp InputManager.cpp Renderer.cpp Map.cpp Drawable3D.cpp Drawable2D.cpp Window.cpp Logger.cpp CollisionManager.cpp SoundManager.cpp -o main -O1  -Wno-missing-braces -L ./lib/ -lraylib -ldl -pthread -std=c++2a -g3
 #include <raylib.h>
 #include "InputManager.hpp"
 #include "Window.hpp"
@@ -6,23 +6,8 @@
 #include "Map.hpp"
 #include "Drawable3D.hpp"
 #include "Drawable2D.hpp"
-
-float translateCoordinatestoWorld(int pos, int borderSize)
-{
-    float newpos = pos - (borderSize / 2);
-    if (borderSize % 2 == 0)
-        newpos += 0.5;
-    return newpos;
-}
-
-bool do_collision_walls(RL::Drawable3D Model, int i, int j , RL::Map Map)
-{
-    float x = translateCoordinatestoWorld(j, Map.getMapWidth());
-    float z = translateCoordinatestoWorld(i, Map.getMapDepth());
-    if (CheckCollisionSpheres(Model.getPosition(), 0.5f, Vector3{x, 0.5f, z}, 0.5f))
-        return true;
-    return false;
-}
+#include "CollisionManager.hpp"
+#include "SoundManager.hpp"
 
 int main(void)
 {
@@ -31,7 +16,6 @@ int main(void)
     std::string skullmod = "./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj";
 
     int keystroke;
-    bool collision = false;
     
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -45,11 +29,20 @@ int main(void)
 
     RL::Renderer Drawer("TESTDRAWER");
 
+    RL::SoundManager SoundManager;
+
     RL::Map Map("./Maps/TestMap/test.csv", "./Maps/TestMap/TEST_WALL.png", "./Maps/TestMap/Floor.png" );
+
+    RL::CollisionManager ColMan;
 
     RL::Drawable3D Skull(skulltex, skullmod, 0.04, RL::MODEL);
     Skull.setPosition(0, 1.0f, 0); //add 3dmodel_getmodel
     Vector3 SkullPosition;
+
+
+    RL::Drawable3D TestMOB(skulltex, skullmod, 0.04, RL::MODEL);
+    TestMOB.setPosition(5, 1.0f, 2);
+
 
     RL::Drawable2D playerIcon("./2d_models/FrogIcon/frog-prince.png");
     Vector2 newSize = {50, 50};
@@ -72,32 +65,63 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key ,add to Window Class
     {
+        SoundManager.updateMusicStream();
+        InputManager.recordInputs();
 
-        //collisions
+        for (int i = 0; i < InputManager.getInputs().size(); i++)
+            std::cout << InputManager.getInputs()[i] << std::endl;
 
-        // Update
-        if ((keystroke = InputManager.recordInput()) != 0)
-            std::cout << keystroke << std::endl;        
-        if (keystroke == -4){
-            SkullPosition = Skull.getPosition();
-            SkullPosition.z -= 0.1f;
-            Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
+
+        if (InputManager.playerHasPressedKeyAsChar(-4)){
+                SkullPosition = Skull.getPosition();
+                SkullPosition.z -= 0.05f;
+            if (ColMan.collisionsWithWalls(SkullPosition, Map) == false &&
+                ColMan.collisionsWithModels(SkullPosition, TestMOB) == false) {
+                Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
+            }
         }
-        if (keystroke == -3){
-            SkullPosition = Skull.getPosition();
-            SkullPosition.x -= 0.1f;
-            Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
+        if (InputManager.playerHasPressedKeyAsChar(-3)){
+                SkullPosition = Skull.getPosition();
+                SkullPosition.x -= 0.05f;
+            if (ColMan.collisionsWithWalls(SkullPosition, Map) == false &&
+                ColMan.collisionsWithModels(SkullPosition, TestMOB) == false) {
+                Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
+            }
         }
-        if (keystroke == -2){
-            SkullPosition = Skull.getPosition();
-            SkullPosition.z += 0.1f;
-            Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
+        if (InputManager.playerHasPressedKeyAsChar(-2)){
+                SkullPosition = Skull.getPosition();
+                SkullPosition.z += 0.05f;
+            if (ColMan.collisionsWithWalls(SkullPosition, Map) == false &&
+                ColMan.collisionsWithModels(SkullPosition, TestMOB) == false) {
+                Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
+            }
         }
-        if (keystroke == -1){
-            SkullPosition = Skull.getPosition();
-            SkullPosition.x += 0.1f;
-            Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
+        if (InputManager.playerHasPressedKeyAsChar(-1)){
+                SkullPosition = Skull.getPosition();
+                SkullPosition.x += 0.05f;
+            if (ColMan.collisionsWithWalls(SkullPosition, Map) == false &&
+                ColMan.collisionsWithModels(SkullPosition, TestMOB) == false) {
+                Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
+            }
         }
+        
+        //MUSIC HANDLING
+        if (InputManager.playerHasPressedKeyAsChar('p'))
+            SoundManager.playSpecificMusic("SeruGemû");
+        if (InputManager.playerHasPressedKeyAsChar('o'))
+            SoundManager.playSpecificMusic("RestuSen");
+        if (InputManager.playerHasPressedKeyAsChar('k'))
+            SoundManager.playSpecificMusic("MiraiKaraNoShonen");
+        if (InputManager.playerHasPressedKeyAsChar('m'))
+            SoundManager.playSpecificMusic("MiraiKaraKitaShonen");
+        
+        if (InputManager.playerHasPressedKeyAsChar('l'))
+            SoundManager.pauseOrPlayMusic();
+        if (InputManager.playerHasPressedKeyAsChar('r'))
+            SoundManager.enableDisableShuffle();
+
+        if (InputManager.playerHasPressedKeyAsChar('e'))
+            SoundManager.playSpecificSoundFx("Explosion1");
         // Draw
         //----------------------------------------------------------------------------------
         Drawer.beginDrawing();
@@ -105,6 +129,7 @@ int main(void)
             Drawer.clearBackground();
 
             Drawer.begin3DMode(Window.getCamera());
+                TestMOB.draw();
                 Skull.draw();
                 Map.draw_map();
             Drawer.end3DMode();
@@ -112,20 +137,18 @@ int main(void)
             playerIcon.draw();             
             Drawer.draw_text("Player 1", RED, text_x  , text_y + player_height , SquidFont);
 
-            collision = false;
-            for (int i = 0; i < Map.getMapDepth(); i++) {
-                for (int j = 0; j < Map.getMapWidth(); j++) {
-                    if (Map.getParsedMap()[i][j].tile == 1) {
-                        //COLLISION HANDLER 
-                        collision = do_collision_walls(Skull, i, j, Map);
-                        if (collision)
-                            Drawer.draw_text("COLLISION DETECTED", BLUE, 500, 500, SquidFont);
-                    }
-;   
-                }
-            }
+
+            Drawer.draw_text("Press r to enable/disable shuffle", BLUE, 600  , text_y + player_height -200, SquidFont);
+            Drawer.draw_text("Press m to play Mirai Kara Kita Shonen song", RED, 600  , text_y + player_height -140, SquidFont);
+            Drawer.draw_text("Press k to play Mirai Kara no Shonen song", RED, 600  , text_y + player_height -160, SquidFont);
+            Drawer.draw_text("Press l to PAUSE/PLAY Current music", BLACK, 600  , text_y + player_height-180 , SquidFont);
+            Drawer.draw_text("Press o to play Restu Sen song", RED, 600  , text_y + player_height -120 , SquidFont);
+            Drawer.draw_text("Press p to play Seru Gemû song", RED, 600  , text_y + player_height -100, SquidFont);
+            Drawer.draw_text("Press e to play Explosion1 sound effect", GREEN, 600  , text_y + player_height -80, SquidFont);
         Drawer.endDrawing();
         //----------------------------------------------------------------------------------
+
+        InputManager.popInputs();
     }
     // De-Initialization
     //--------------------------------------------------------------------------------------

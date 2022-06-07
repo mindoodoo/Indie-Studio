@@ -19,29 +19,50 @@ RL::InputManager::~InputManager()
 
 
 // -4 = UP ; -3 = LEFT ; -2 = DOWN ; -1 = RIGHT
-int RL::InputManager::recordInput()
+void RL::InputManager::recordInputs()
 {
-    if (IsKeyDown(KEY_UP))
-        return -4;
-    if (IsKeyDown(KEY_DOWN))
-    return -2;
-    if (IsKeyDown(KEY_LEFT))
-    return -3;
-    if (IsKeyDown(KEY_RIGHT))
-    return -1;
+    char pressedKey = GetCharPressed();
+    if (pressedKey != 0)
+        this->_inputQueue.emplace_back(pressedKey);
 
-    return GetCharPressed();
+    if (IsKeyDown(KEY_UP))
+        this->_inputQueue.emplace_back(-4);
+    if (IsKeyDown(KEY_DOWN))
+        this->_inputQueue.emplace_back(-2);
+    if (IsKeyDown(KEY_LEFT))
+        this->_inputQueue.emplace_back(-3);
+    if (IsKeyDown(KEY_RIGHT))
+        this->_inputQueue.emplace_back(-1);
+    //std::this_thread::sleep_for(std::chrono::milliseconds(100)); // This should change
 }
 
 
-// RL::Vector2i RL::InputManager::getMousePosition()
-// {
-//     RL::Vector2i mousePosition;
-//     mousePosition.x = GetMouseX();
-//     mousePosition.y = GetMouseY();
+void RL::InputManager::popInputs()
+{
+    if (!this->_inputQueue.empty())
+        this->_inputQueue.clear();
+}
 
-//     return mousePosition;
-// }
+bool RL::InputManager::playerHasPressedKeyAsChar(int key)
+{
+    for (int i = 0; i < this->_inputQueue.size(); i++) {
+            if (this->_inputQueue[i]== key)
+                return true;
+    }
+    return false;        
+}
+
+std::vector<int> RL::InputManager::getInputs()
+{
+    return this->_inputQueue;
+}
+
+
+Vector2 RL::InputManager::getMousePosition()
+{
+    Vector2 mousePosition = GetMousePosition();
+    return mousePosition;
+}
 
 bool RL::InputManager::isMouseLeftClicked()
 {
