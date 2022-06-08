@@ -52,15 +52,21 @@ class MovementSystem : public ISystem {
             return newpos;
         }
 
-        // check for collision with objects in other system
+        bool checkMovable(Pos pos) {
+            if (_colManager.collisionsWithWalls({pos.x, pos.y, pos.z}, *_map.get()))
+                return false;
+            // also check for collision with other objects at that new position
+            return true;
+        }
+
         void moveLeft(Pos *pos, Velocity vel, Sprite *playerSprite)
         {
             float z = translatePosCoordinates(pos->y, _map->getMapDepth());
-            if (pos->x >= vel.x && !_colManager.collisionsWithWalls({
+            if (pos->x >= vel.x && checkMovable({
                 translatePosCoordinates(pos->x - vel.x, _map->getMapWidth()),
                 0.5f + (z * 0.01f),
                 z,
-            }, *_map.get())) {
+            })) {
                 pos->x -= vel.x;
                 playerSprite->model.setPosition(pos->x, pos->y, pos->z);
             }
@@ -69,11 +75,11 @@ class MovementSystem : public ISystem {
         void moveRight(Pos *pos, Velocity vel, Sprite *playerSprite)
         {
             float z = translatePosCoordinates(pos->y, _map->getMapDepth());
-            if (pos->x + vel.x < _map->getParsedMap()[pos->y].size() && !_colManager.collisionsWithWalls({
+            if (pos->x + vel.x < _map->getParsedMap()[pos->y].size() && checkMovable({
                 translatePosCoordinates(pos->x + vel.x, _map->getMapWidth()),
-                0.5f + (z * 0.01f),
+                0.5f,
                 z,
-            }, *_map.get())) {
+            })) {
                 pos->x += vel.x;
                 playerSprite->model.setPosition(pos->x, pos->y, pos->z);
             }
@@ -82,11 +88,11 @@ class MovementSystem : public ISystem {
         void moveUp(Pos *pos, Velocity vel, Sprite *playerSprite)
         {
             float z = translatePosCoordinates(pos->y - vel.y, _map->getMapDepth());
-            if (pos->y >= vel.y && !_colManager.collisionsWithWalls({
+            if (pos->y >= vel.y && checkMovable({
                 translatePosCoordinates(pos->x, _map->getMapWidth()),
                 0.5f + (z * 0.01f),
                 z,
-            }, *_map.get())) {
+            })) {
                 pos->y -= vel.y;
                 playerSprite->model.setPosition(pos->x, pos->y, pos->z);
             }
@@ -95,11 +101,11 @@ class MovementSystem : public ISystem {
         void moveDown(Pos *pos, Velocity vel, Sprite *playerSprite)
         {
             float z = translatePosCoordinates(pos->y + vel.y, _map->getMapDepth());
-            if (pos->y + vel.y < _map->getParsedMap().size() && !_colManager.collisionsWithWalls({
+            if (pos->y + vel.y < _map->getParsedMap().size() && checkMovable({
                 translatePosCoordinates(pos->x, _map->getMapWidth()),
                 0.5f + (z * 0.01f),
                 z,
-            }, *_map.get())) {
+            })) {
                 pos->y += vel.y;
                 playerSprite->model.setPosition(pos->x, pos->y, pos->z);
             }
