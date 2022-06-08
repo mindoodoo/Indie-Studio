@@ -7,6 +7,10 @@
 
 #include "Drawable3D.hpp"
 
+//how to create a 3d model : if it is not an animated 3d item ( aka not a character or a bomb), the modelPath
+//and the animationPath should be set to ""
+//the scale can be set to 1
+//set type == RL::MODEL only if its an animated model / bomb. the powerups are RL::POWER, the walls are RL::WALL
 RL::Drawable3D::Drawable3D(std::string texturePath, std::string modelPath, std::string animationPath, float scale, ModelType type)
 {
     this->_type = type;
