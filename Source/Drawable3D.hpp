@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <iostream>
 #include <raylib.h>
 #include <string>
 #include <stdexcept>
@@ -30,7 +31,7 @@ namespace RL {
 
     class Drawable3D: public IDrawable {
         public:
-            Drawable3D(std::string texturePath, std::string modelPath, float scale, ModelType type);
+            Drawable3D(std::string texturePath, std::string modelPath, std::string animationPath, float scale, ModelType type);
             ~Drawable3D();
 
             // IDrawable methods
@@ -39,9 +40,19 @@ namespace RL {
             // void reset();
 
             // Image Loading / Manipulation methods
-            void load3DModel(std::string texturePath, std::string modelPath);
+            void load3DModel(std::string texturePath, std::string modelPath, std::string animationPath);
             void unloadAll();
             void resize(float newScale);
+
+            // Animation
+            void loadAnimation(std::string path);
+            void unloadAnimation();
+            void updateModelsAnimation();
+            void resetAnimSequence();
+            void setCurrentAnim(int anim);
+            int getCurrentAnim() const;
+
+            bool isAnimLoaded() const;
 
             // Getters and setters
             bool isImageLoaded() const;
@@ -71,5 +82,12 @@ namespace RL {
             ModelType _type;
             BoundingBox _boundingBox;
             int up;
+
+             // Animation
+            ModelAnimation *_animations;
+            int _currentAnim = 0;
+            int _currentFrame = 0;
+            unsigned int _animCount;
+            bool _animationLoaded = false;
     };
 }

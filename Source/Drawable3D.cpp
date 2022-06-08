@@ -7,7 +7,7 @@
 
 #include "Drawable3D.hpp"
 
-RL::Drawable3D::Drawable3D(std::string texturePath, std::string modelPath, float scale, ModelType type)
+RL::Drawable3D::Drawable3D(std::string texturePath, std::string modelPath, std::string animationPath, float scale, ModelType type)
 {
     this->_type = type;
     this->_scale = scale;
@@ -17,7 +17,7 @@ RL::Drawable3D::Drawable3D(std::string texturePath, std::string modelPath, float
     if (_type == ModelType::FLOOR)
         _boxSize = {1.0, 0.5, 1.0};
 
-    this->load3DModel(texturePath, modelPath);
+    this->load3DModel(texturePath, modelPath, animationPath);
 }
 
 RL::Drawable3D::~Drawable3D()
@@ -55,7 +55,7 @@ void RL::Drawable3D::drawPower()
 
 }
 
-void RL::Drawable3D::load3DModel(std::string texturePath, std::string modelPath)
+void RL::Drawable3D::load3DModel(std::string texturePath, std::string modelPath, std::string animationPath)
 {
     struct stat sb;
 
@@ -70,9 +70,72 @@ void RL::Drawable3D::load3DModel(std::string texturePath, std::string modelPath)
     if (this->_type == RL::MODEL) {
         this->_model = LoadModel(modelPath.c_str());
         SetMaterialTexture(&this->_model.materials[0], MATERIAL_MAP_DIFFUSE, this->_texture);
+        //HERE ADD LOAD ANIMATION, 
+        loadAnimation(animationPath);
     }
     this->_imageLoaded = true;
     setBoundingBox();
+}
+
+//
+// ANIMATION
+//
+
+void RL::Drawable3D::loadAnimation(std::string path)
+{
+    if (path == "")
+        return;
+    struct stat sb;
+
+    if (stat(path.c_str(), &sb) == -1)
+        throw std::invalid_argument("Asset path is invalid");
+    if (S_ISDIR(sb.st_mode))
+        throw std::invalid_argument("Asset path is a directory");
+
+    if (_animationLoaded)
+        this->unloadAnimation();
+    this->_animations = LoadModelAnimations(path.c_str(), &this->_animCount);
+    this->_animationLoaded = true;
+}
+
+void RL::Drawable3D::unloadAnimation()
+{
+    for (unsigned int i = 0; i < this->_animCount; i++)
+        UnloadModelAnimation(this->_animations[i]);
+    RL_FREE(this->_animations);
+    this->_animationLoaded = false;
+}
+
+void RL::Drawable3D::updateModelsAnimation()
+{
+    if (!this->_animationLoaded)
+        return;
+
+    this->_currentFrame++;
+    UpdateModelAnimation
+    (this->_model, this->_animations[this->_currentAnim], this->_currentFrame);
+}
+
+void RL::Drawable3D::setCurrentAnim(int anim)
+{
+    this->_currentAnim;
+
+    if (anim >= this->_animCount) {
+        std::cout << "Animation index invalid" << std::endl;
+        return;
+    }
+
+    this->resetAnimSequence();
+}
+
+void RL::Drawable3D::resetAnimSequence()
+{
+    this->_currentFrame = 0;
+}
+
+int RL::Drawable3D::getCurrentAnim() const
+{
+    return this->_currentAnim;
 }
 
 void RL::Drawable3D::setBoundingBox()
