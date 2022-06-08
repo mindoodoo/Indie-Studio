@@ -45,6 +45,8 @@ namespace RL {
             //getters
             std::vector<musicFile_t> getSongList();
             musicFile_t getSong(std::string);
+            float getMusicVolume();
+            float getSoundEffectVolume();
 
             //loading methods
             void loadMusic(std::string folderPath);
@@ -59,6 +61,12 @@ namespace RL {
             void playSpecificSoundFx(std::string EffectName);
             void pauseOrPlayMusic();
 
+            void increaseMusicVolume();
+            void decreaseMusicVolume();
+
+            void increaseSoundEffectVolume();
+            void decreaseSoundEffectVolume();
+
             void enableDisableShuffle();
 
         private:
@@ -69,5 +77,7 @@ namespace RL {
             bool _musicPaused;
             float _songTimePlayed;
             bool _shuffleEnabled;
+            float _musicVolume; // max == 1.0f
+            float _soundEffectVolume; // max == 1.0f
     };
 }

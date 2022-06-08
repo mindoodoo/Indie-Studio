@@ -15,6 +15,8 @@ int main(void)
     std::string skulltex = "./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/Skull.png";
     std::string skullmod = "./3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj";
 
+    std::string SpeedUpTex = "./PowerUps/Speed.png";
+
     int keystroke;
     
     // Initialization
@@ -41,7 +43,10 @@ int main(void)
 
 
     RL::Drawable3D TestMOB(skulltex, skullmod, 0.04, RL::MODEL);
-    TestMOB.setPosition(5, 1.0f, 2);
+    TestMOB.setPosition(-5, 1.0f, 2);
+
+    RL::Drawable3D SpeedUp(SpeedUpTex, "", 1, RL::POWER);
+    SpeedUp.setPosition(5, 1.0f, 2);
 
 
     RL::Drawable2D playerIcon("./2d_models/FrogIcon/frog-prince.png");
@@ -122,6 +127,11 @@ int main(void)
 
         if (InputManager.playerHasPressedKeyAsChar('e'))
             SoundManager.playSpecificSoundFx("Explosion1");
+        
+        if (InputManager.playerHasPressedKeyAsChar('+'))
+            SoundManager.increaseMusicVolume();
+        if (InputManager.playerHasPressedKeyAsChar('-'))
+            SoundManager.decreaseMusicVolume();
         // Draw
         //----------------------------------------------------------------------------------
         Drawer.beginDrawing();
@@ -131,20 +141,23 @@ int main(void)
             Drawer.begin3DMode(Window.getCamera());
                 TestMOB.draw();
                 Skull.draw();
+                SpeedUp.drawPower();
+                std::cout << SpeedUp.getPosition().y <<std::endl;
                 Map.draw_map();
+
             Drawer.end3DMode();
 
             playerIcon.draw();             
-            Drawer.draw_text("Player 1", RED, text_x  , text_y + player_height , SquidFont);
+            Drawer.draw_text("Player 1", RED, text_x  , text_y + player_height , SquidFont, 20.0f);
 
 
-            Drawer.draw_text("Press r to enable/disable shuffle", BLUE, 600  , text_y + player_height -200, SquidFont);
-            Drawer.draw_text("Press m to play Mirai Kara Kita Shonen song", RED, 600  , text_y + player_height -140, SquidFont);
-            Drawer.draw_text("Press k to play Mirai Kara no Shonen song", RED, 600  , text_y + player_height -160, SquidFont);
-            Drawer.draw_text("Press l to PAUSE/PLAY Current music", BLACK, 600  , text_y + player_height-180 , SquidFont);
-            Drawer.draw_text("Press o to play Restu Sen song", RED, 600  , text_y + player_height -120 , SquidFont);
-            Drawer.draw_text("Press p to play Seru Gemû song", RED, 600  , text_y + player_height -100, SquidFont);
-            Drawer.draw_text("Press e to play Explosion1 sound effect", GREEN, 600  , text_y + player_height -80, SquidFont);
+            Drawer.draw_text("Press r to enable/disable shuffle", BLUE, 600  , text_y + player_height -60, SquidFont, 20.0f);
+            Drawer.draw_text("Press m to play Mirai Kara Kita Shonen song", RED, 600  , text_y + player_height -140, SquidFont, 20.0f);
+            Drawer.draw_text("Press k to play Mirai Kara no Shonen song", RED, 600  , text_y + player_height -160, SquidFont, 20.0f);
+            Drawer.draw_text("Press l to PAUSE/PLAY Current music", BLACK, 600  , text_y + player_height-180 , SquidFont, 20.0f);
+            Drawer.draw_text("Press o to play Restu Sen song", RED, 600  , text_y + player_height -120 , SquidFont, 20.0f);
+            Drawer.draw_text("Press p to play Seru Gemû song", RED, 600  , text_y + player_height -100, SquidFont, 20.0f);
+            Drawer.draw_text("Press e to play Explosion1 sound effect", GREEN, 600  , text_y + player_height -80, SquidFont, 20.0f);
         Drawer.endDrawing();
         //----------------------------------------------------------------------------------
 

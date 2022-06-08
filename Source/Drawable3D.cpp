@@ -11,6 +11,7 @@ RL::Drawable3D::Drawable3D(std::string texturePath, std::string modelPath, float
 {
     this->_type = type;
     this->_scale = scale;
+    this->up = 0;
     if (_type == RL::ModelType::WALL || _type == RL::ModelType::CRATE)
         _boxSize = {1.0, 1.0, 1.0};
     if (_type == ModelType::FLOOR)
@@ -32,7 +33,26 @@ void RL::Drawable3D::draw()
     if (this->_type == RL::MODEL)
         DrawModel(this->_model, this->_position, this->_scale, WHITE);
         DrawSphere(this->_position, 0.5f, RED);
+    if (this->_type == RL::POWER)
+        drawPower();  //here we implement the movement and rotation of the poweup and bouncy etc etc and smaller size etc etc
     //EndDrawing();
+}
+
+void RL::Drawable3D::drawPower()
+{
+    if (this->_position.y >= 0.59f && this->up == 0) {
+        this->_position.y -= 0.01f;
+        DrawCubeTexture(this->_texture, this->_position, 0.6f, 0.6f, 0.6f, WHITE);
+        if (this->_position.y <= 0.6f)
+            this->up = 1;
+        }
+    if (this->_position.y <= 1.41f && this->up == 1) {
+        this->_position.y += 0.01f;
+        DrawCubeTexture(this->_texture, this->_position, 0.6f, 0.6f, 0.6f, WHITE);
+        if (this->_position.y >= 1.4f)
+            this->up = 0;
+        }
+
 }
 
 void RL::Drawable3D::load3DModel(std::string texturePath, std::string modelPath)

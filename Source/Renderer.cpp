@@ -16,12 +16,12 @@ RL::Renderer::~Renderer()
 {
 }
 
-void RL::Renderer::draw_text(std::string text, Color color, int x, int y, Font font)
+void RL::Renderer::draw_text(std::string text, Color color, int x, int y, Font font, float size)
 {
     //DrawText(text.c_str(), x, y, 20, color);
 
     //use this function when we get font handled
-    DrawTextEx(font, text.c_str(), Vector2 {float(x), float(y)}, 20.0f, 2, color);
+    DrawTextEx(font, text.c_str(), Vector2 {float(x), float(y)}, size, 2, color);
 }
 
 void RL::Renderer::draw_3D_model(Model model, float x, float y, float z)

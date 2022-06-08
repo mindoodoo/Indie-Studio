@@ -15,14 +15,16 @@
 #include "IDrawable.hpp"
 //#include "RaylibTypeEncaps.hpp"
 
-#define MODEL_RADIUS = 0.45f
+
 
 namespace RL {
     enum ModelType {
+        MCGUYVER,
         WALL,
         CRATE,
         MODEL,
-        FLOOR
+        FLOOR,
+        POWER
     };
 
 
@@ -33,6 +35,7 @@ namespace RL {
 
             // IDrawable methods
             void draw();
+            void drawPower();
             // void reset();
 
             // Image Loading / Manipulation methods
@@ -67,5 +70,6 @@ namespace RL {
             float _scale;
             ModelType _type;
             BoundingBox _boundingBox;
+            int up;
     };
 }
