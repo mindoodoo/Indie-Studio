@@ -21,15 +21,18 @@ class DrawSystem : public ISystem {
 
         void update(float deltaTime, std::vector<EntityID> &playerIds) override {
             _map->draw_map();
-            for (EntityID ent : EntityViewer<Pos, Sprite>(*_em.get())) {
+            for (EntityID ent : EntityViewer<Pos, Sprite, CollisionObjectType>(*_em.get())) {
                 Pos *objectPos = _em->Get<Pos>(ent);
                 Sprite *objectSprite = _em->Get<Sprite>(ent);
+                CollisionObjectType *objectType = _em->Get<CollisionObjectType>(ent);
                 float z = translateObjectCoordinates(objectPos->y, _map->getMapDepth());
-                objectSprite->model.setPosition(
-                    translateObjectCoordinates(objectPos->x, _map->getMapWidth()),
-                    0.5f + (z * 0.01f),
-                    z
-                );
+                if (*objectType != ITEM) {
+                    objectSprite->model.setPosition(
+                        translateObjectCoordinates(objectPos->x, _map->getMapWidth()),
+                        0.5f + (z * 0.01f),
+                        z
+                    );
+                }                
                 objectSprite->model.draw();
             }
         }

@@ -27,10 +27,13 @@ class CollisionSystem : public ISystem {
             for (EntityID ent : EntityViewer<Pos, Sprite, CollisionObjectType>(*_em.get())) {
                 for (EntityID other : EntityViewer<Pos, Sprite>(*_em.get())) {
                     Pos *entPos = _em->Get<Pos>(ent);
+                    Sprite *entModel = _em->Get<Sprite>(ent);
                     Sprite *otherModel = _em->Get<Sprite>(other);
                     Vector3 pos = Vector3{entPos->x, entPos->y, entPos->z};
                     CollisionObjectType* type1 = _em->Get<CollisionObjectType>(ent);
                     CollisionObjectType* type2 = _em->Get<CollisionObjectType>(other);
+                    if (*type1 == ITEM)
+                        pos = entModel->model.getPosition();
                     if (ent != other && _colManager.collisionsWithModels(pos, otherModel->model)) {
                         _destroyQueue.push_back(checkCollisionType(ent, other));
                     }
