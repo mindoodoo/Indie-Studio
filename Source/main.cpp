@@ -10,23 +10,6 @@
 
 int counter;
 
-float translateCoordinatestoWorld(int pos, int borderSize)
-{
-    float newpos = pos - (borderSize / 2);
-    if (borderSize % 2 == 0)
-        newpos += 0.5;
-    return newpos;
-}
-
-bool do_collision_walls(RL::Drawable3D Model, int i, int j , RL::Map Map)
-{
-    float x = translateCoordinatestoWorld(j, Map.getMapWidth());
-    float z = translateCoordinatestoWorld(i, Map.getMapDepth());
-    if (CheckCollisionSpheres(Model.getPosition(), 0.5f, Vector3{x, 0.5f, z}, 0.5f))
-        return true;
-    return false;
-}
-
 int main(void)
 {
     int keystroke;

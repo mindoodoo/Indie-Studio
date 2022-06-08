@@ -19,21 +19,22 @@ class DrawSystem : public ISystem {
         }
         ~DrawSystem() {};
 
-        void update(float deltaTime) override {
+        void update(float deltaTime, std::vector<EntityID> &playerIds) override {
             _map->draw_map();
             for (EntityID ent : EntityViewer<Pos, Sprite>(*_em.get())) {
                 Pos *objectPos = _em->Get<Pos>(ent);
                 Sprite *objectSprite = _em->Get<Sprite>(ent);
+                float z = translateObjectCoordinates(objectPos->y, _map->getMapDepth());
                 objectSprite->model.setPosition(
-                    translateCoordinates(objectPos->x, _map->getMapWidth()),
-                    0.4f,
-                    translateCoordinates(objectPos->y, _map->getMapDepth())
+                    translateObjectCoordinates(objectPos->x, _map->getMapWidth()),
+                    0.5f + (z * 0.01f),
+                    z
                 );
                 objectSprite->model.draw();
             }
         }
 
-        float translateCoordinates(float pos, int borderSize)
+        float translateObjectCoordinates(float pos, int borderSize)
         {
             float newpos = pos - (borderSize / 2);
             if (borderSize % 2 == 0)

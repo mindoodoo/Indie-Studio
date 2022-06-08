@@ -13,13 +13,15 @@ project(bomberman VERSION 0.0)
 #add C files
 FILE(GLOB CFILES
         Source/main.cpp
+        Source/CollisionManager.cpp
         Source/Drawable2D.cpp
         Source/Drawable3D.cpp
-        Source/Window.cpp
+        Source/InputManager.cpp
         Source/Logger.cpp
         Source/Map.cpp
         Source/Renderer.cpp
-        Source/InputManager.cpp
+        Source/SoundManager.cpp
+        Source/Window.cpp
         Source/GamePlay/Bomberman.cpp)
 
 #add Header files
@@ -34,15 +36,17 @@ FILE(GLOB HEADERFILES
         Source/GamePlay/DrawSystem.hpp
         Source/GamePlay/ISystem.hpp
         Source/GamePlay/MovementSystem.hpp
-        Source/InputManager.hpp
-        Source/Renderer.hpp
-        Source/Map.hpp
+        Source/CollisionManager.hpp
         Source/Drawable2D.hpp
         Source/Drawable3D.hpp
         Source/IDrawable.hpp
-        Source/Window.hpp
+        Source/InputManager.hpp
         Source/Logger.hpp
-        Source/RaylibTypeEncaps.hpp)
+        Source/Map.hpp
+        Source/RaylibTypeEncaps.hpp
+        Source/Renderer.hpp
+        Source/SoundManager.hpp
+        Source/Window.hpp)
 
 
 #add to project

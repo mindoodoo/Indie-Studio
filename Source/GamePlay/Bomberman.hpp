@@ -40,7 +40,7 @@ class Bomberman {
         std::shared_ptr<RL::InputManager> _inputManager;
         std::shared_ptr<RL::Map> _map;
         std::shared_ptr<RL::Renderer> _drawer;
-        UserInput _event;
+        std::vector<int> _event;
         std::vector<std::shared_ptr<ISystem>> _systems;
         std::vector<EntityID> _player;
         std::shared_ptr<EntityManager> _em;

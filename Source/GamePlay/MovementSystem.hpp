@@ -10,6 +10,7 @@
 
 #include "ISystem.hpp"
 #include "../Map.hpp"
+#include "../CollisionManager.hpp"
 
 class MovementSystem : public ISystem {
     public:
@@ -19,7 +20,7 @@ class MovementSystem : public ISystem {
         };
         ~MovementSystem() {};
 
-        void update(float deltaTime) override {
+        void update(float deltaTime, std::vector<EntityID> &playerIds) override {
             for (EntityID ent : EntityViewer<Pos, Velocity, Input, Sprite>(*_em.get())) {
                 Pos* playerPos = _em->Get<Pos>(ent);
                 Velocity* playerVel = _em->Get<Velocity>(ent);
@@ -43,10 +44,23 @@ class MovementSystem : public ISystem {
             }
         };
 
+        float translatePosCoordinates(float pos, int borderSize)
+        {
+            float newpos = pos - (borderSize / 2);
+            if (borderSize % 2 == 0)
+                newpos += 0.5;
+            return newpos;
+        }
+
         // check for collision with objects in other system
         void moveLeft(Pos *pos, Velocity vel, Sprite *playerSprite)
         {
-            if (pos->x >= vel.x && _map->getParsedMap()[pos->y][pos->x - vel.x].tile == PATH) {
+            float z = translatePosCoordinates(pos->y, _map->getMapDepth());
+            if (pos->x >= vel.x && !_colManager.collisionsWithWalls({
+                translatePosCoordinates(pos->x - vel.x, _map->getMapWidth()),
+                0.5f + (z * 0.01f),
+                z,
+            }, *_map.get())) {
                 pos->x -= vel.x;
                 playerSprite->model.setPosition(pos->x, pos->y, pos->z);
             }
@@ -54,7 +68,12 @@ class MovementSystem : public ISystem {
 
         void moveRight(Pos *pos, Velocity vel, Sprite *playerSprite)
         {
-            if (pos->x + vel.x < _map->getParsedMap()[pos->y].size() && _map->getParsedMap()[pos->y][pos->x + vel.x].tile == PATH) {
+            float z = translatePosCoordinates(pos->y, _map->getMapDepth());
+            if (pos->x + vel.x < _map->getParsedMap()[pos->y].size() && !_colManager.collisionsWithWalls({
+                translatePosCoordinates(pos->x + vel.x, _map->getMapWidth()),
+                0.5f + (z * 0.01f),
+                z,
+            }, *_map.get())) {
                 pos->x += vel.x;
                 playerSprite->model.setPosition(pos->x, pos->y, pos->z);
             }
@@ -62,7 +81,12 @@ class MovementSystem : public ISystem {
 
         void moveUp(Pos *pos, Velocity vel, Sprite *playerSprite)
         {
-            if (pos->y >= vel.y && _map->getParsedMap()[pos->y - vel.y][pos->x].tile == PATH) {
+            float z = translatePosCoordinates(pos->y - vel.y, _map->getMapDepth());
+            if (pos->y >= vel.y && !_colManager.collisionsWithWalls({
+                translatePosCoordinates(pos->x, _map->getMapWidth()),
+                0.5f + (z * 0.01f),
+                z,
+            }, *_map.get())) {
                 pos->y -= vel.y;
                 playerSprite->model.setPosition(pos->x, pos->y, pos->z);
             }
@@ -70,7 +94,12 @@ class MovementSystem : public ISystem {
 
         void moveDown(Pos *pos, Velocity vel, Sprite *playerSprite)
         {
-            if (pos->y + vel.y < _map->getParsedMap().size() && _map->getParsedMap()[pos->y + vel.y][pos->x].tile == PATH) {
+            float z = translatePosCoordinates(pos->y + vel.y, _map->getMapDepth());
+            if (pos->y + vel.y < _map->getParsedMap().size() && !_colManager.collisionsWithWalls({
+                translatePosCoordinates(pos->x, _map->getMapWidth()),
+                0.5f + (z * 0.01f),
+                z,
+            }, *_map.get())) {
                 pos->y += vel.y;
                 playerSprite->model.setPosition(pos->x, pos->y, pos->z);
             }
@@ -78,6 +107,7 @@ class MovementSystem : public ISystem {
 
     private:
         std::shared_ptr<RL::Map> _map;
+        RL::CollisionManager _colManager;
 };
 
 #endif /* !MOVEMENTSYSTEM_HPP_ */
