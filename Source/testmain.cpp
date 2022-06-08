@@ -37,15 +37,15 @@ int main(void)
 
     RL::CollisionManager ColMan;
 
-    RL::Drawable3D Skull(skulltex, skullmod, 0.04, RL::MODEL);
+    RL::Drawable3D Skull(skulltex, skullmod,"", 0.04, RL::MODEL);
     Skull.setPosition(0, 1.0f, 0); //add 3dmodel_getmodel
     Vector3 SkullPosition;
 
 
-    RL::Drawable3D TestMOB(skulltex, skullmod, 0.04, RL::MODEL);
+    RL::Drawable3D TestMOB(skulltex, skullmod,"", 0.04, RL::MODEL);
     TestMOB.setPosition(-5, 1.0f, 2);
 
-    RL::Drawable3D SpeedUp(SpeedUpTex, "", 1, RL::POWER);
+    RL::Drawable3D SpeedUp(SpeedUpTex, "", "",  1, RL::POWER);
     SpeedUp.setPosition(5, 1.0f, 2);
 
 
@@ -142,7 +142,6 @@ int main(void)
                 TestMOB.draw();
                 Skull.draw();
                 SpeedUp.drawPower();
-                std::cout << SpeedUp.getPosition().y <<std::endl;
                 Map.draw_map();
 
             Drawer.end3DMode();

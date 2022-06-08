@@ -8,7 +8,7 @@
 #include "Map.hpp"
 
 RL::Map::Map(std::string mapCSVPath, std::string wallTexturePath, std::string floorTexturePath)
-:_wallModel(Drawable3D(wallTexturePath, "", 1.0, RL::WALL)), _floorModel(RL::Drawable3D(floorTexturePath, "", 1.0, RL::FLOOR))
+:_wallModel(Drawable3D(wallTexturePath, "", "", 1.0, RL::WALL)), _floorModel(RL::Drawable3D(floorTexturePath, "","", 1.0, RL::FLOOR))
 {
     this->_parsedMap = parseMap(mapCSVPath);
     this->mapDepth = _parsedMap.size();
