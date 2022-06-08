@@ -12,7 +12,7 @@ project(bomberman VERSION 0.0)
 
 #add C files
 FILE(GLOB CFILES
-        Source/main.cpp
+        Source/testGamePlay.cpp
         Source/CollisionManager.cpp
         Source/Drawable2D.cpp
         Source/Drawable3D.cpp

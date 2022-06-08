@@ -49,7 +49,7 @@ void Bomberman::createPlayer(Pos pos)
     _em->Assign<Skillset>(id, Skillset{0, 0, 0, false});
     _em->Assign<BombCapacity>(id, BombCapacity{1, 1});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{PLAYER});
-    RL::Drawable3D Skull(skulltex, skullmod, 0.04, RL::MODEL);
+    RL::Drawable3D Skull(skulltex, skullmod, "", 0.04, RL::MODEL);
     Skull.setPosition(translateFigureCoordinates(pos.x, _map->getMapWidth()), pos.y, translateFigureCoordinates(pos.y, _map->getMapDepth()));
     _em->Assign<Sprite>(id, Sprite{Skull});
 }
@@ -61,7 +61,7 @@ void Bomberman::createItem(Pos pos)
     _em->Assign<Skillset>(id, Skillset{0, 0, 0, false});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
     std::string speedUpPath = "./Source/PowerUps/Speed.png";
-    RL::Drawable3D speedUp(speedUpPath, "", 1, RL::POWER);
+    RL::Drawable3D speedUp(speedUpPath, "", "", 1, RL::POWER);
     speedUp.setPosition(translateFigureCoordinates(pos.x, _map->getMapWidth()), 1.0f, translateFigureCoordinates(pos.y, _map->getMapDepth()));
     _em->Assign<Sprite>(id, Sprite{speedUp});
 }
@@ -78,7 +78,7 @@ void Bomberman::createMonster(Pos pos)
 
     std::string skulltex = "./Source/3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/Skull.png";
     std::string skullmod = "./Source/3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj";
-    RL::Drawable3D Skull(skulltex, skullmod, 0.04, RL::MODEL);
+    RL::Drawable3D Skull(skulltex, skullmod, "", 0.04, RL::MODEL);
     Skull.setPosition(translateFigureCoordinates(pos.x, _map->getMapWidth()), pos.y, translateFigureCoordinates(pos.y, _map->getMapDepth()));
     // Skull.setPosition(pos.x, pos.y, pos.z);
     _em->Assign<Sprite>(id, Sprite{Skull});
@@ -94,7 +94,7 @@ void Bomberman::createBomb(Pos pos, EntityID bombOwner)
 
     std::string skulltex = "./Source/3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/Skull.png";
     std::string skullmod = "./Source/3d_models/Skull_v3_L2.123c1407fc1e-ea5c-4cb9-9072-d28b8aba4c36/12140_Skull_v3_L2.obj";
-    RL::Drawable3D Skull(skulltex, skullmod, 0.04, RL::MODEL);
+    RL::Drawable3D Skull(skulltex, skullmod, "", 0.04, RL::MODEL);
     Skull.setPosition(translateFigureCoordinates(pos.x, _map->getMapWidth()), pos.y, translateFigureCoordinates(pos.y, _map->getMapDepth()));
     // Skull.setPosition(pos.x, pos.y, pos.z);
     _em->Assign<Sprite>(id, Sprite{Skull});
