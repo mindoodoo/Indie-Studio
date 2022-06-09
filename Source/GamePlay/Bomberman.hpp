@@ -13,15 +13,14 @@
 #include "MovementSystem.hpp"
 #include "CollisionSystem.hpp"
 #include "DrawSystem.hpp"
-#include "../Drawable3D.hpp"
-#include "../InputManager.hpp"
-#include "../Map.hpp"
-#include "../Renderer.hpp"
+#include "../Raylib/Drawables/Drawable3D.hpp"
+#include "../Raylib/InputManager.hpp"
+#include "../GameEngine/Map.hpp"
 #include "../Window.hpp"
 
 class Bomberman {
     public:
-        Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::Renderer> Drawer);
+        Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map);
         ~Bomberman();
 
         void createPlayer(Pos pos);
@@ -39,7 +38,6 @@ class Bomberman {
         std::shared_ptr<RL::Window> _window;
         std::shared_ptr<RL::InputManager> _inputManager;
         std::shared_ptr<RL::Map> _map;
-        std::shared_ptr<RL::Renderer> _drawer;
         std::vector<int> _event;
         std::vector<std::shared_ptr<ISystem>> _systems;
         std::vector<EntityID> _player;

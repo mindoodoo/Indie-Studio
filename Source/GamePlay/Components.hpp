@@ -10,7 +10,8 @@
 #include <memory>
 #include <vector>
 
-#include "../Drawable3D.hpp"
+#include "../Raylib/Drawables/Drawable3D.hpp"
+#include "../Raylib/RaylibTypeEncaps.hpp"
 
 enum UserInput {
     CLOSED_WINDOW = -5,
@@ -102,7 +103,7 @@ struct Health {
 
 // ?
 struct Sprite {
-    RL::Drawable3D model;
+    RL::Drawable3D *model;
 };
 
 // replace by marc map

@@ -9,8 +9,9 @@
 #define MOVEMENTSYSTEM_HPP_
 
 #include "ISystem.hpp"
-#include "../Map.hpp"
-#include "../CollisionManager.hpp"
+#include "../GameEngine/Map.hpp"
+#include "../GameEngine/CollisionManager.hpp"
+#include "../RaylibTypeEncaps.hpp"
 
 class MovementSystem : public ISystem {
     public:
@@ -53,7 +54,7 @@ class MovementSystem : public ISystem {
         }
 
         bool checkMovable(Pos pos) {
-            if (_colManager.collisionsWithWalls({pos.x, pos.y, pos.z}, *_map.get()))
+            if (_colManager.collisionsWithWalls((RL::Vector3f){pos.x, pos.y, pos.z}, *_map.get()))
                 return false;
             // also check for collision with other objects at that new position
             return true;
@@ -68,7 +69,7 @@ class MovementSystem : public ISystem {
                 z,
             })) {
                 pos->x -= vel.x;
-                playerSprite->model.setPosition(pos->x, pos->y, pos->z);
+                playerSprite->model->setPosition((RL::Vector3f){pos->x, pos->y, pos->z});
             }
         };
 
@@ -81,7 +82,7 @@ class MovementSystem : public ISystem {
                 z,
             })) {
                 pos->x += vel.x;
-                playerSprite->model.setPosition(pos->x, pos->y, pos->z);
+                playerSprite->model->setPosition((RL::Vector3f){pos->x, pos->y, pos->z});
             }
         };
 
@@ -94,7 +95,7 @@ class MovementSystem : public ISystem {
                 z,
             })) {
                 pos->y -= vel.y;
-                playerSprite->model.setPosition(pos->x, pos->y, pos->z);
+                playerSprite->model->setPosition((RL::Vector3f){pos->x, pos->y, pos->z});
             }
         };
 
@@ -107,7 +108,7 @@ class MovementSystem : public ISystem {
                 z,
             })) {
                 pos->y += vel.y;
-                playerSprite->model.setPosition(pos->x, pos->y, pos->z);
+                playerSprite->model->setPosition((RL::Vector3f){pos->x, pos->y, pos->z});
             }
         };
 
