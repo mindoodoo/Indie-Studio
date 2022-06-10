@@ -45,6 +45,10 @@ namespace RL {
         // Display all 2D and 3D Drawables in queue
         void displayDrawables(Map map);
 
+        // Draw some text on the window
+        void draw_text(std::string text, Color color, int x, int y, Font font, float size); // temporary, should create text class with font and size
+
+
         // Misc
         // Checks if a window is initiated and prints if not
         bool checkWindowOpen() const;
@@ -56,6 +60,8 @@ namespace RL {
         // Getters
         const Vector2i &getDimensions() const;
         const std::string &getTitle() const;
+
+        Font getFont();
 
         // Check if window is initiated and checks if window should close
         bool isWindowOpen();
@@ -73,6 +79,8 @@ namespace RL {
         
         std::string _title;
         bool _windowOpen;
+        
+        Font _windowFont;
     };
 }
 
