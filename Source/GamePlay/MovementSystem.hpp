@@ -61,6 +61,8 @@ class MovementSystem : public ISystem {
         bool checkMovable(Pos pos) {
             if (_colManager.collisionsWithWalls((RL::Vector3f){pos.x, pos.y, pos.z}, *_map.get()))
                 return false;
+            if (_colManager.collisionsWithCrates((RL::Vector3f){pos.x, pos.y, pos.z}, *_map.get()))
+                return false;
             // also check for collision with other objects at that new position
             return true;
         }
