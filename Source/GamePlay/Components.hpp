@@ -14,12 +14,12 @@
 #include "../Raylib/RaylibTypeEncaps.hpp"
 
 enum UserInput {
+    LAY_BOMB = -6,
     CLOSED_WINDOW = -5,
     UP = -4,
     LEFT = -3,
     DOWN = -2,
     RIGHT = -1,
-    LAY_BOMB,
     NONE
 };
 

@@ -44,4 +44,5 @@ class Bomberman {
         std::shared_ptr<EntityManager> _em;
 };
 
+
 #endif /* !BOMBERMAN_HPP_ */

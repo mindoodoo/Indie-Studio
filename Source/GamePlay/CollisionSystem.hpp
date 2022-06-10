@@ -77,7 +77,7 @@ class CollisionSystem : public ISystem {
                 case ITEM:
                     return handleItemCollision(lowEnt, low, highEnt, high);
                 case BREAKABLE_BLOCK:
-                case PLAYER:
+                //case PLAYER:
                 case MONSTER:
                     return handleBombCollision(lowEnt, low, highEnt, high);
             }

@@ -18,13 +18,14 @@
 #include "Raylib/Drawables/Drawable3D.hpp"
 #include "RaylibTypeEncaps.hpp"
 
+
 namespace RL {
     class Window {
     public:
         // Creation of window
         // By default, window is initialized immediately, but can be done later
         // by passing initLater = true
-        Window(std::string title, Vector2i dimensions = {1920, 1080},
+        Window(std::string title, Vector2i dimensions = {1200, 800},
                bool initLater = false);
         ~Window();
 

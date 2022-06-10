@@ -19,7 +19,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     createItem({10, 10, 1});
     // createItem({5, 5, 1});
     createBomb({5, 5, 1}, _player.back());
-    createMonster({5, 5, 1});
+    //createMonster({5, 5, 1});
 }
 
 Bomberman::~Bomberman()
@@ -37,8 +37,8 @@ float translateFigureCoordinates(float pos, int borderSize)
 void Bomberman::createPlayer(Pos pos)
 {
     EntityID id = _em->CreateNewEntity();
-    std::string skulltex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
-    std::string skullmod = "./RaylibTesting/Assets/3d_models/Skull/Skull.obj";
+    std::string playtex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
+    std::string playermod = "./RaylibTesting/Assets/3d_models/Skull/mainplayerAnimated.glb";
 
     // std::string skullmod = "RaylibTesting/Assets/3d_models/Guy/guy.iqm";
     // std::string modelAnimPath = "RaylibTesting/Assets/3d_models/Guy/guyanim.iqm";
@@ -53,14 +53,14 @@ void Bomberman::createPlayer(Pos pos)
     _em->Assign<Skillset>(id, Skillset{0, 0, 0, false});
     _em->Assign<BombCapacity>(id, BombCapacity{1, 1});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{PLAYER});
-    RL::Drawable3D *Skull = new RL::Drawable3D(skulltex, skullmod, "", RL::MODEL, 0.04);
-    Skull->setPosition((RL::Vector3f){
+    RL::Drawable3D *Player = new RL::Drawable3D(playtex, playermod, "", RL::MODEL, 0.25);
+    Player->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
         pos.y,
         translateFigureCoordinates(pos.y, _map->getMapDepth())
     });
-    _em->Assign<Sprite>(id, Sprite{Skull});
-    _window->queueDrawable(Skull);
+    _em->Assign<Sprite>(id, Sprite{Player});
+    _window->queueDrawable(Player);
 }
 
 void Bomberman::createItem(Pos pos)
@@ -110,16 +110,16 @@ void Bomberman::createBomb(Pos pos, EntityID bombOwner)
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{BOMB});
     // _em->Assign<Sprite>(id, Sprite{""});
 
-    std::string skulltex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
-    std::string skullmod = "./RaylibTesting/Assets/3d_models/Skull/Skull.obj";
-    RL::Drawable3D *Skull = new RL::Drawable3D(skulltex, skullmod, "", RL::MODEL, 0.04);
-    Skull->setPosition((RL::Vector3f){
+    std::string bombtex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
+    std::string bombmod = "./RaylibTesting/Assets/3d_models/Skull/Bomb.obj";
+    RL::Drawable3D *Bomb = new RL::Drawable3D(bombtex, bombmod, "", RL::MODEL, 2);
+    Bomb->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
         pos.y,
         translateFigureCoordinates(pos.y, _map->getMapDepth())
     });
-    _em->Assign<Sprite>(id, Sprite{Skull});
-    _window->queueDrawable(Skull);
+    _em->Assign<Sprite>(id, Sprite{Bomb});
+    _window->queueDrawable(Bomb);
 }
 
 void Bomberman::checkInput()
@@ -137,6 +137,10 @@ void Bomberman::checkInput()
             case RIGHT:
                 playerInput->pressedKey = (UserInput)input;
                 break;
+           case LAY_BOMB:
+               std::cout << "LAYING bomb" << std::endl;
+               createBomb(*_em->Get<Pos>(_player[0]), _player[0]);
+               break;
             default:
                 playerInput->pressedKey = NONE;
         }
@@ -151,6 +155,7 @@ void Bomberman::runFrame()
     while (_window->isWindowOpen()) {
         // update deltatime
         checkInput();
+
         for (std::shared_ptr<ISystem> system : _systems) {
             system->update(deltaTime, _player);
         }

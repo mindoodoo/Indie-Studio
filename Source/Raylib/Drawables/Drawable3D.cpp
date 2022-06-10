@@ -32,7 +32,7 @@ void RL::Drawable3D::draw()
         DrawCubeTexture(this->_texture, this->_position, 1.0f, 1.0f, 1.0f, WHITE);
     if (this->_modelType == RL::MODEL) {
         DrawModel(this->_model, this->_position, this->_scale, WHITE);
-        DrawSphere(this->_position, 0.5f, RED);
+        //DrawSphere(this->_position, 0.5f, RED);
     }
     if (this->_modelType == RL::POWER)
         drawPower();  //here we implement the movement and rotation of the poweup and bouncy etc etc and smaller size etc etc
