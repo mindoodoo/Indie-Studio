@@ -34,7 +34,7 @@ class MovementSystem : public ISystem {
                     skills = *_em->Get<Skillset>(ent);
                     wallPass = skills.wallPass;
                 }
-                Velocity vel = (*playerVel) * (deltaTime * 1000) + (skills.speedUp * 0.1);
+                Velocity vel = (*playerVel) * (deltaTime * 1000) + (skills.speedUp * 0.05);
 
                 // TODO: pressedKey as vector, for loop over it to make diagonal movement possible
                 switch (playerMovement->pressedKey) {
