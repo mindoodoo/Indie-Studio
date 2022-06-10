@@ -14,7 +14,7 @@ int main(void)
     std::shared_ptr<RL::Window> Window = std::make_shared<RL::Window>("TESTMAIN");
     //for everything to work, we need to init everything else AFTER THE WINDOW
     std::shared_ptr<RL::InputManager> InputManager = std::make_shared<RL::InputManager>();
-    std::shared_ptr<RL::Map> Map = std::make_shared<RL::Map>("./RaylibTesting/Assets/Maps/TestMap/test.csv", "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png" );
+    std::shared_ptr<RL::Map> Map = std::make_shared<RL::Map>("./RaylibTesting/Assets/Maps/TestMap/test.csv", "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png" );
 
     SetTargetFPS(60);
 

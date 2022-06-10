@@ -80,6 +80,16 @@ void RL::Window::queueDrawable(IDrawable *drawable)
         this->_displayQueue2D.push_back(drawable);
 }
 
+void RL::Window::removeDrawable(IDrawable *drawable)
+{
+    RL::DrawableType type = drawable->getType();
+    
+    if (type == RL::DrawableType::Type3D)
+        this->_displayQueue3D.erase(std::remove(this->_displayQueue3D.begin(), this->_displayQueue3D.end(), drawable), this->_displayQueue3D.end());
+    if (type == RL::DrawableType::Type2D)
+        this->_displayQueue2D.erase(std::remove(this->_displayQueue2D.begin(), this->_displayQueue2D.end(), drawable), this->_displayQueue2D.end());
+}
+
 void RL::Window::displayDrawables(Map map)
 {
     BeginDrawing();

@@ -22,6 +22,7 @@ namespace RL {
 
             // Methods to check if collision
             bool collisionsWithWalls(RL::Vector3f ModelPos,RL::Map Map);
+            bool collisionsWithCrates(RL::Vector3f ModelPos, RL::Map Map);
             bool collisionsWithModels(RL::Vector3f MovingPos, RL::Drawable3D Model2);
 
         private:

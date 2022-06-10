@@ -22,24 +22,29 @@ class MovementSystem : public ISystem {
         ~MovementSystem() {};
 
         void update(float deltaTime, std::vector<EntityID> &playerIds) override {
-            for (EntityID ent : EntityViewer<Pos, Velocity, Input, Sprite>(*_em.get())) {
+            for (EntityID ent : EntityViewer<Pos, Velocity, Input, Sprite, CollisionObjectType>(*_em.get())) {
                 Pos* playerPos = _em->Get<Pos>(ent);
                 Velocity* playerVel = _em->Get<Velocity>(ent);
                 Input* playerMovement = _em->Get<Input>(ent);
                 Sprite* playerSprite = _em->Get<Sprite>(ent);
+                CollisionObjectType* playerType = _em->Get<CollisionObjectType>(ent);
+                Skillset skills({0, 0, 0, false});
+                if (*playerType == PLAYER)
+                    skills = *_em->Get<Skillset>(ent);
+                Velocity vel = (*playerVel) * deltaTime + (skills.speedUp * 0.1);
 
                 switch (playerMovement->pressedKey) {
                     case UP:
-                        moveUp(playerPos, (*playerVel) * deltaTime, playerSprite);
+                        moveUp(playerPos, vel, playerSprite);
                         break;
                     case DOWN:
-                        moveDown(playerPos, (*playerVel) * deltaTime, playerSprite);
+                        moveDown(playerPos, vel, playerSprite);
                         break;
                     case LEFT:
-                        moveLeft(playerPos, (*playerVel) * deltaTime, playerSprite);
+                        moveLeft(playerPos, vel, playerSprite);
                         break;
                     case RIGHT:
-                        moveRight(playerPos, (*playerVel) * deltaTime, playerSprite);
+                        moveRight(playerPos, vel, playerSprite);
                         break;
                 }
             }
