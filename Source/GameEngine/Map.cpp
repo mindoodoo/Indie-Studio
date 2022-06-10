@@ -13,6 +13,7 @@ RL::Map::Map(std::string mapCSVPath, std::string wallTexturePath, std::string fl
     this->_parsedMap = parseMap(mapCSVPath);
     this->mapDepth = _parsedMap.size();
     this->mapWidth = _parsedMap[0].size();
+    generate_all_crates();
     this->_wallTexturepath = wallTexturePath;
 }
 
@@ -158,9 +159,33 @@ float RL::Map::translateCoordinatestoWorld(int pos, int borderSize)
 
 //random crate generator
 
+bool RL::Map::skip_start_areas(int i, int j)
+{
+    //check first row 
+    if (i == 1 || i == this->mapDepth - 2) {
+        if (j == 1 || j == this->mapWidth - 2 || j == 2 || j == this->mapWidth - 3)
+            return true;
+    }
+    //check first column 
+    if (j == 1 || j == this->mapWidth - 2) {
+        if (i == 1 || i == this->mapDepth - 2 || i == 2 || i == this->mapDepth - 3)
+            return true;
+    }
+    return false;
+}
+
 void RL::Map::generate_all_crates()
 {
-
+    int placeCrate;
+    for (int i = 0; i < mapDepth; i++) {
+        for (int j = 0; j < mapWidth; j++) {
+            placeCrate = rand() % 100;
+            if (!skip_start_areas(i, j) && _parsedMap[i][j].tile == 0 && placeCrate > 25)
+                
+                //here we do a randomiser and change the tile to == 2;
+                _parsedMap[i][j].tile = 2;
+            }
+        }
 }
 
 //Getters
