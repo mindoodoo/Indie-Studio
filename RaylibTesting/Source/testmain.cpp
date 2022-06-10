@@ -33,7 +33,7 @@ int main(void)
 
     RL::SoundManager SoundManager;
 
-    RL::Map Map("./Maps/TestMap/test.csv", "./Maps/TestMap/TEST_WALL.png", "./Maps/TestMap/Floor.png" );
+    RL::Map Map("./Maps/TestMap/test.csv", "./Maps/TestMap/TEST_WALL.png", "./Maps/TestMap/Floor.png", "./Maps/TestMap/crate.png" );
 
     RL::CollisionManager ColMan;
 
@@ -81,7 +81,8 @@ int main(void)
                 SkullPosition = Skull.getPosition();
                 SkullPosition.z -= 0.05f;
             if (ColMan.collisionsWithWalls(SkullPosition, Map) == false &&
-                ColMan.collisionsWithModels(SkullPosition, TestMOB) == false) {
+                ColMan.collisionsWithModels(SkullPosition, TestMOB) == false &&
+                ColMan.collisionsWithCrates(SkullPosition, Map) == false) {
                 Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
             }
         }
@@ -89,7 +90,8 @@ int main(void)
                 SkullPosition = Skull.getPosition();
                 SkullPosition.x -= 0.05f;
             if (ColMan.collisionsWithWalls(SkullPosition, Map) == false &&
-                ColMan.collisionsWithModels(SkullPosition, TestMOB) == false) {
+                ColMan.collisionsWithModels(SkullPosition, TestMOB) == false &&
+                ColMan.collisionsWithCrates(SkullPosition, Map) == false) {
                 Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
             }
         }
@@ -97,7 +99,8 @@ int main(void)
                 SkullPosition = Skull.getPosition();
                 SkullPosition.z += 0.05f;
             if (ColMan.collisionsWithWalls(SkullPosition, Map) == false &&
-                ColMan.collisionsWithModels(SkullPosition, TestMOB) == false) {
+                ColMan.collisionsWithModels(SkullPosition, TestMOB) == false &&
+                ColMan.collisionsWithCrates(SkullPosition, Map) == false) {
                 Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
             }
         }
@@ -105,7 +108,8 @@ int main(void)
                 SkullPosition = Skull.getPosition();
                 SkullPosition.x += 0.05f;
             if (ColMan.collisionsWithWalls(SkullPosition, Map) == false &&
-                ColMan.collisionsWithModels(SkullPosition, TestMOB) == false) {
+                ColMan.collisionsWithModels(SkullPosition, TestMOB) == false &&
+                ColMan.collisionsWithCrates(SkullPosition, Map) == false) {
                 Skull.setPosition(SkullPosition.x, SkullPosition.y, SkullPosition.z);
             }
         }

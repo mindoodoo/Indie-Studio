@@ -25,9 +25,12 @@ namespace RL {
     
     class Map {
     public:
-        Map(std::string mapCSVPath, std::string wallTexturePath, std::string floorTexturePath);
+        Map(std::string mapCSVPath, std::string wallTexturePath, std::string floorTexturePath, std::string crateTexturePath);
         ~Map();
         std::vector<std::vector<gfx_tile_t>> parseMap(const std::string &path);
+
+        //random crate generator
+        void generate_all_crates();
 
         //Drawer
         void draw_map();
@@ -47,6 +50,7 @@ namespace RL {
         //std::vector<RL::Drawable3D> _mapStaticAssets;
         RL::Drawable3D _floorModel;
         RL::Drawable3D _wallModel;
+        RL::Drawable3D _crateModel;
         std::string _wallTexturepath;
         int mapWidth;
         int mapDepth;
