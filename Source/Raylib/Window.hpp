@@ -11,6 +11,7 @@
 #include <string>
 #include <raylib.h>
 #include <vector>
+#include <algorithm>
 #include "GameEngine/Map.hpp"
 #include "Logger/Logger.hpp"
 #include "Camera.hpp"
