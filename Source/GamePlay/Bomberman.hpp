@@ -24,7 +24,10 @@ class Bomberman {
         ~Bomberman();
 
         void createPlayer(Pos pos);
-        void createItem(Pos pos);
+        void createSpeedUpItem(Pos pos);
+        void createBombUpItem(Pos pos);
+        void createFireUpItem(Pos pos);
+        void createWallPassItem(Pos pos);
         void createMonster(Pos pos);
         void createBomb(Pos pos, EntityID bombOwner);
         void checkInput();

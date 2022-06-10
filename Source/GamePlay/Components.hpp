@@ -84,7 +84,17 @@ struct Velocity {
         this->y *= factor;
         this->z *= factor;  // is it necessary to change the z coordinate?
         return *this;
-    }
+    };
+
+    Velocity operator+(const float &factor) {
+        if (this->x)
+            this->x += factor;
+        if (this->y)
+            this->y += factor;
+        if (this->z)
+            this->z += factor;
+        return *this;
+    };
 };
 
 

@@ -12,12 +12,16 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
 {
     _em = std::make_shared<EntityManager>();
     // take care with system order when adding to vector
+    _systems.push_back(std::make_shared<CollisionSystem>(_em, _window));
     _systems.push_back(std::make_shared<MovementSystem>(_em, _map));
-    _systems.push_back(std::make_shared<CollisionSystem>(_em, _map));
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
     createPlayer({1, 1, 1});
-    createItem({10, 10, 1});
-    // createItem({5, 5, 1});
+    createSpeedUpItem({10, 10, 1});
+    createSpeedUpItem({4, 3, 1});
+    createBombUpItem({8, 5, 1});
+    createBombUpItem({9, 5, 1});
+    createFireUpItem({10, 5, 1});
+    createWallPassItem({2, 3, 1});
     createBomb({5, 5, 1}, _player.back());
     createMonster({5, 5, 1});
 }
@@ -39,10 +43,6 @@ void Bomberman::createPlayer(Pos pos)
     EntityID id = _em->CreateNewEntity();
     std::string skulltex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
     std::string skullmod = "./RaylibTesting/Assets/3d_models/Skull/Skull.obj";
-
-    // std::string skullmod = "RaylibTesting/Assets/3d_models/Guy/guy.iqm";
-    // std::string modelAnimPath = "RaylibTesting/Assets/3d_models/Guy/guyanim.iqm";
-    // std::string skulltex = "RaylibTesting/Assets/3d_models/Guy/guytex.png";
     
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
@@ -63,11 +63,11 @@ void Bomberman::createPlayer(Pos pos)
     _window->queueDrawable(Skull);
 }
 
-void Bomberman::createItem(Pos pos)
+void Bomberman::createSpeedUpItem(Pos pos)
 {
     EntityID id = _em->CreateNewEntity();
     _em->Assign<Pos>(id, pos);
-    _em->Assign<Skillset>(id, Skillset{0, 0, 0, false});
+    _em->Assign<Skillset>(id, Skillset{0, 1, 0, false});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
     std::string speedUpPath = "./Source/PowerUps/Speed.png";
     RL::Drawable3D *speedUp = new RL::Drawable3D(speedUpPath, "", "", RL::POWER);
@@ -80,6 +80,57 @@ void Bomberman::createItem(Pos pos)
     _window->queueDrawable(speedUp);
 }
 
+void Bomberman::createBombUpItem(Pos pos)
+{
+    EntityID id = _em->CreateNewEntity();
+    _em->Assign<Pos>(id, pos);
+    _em->Assign<Skillset>(id, Skillset{1, 0, 0, false});
+    _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
+    std::string bombUpPath = "./Source/PowerUps/BombUp.png";
+    RL::Drawable3D *bombUp = new RL::Drawable3D(bombUpPath, "", "", RL::POWER);
+    bombUp->setPosition((RL::Vector3f){
+        translateFigureCoordinates(pos.x, _map->getMapWidth()),
+        1.0f,
+        translateFigureCoordinates(pos.y, _map->getMapDepth())
+    });
+    _em->Assign<Sprite>(id, Sprite{bombUp});
+    _window->queueDrawable(bombUp);
+}
+
+void Bomberman::createFireUpItem(Pos pos)
+{
+    EntityID id = _em->CreateNewEntity();
+    _em->Assign<Pos>(id, pos);
+    _em->Assign<Skillset>(id, Skillset{0, 0, 1, false});
+    _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
+    std::string fireUpPath = "./Source/PowerUps/PowerUp.png";
+    RL::Drawable3D *fireUp = new RL::Drawable3D(fireUpPath, "", "", RL::POWER);
+    fireUp->setPosition((RL::Vector3f){
+        translateFigureCoordinates(pos.x, _map->getMapWidth()),
+        1.0f,
+        translateFigureCoordinates(pos.y, _map->getMapDepth())
+    });
+    _em->Assign<Sprite>(id, Sprite{fireUp});
+    _window->queueDrawable(fireUp);
+}
+
+void Bomberman::createWallPassItem(Pos pos)
+{
+    EntityID id = _em->CreateNewEntity();
+    _em->Assign<Pos>(id, pos);
+    _em->Assign<Skillset>(id, Skillset{0, 0, 0, true});
+    _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
+    std::string wallPassPath = "./Source/PowerUps/WallsWalkable.png";
+    RL::Drawable3D *wallPass = new RL::Drawable3D(wallPassPath, "", "", RL::POWER);
+    wallPass->setPosition((RL::Vector3f){
+        translateFigureCoordinates(pos.x, _map->getMapWidth()),
+        1.0f,
+        translateFigureCoordinates(pos.y, _map->getMapDepth())
+    });
+    _em->Assign<Sprite>(id, Sprite{wallPass});
+    _window->queueDrawable(wallPass);
+}
+
 void Bomberman::createMonster(Pos pos)
 {
     EntityID id = _em->CreateNewEntity();
@@ -88,7 +139,6 @@ void Bomberman::createMonster(Pos pos)
     _em->Assign<Score>(id, Score{0}); //defines how player score increases when killing monster
     _em->Assign<Health>(id, Health{100});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{MONSTER});
-    // _em->Assign<Sprite>(id, Sprite{""});
 
     std::string skulltex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
     std::string skullmod = "./RaylibTesting/Assets/3d_models/Skull/Skull.obj";
@@ -108,7 +158,6 @@ void Bomberman::createBomb(Pos pos, EntityID bombOwner)
     _em->Assign<Pos>(id, pos);
     _em->Assign<BombOwner>(id, BombOwner{bombOwner});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{BOMB});
-    // _em->Assign<Sprite>(id, Sprite{""});
 
     std::string skulltex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
     std::string skullmod = "./RaylibTesting/Assets/3d_models/Skull/Skull.obj";
