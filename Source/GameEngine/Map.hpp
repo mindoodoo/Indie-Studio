@@ -31,6 +31,7 @@ namespace RL {
 
         //random crate generator
         void generate_all_crates();
+        bool skip_start_areas(int i, int j);
 
         //Drawer
         void draw_map();

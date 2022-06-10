@@ -36,7 +36,7 @@ class CollisionSystem : public ISystem {
                     CollisionObjectType* type2 = _em->Get<CollisionObjectType>(other);
                     if (*type1 == ITEM)
                         pos = entModel->model->getPosition();
-                    if (ent != other && _colManager.collisionsWithModels(entModel->model->getPosition(), *otherModel->model)) {
+                    if (ent != other && _colManager.collisionsWithModels(*entModel->model, *otherModel->model)) {
                         _destroyQueue.push_back(checkCollisionType(ent, other));
                     }
                 }

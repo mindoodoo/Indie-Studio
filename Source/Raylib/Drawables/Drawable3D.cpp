@@ -31,7 +31,8 @@ void RL::Drawable3D::draw()
     if (this->_modelType == RL::WALL)
         DrawCubeTexture(this->_texture, this->_position, 1.0f, 1.0f, 1.0f, WHITE);
     if (this->_modelType == RL::MODEL) {
-        DrawModel(this->_model, this->_position, this->_scale, WHITE);
+        DrawModelEx(this->_model, this->_position, {0, 1, 0}, this->_rotationAngle, (Vector3f) {this->_scale,this->_scale,this->_scale} , WHITE);
+        //DrawModel(this->_model, this->_position, this->_scale, WHITE);
         DrawSphere(this->_position, 0.5f, RED);
     }
     if (this->_modelType == RL::POWER)
@@ -44,12 +45,14 @@ void RL::Drawable3D::drawPower()
     if (this->_position.y >= 0.59f && this->up == 0) {
         this->_position.y -= 0.01f;
         DrawCubeTexture(this->_texture, this->_position, 0.6f, 0.6f, 0.6f, WHITE);
+        //DrawSphere(this->_position, 0.05f, WHITE);
         if (this->_position.y <= 0.6f)
             this->up = 1;
         }
     if (this->_position.y <= 1.41f && this->up == 1) {
         this->_position.y += 0.01f;
         DrawCubeTexture(this->_texture, this->_position, 0.6f, 0.6f, 0.6f, WHITE);
+        //DrawSphere(this->_position, 0.05f, WHITE);
         if (this->_position.y >= 1.4f)
             this->up = 0;
         }
@@ -66,8 +69,10 @@ void RL::Drawable3D::load3DModel(std::string texturePath, std::string modelPath,
         throw std::invalid_argument("Asset path is a directory");
     if (this->_assetLoaded)
         this->unloadAll();
-    this->_img = LoadImage(texturePath.c_str());
-    this->_texture = LoadTextureFromImage(this->_img);
+    if (this->_modelType != RL::MODEL) {
+        this->_img = LoadImage(texturePath.c_str());
+        this->_texture = LoadTextureFromImage(this->_img);
+    }
     if (this->_modelType == RL::MODEL) {
         this->_model = LoadModel(modelPath.c_str());
         SetMaterialTexture(&this->_model.materials[0], MATERIAL_MAP_DIFFUSE, this->_texture);
@@ -215,4 +220,15 @@ RL::DrawableType RL::Drawable3D::getType() const
 {
     return this->_type;
 }
+
+RL::ModelType RL::Drawable3D::getModelType()
+{
+    return this->_modelType;
+}
+
+void RL::Drawable3D::setRotation(float newRotation)
+{
+    this->_rotationAngle = newRotation;
+}
+
 
