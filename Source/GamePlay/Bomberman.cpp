@@ -108,7 +108,9 @@ void Bomberman::createBomb(Pos pos, EntityID bombOwner)
     _em->Assign<Pos>(id, pos);
     _em->Assign<BombOwner>(id, BombOwner{bombOwner});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{BOMB});
-    // _em->Assign<Sprite>(id, Sprite{""});
+    Timer timer = Timer();
+    timer.startTimer();
+    _em->Assign<Timer>(id, timer);
 
     std::string bombtex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
     std::string bombmod = "./RaylibTesting/Assets/3d_models/Skull/Bomb.obj";
@@ -138,8 +140,7 @@ void Bomberman::checkInput()
                 playerInput->pressedKey = (UserInput)input;
                 break;
            case LAY_BOMB:
-               std::cout << "LAYING bomb" << std::endl;
-               createBomb(*_em->Get<Pos>(_player[0]), _player[0]);
+               layBomb(_player[One]);
                break;
             default:
                 playerInput->pressedKey = NONE;
@@ -161,6 +162,7 @@ void Bomberman::runFrame()
         }
         if (_player.size() <= 0)
             break;
+        checkBombalive();
         startDrawScene();
         _inputManager->popInputs();
         _inputManager->recordInputs();

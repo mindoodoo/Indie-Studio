@@ -39,6 +39,11 @@ enum CollisionObjectType {
     BOMB
 };
 
+enum PlayerNumber {
+    One = 0,
+    Two = 1
+};
+
 struct Level {
     std::size_t level;
 };
@@ -110,5 +115,6 @@ struct Sprite {
 struct Map {
     std::vector<std::vector<int>> map;
 };
+
 
 #endif /* !COMPONENTS_HPP_ */

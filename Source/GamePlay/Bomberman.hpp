@@ -17,6 +17,7 @@
 #include "../Raylib/InputManager.hpp"
 #include "../GameEngine/Map.hpp"
 #include "../Window.hpp"
+#include "Timer.hpp"
 
 class Bomberman {
     public:
@@ -26,6 +27,8 @@ class Bomberman {
         void createPlayer(Pos pos);
         void createItem(Pos pos);
         void createMonster(Pos pos);
+        void layBomb(EntityID playerid);
+        void checkBombalive();
         void createBomb(Pos pos, EntityID bombOwner);
         void checkInput();
         void runFrame();
@@ -43,6 +46,5 @@ class Bomberman {
         std::vector<EntityID> _player;
         std::shared_ptr<EntityManager> _em;
 };
-
 
 #endif /* !BOMBERMAN_HPP_ */
