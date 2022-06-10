@@ -42,7 +42,7 @@ void Bomberman::createPlayer(Pos pos)
 {
     EntityID id = _em->CreateNewEntity();
     std::string skulltex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
-    std::string skullmod = "./RaylibTesting/Assets/3d_models/Skull/Skull.obj";
+    std::string skullmod = "./RaylibTesting/Assets/3d_models/Skull/mainplayerAnimated.glb";
     
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
@@ -53,7 +53,7 @@ void Bomberman::createPlayer(Pos pos)
     _em->Assign<Skillset>(id, Skillset{0, 0, 0, false});
     _em->Assign<BombCapacity>(id, BombCapacity{1, 1});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{PLAYER});
-    RL::Drawable3D *Skull = new RL::Drawable3D(skulltex, skullmod, "", RL::MODEL, 0.04);
+    RL::Drawable3D *Skull = new RL::Drawable3D(skulltex, skullmod, "", RL::MODEL, 0.25f);
     Skull->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
         pos.y,
