@@ -216,3 +216,9 @@ RL::DrawableType RL::Drawable3D::getType() const
     return this->_type;
 }
 
+RL::ModelType RL::Drawable3D::getModelType()
+{
+    return this->_modelType;
+}
+
+

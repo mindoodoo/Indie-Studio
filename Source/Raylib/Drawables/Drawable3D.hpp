@@ -75,6 +75,7 @@ namespace RL {
 
             Texture2D getTexture();
             DrawableType getType() const;
+            ModelType getModelType();
 
             Vector3f getBoxSize();
             void setBoundingBox();

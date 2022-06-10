@@ -13,7 +13,7 @@ RL::Map::Map(std::string mapCSVPath, std::string wallTexturePath, std::string fl
     this->_parsedMap = parseMap(mapCSVPath);
     this->mapDepth = _parsedMap.size();
     this->mapWidth = _parsedMap[0].size();
-    generate_all_crates();
+    //generate_all_crates();
     this->_wallTexturepath = wallTexturePath;
 }
 
