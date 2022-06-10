@@ -33,7 +33,7 @@ void RL::Drawable3D::draw()
     if (this->_modelType == RL::MODEL) {
         DrawModelEx(this->_model, this->_position, {0, 1, 0}, this->_rotationAngle, (Vector3f) {this->_scale,this->_scale,this->_scale} , WHITE);
         //DrawModel(this->_model, this->_position, this->_scale, WHITE);
-        //DrawSphere(this->_position, 0.5f, RED);
+        DrawSphere(this->_position, 0.5f, RED);
     }
     if (this->_modelType == RL::POWER)
         drawPower();  //here we implement the movement and rotation of the poweup and bouncy etc etc and smaller size etc etc
@@ -45,12 +45,14 @@ void RL::Drawable3D::drawPower()
     if (this->_position.y >= 0.59f && this->up == 0) {
         this->_position.y -= 0.01f;
         DrawCubeTexture(this->_texture, this->_position, 0.6f, 0.6f, 0.6f, WHITE);
+        //DrawSphere(this->_position, 0.05f, WHITE);
         if (this->_position.y <= 0.6f)
             this->up = 1;
         }
     if (this->_position.y <= 1.41f && this->up == 1) {
         this->_position.y += 0.01f;
         DrawCubeTexture(this->_texture, this->_position, 0.6f, 0.6f, 0.6f, WHITE);
+        //DrawSphere(this->_position, 0.05f, WHITE);
         if (this->_position.y >= 1.4f)
             this->up = 0;
         }

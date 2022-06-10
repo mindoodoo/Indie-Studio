@@ -82,12 +82,15 @@ bool RL::CollisionManager::collisionsWithCrates(RL::Vector3f ModelPos, RL::Map M
     return collision;
 }
 
-bool RL::CollisionManager::collisionsWithModels(RL::Vector3f MovingPos, RL::Drawable3D Model2)
+bool RL::CollisionManager::collisionsWithModels(RL::Drawable3D Model1, RL::Drawable3D Model2)
 {
     float model2radius = 0.49f;
+    float model1radius = 0.49f;
     if (Model2.getModelType() == RL::POWER)
-        model2radius = 0.18f;
-    bool collision = CheckCollisionSpheres(MovingPos, 0.45f, Model2.getPosition(), model2radius);
+        model2radius = 0.28f;
+    if (Model1.getModelType() == RL::POWER)
+        model1radius = 0.28f;
+    bool collision = CheckCollisionSpheres(Model1.getPosition(), model1radius, Model2.getPosition(), model2radius);
 
     //if model.IS_TRAVERSIBLE == TRUE then
     // collision == false;
