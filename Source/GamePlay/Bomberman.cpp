@@ -24,6 +24,9 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     createWallPassItem({2, 3, 1});
     createBomb({5, 5, 1}, _player.back());
     createMonster({5, 5, 1});
+    _gamePaused = false;
+    _gameTimer.startTimer();
+    _deltaTimer.startTimer();
 }
 
 Bomberman::~Bomberman()
@@ -192,24 +195,39 @@ void Bomberman::checkInput()
     }
 }
 
-void Bomberman::runFrame()
+void Bomberman::startGameTimers()
 {
+    if (!_gamePaused) {
+        _gameTimer.restartTimer();
+    } else {
+        _gameTimer.stopPause();
+        _gamePaused = false;
+    }
+    _deltaTimer.restartTimer();
+}
+
+void Bomberman::stopGameTimers()
+{
+    _gamePaused = true;
+    _gameTimer.startPause();
+}
+
+// event as argument?
+bool Bomberman::runFrame()
+{
+    _inputManager->popInputs();
     _inputManager->recordInputs();
     _event = _inputManager->getInputs();
-    float deltaTime = 1;
-    while (_window->isWindowOpen()) {
-        // update deltatime
-        checkInput();
-        for (std::shared_ptr<ISystem> system : _systems) {
-            system->update(deltaTime, _player);
-        }
-        if (_player.size() <= 0)
-            break;
-        startDrawScene();
-        _inputManager->popInputs();
-        _inputManager->recordInputs();
-        _event = _inputManager->getInputs();
+
+    checkInput();
+    for (std::shared_ptr<ISystem> system : _systems) {
+        system->update(_deltaTimer.returnTime(), _player);
     }
+    if (_player.size() <= 0)
+        return false;
+    startDrawScene();
+    _deltaTimer.restartTimer();
+    return true;
 }
 
 void Bomberman::startDrawScene()

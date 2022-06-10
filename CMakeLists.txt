@@ -12,7 +12,7 @@ project(bomberman VERSION 0.0)
 
 #add C files
 FILE(GLOB CFILES
-        Source/testGamePlay.cpp
+        Source/bombermanMain.cpp
         Source/GameEngine/CollisionManager.cpp
         Source/GameEngine/Map.cpp
         Source/GamePlay/Bomberman.cpp
@@ -23,7 +23,8 @@ FILE(GLOB CFILES
         Source/Raylib/Camera.cpp
         Source/Raylib/InputManager.cpp
         Source/Raylib/SoundManager.cpp
-        Source/Raylib/Window.cpp)
+        Source/Raylib/Window.cpp
+        Source/Core.cpp)
 
 #add Header files
 FILE(GLOB HEADERFILES
@@ -48,7 +49,8 @@ FILE(GLOB HEADERFILES
         Source/Raylib/InputManager.hpp
         Source/Raylib/RaylibTypeEncaps.hpp
         Source/Raylib/SoundManager.hpp
-        Source/Raylib/Window.hpp)
+        Source/Raylib/Window.hpp
+        Source/Core.hpp)
 
 
 #add to project

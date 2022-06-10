@@ -80,20 +80,22 @@ struct Velocity {
     float z;
 
     Velocity operator*(const float &factor) {
-        this->x *= factor;
-        this->y *= factor;
-        this->z *= factor;  // is it necessary to change the z coordinate?
-        return *this;
+        Velocity vel = Velocity();
+        vel.x = this->x * factor;
+        vel.y = this->y * factor;
+        vel.z = this->z * factor;
+        return vel;
     };
 
     Velocity operator+(const float &factor) {
+        Velocity vel = Velocity(*this);
         if (this->x)
-            this->x += factor;
+            vel.x = this->x + factor;
         if (this->y)
-            this->y += factor;
+            vel.y = this->y + factor;
         if (this->z)
-            this->z += factor;
-        return *this;
+            vel.z = this->z + factor;
+        return vel;
     };
 };
 

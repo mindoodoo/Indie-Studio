@@ -29,22 +29,26 @@ class MovementSystem : public ISystem {
                 Sprite* playerSprite = _em->Get<Sprite>(ent);
                 CollisionObjectType* playerType = _em->Get<CollisionObjectType>(ent);
                 Skillset skills({0, 0, 0, false});
-                if (*playerType == PLAYER)
+                bool wallPass = false;
+                if (*playerType == PLAYER) {
                     skills = *_em->Get<Skillset>(ent);
-                Velocity vel = (*playerVel) * deltaTime + (skills.speedUp * 0.1);
+                    wallPass = skills.wallPass;
+                }
+                Velocity vel = (*playerVel) * (deltaTime * 1000) + (skills.speedUp * 0.1);
 
+                // TODO: pressedKey as vector, for loop over it to make diagonal movement possible
                 switch (playerMovement->pressedKey) {
                     case UP:
-                        moveUp(playerPos, vel, playerSprite);
+                        moveUp(playerPos, vel, playerSprite, wallPass);
                         break;
                     case DOWN:
-                        moveDown(playerPos, vel, playerSprite);
+                        moveDown(playerPos, vel, playerSprite, wallPass);
                         break;
                     case LEFT:
-                        moveLeft(playerPos, vel, playerSprite);
+                        moveLeft(playerPos, vel, playerSprite,wallPass);
                         break;
                     case RIGHT:
-                        moveRight(playerPos, vel, playerSprite);
+                        moveRight(playerPos, vel, playerSprite, wallPass);
                         break;
                 }
             }
@@ -58,62 +62,62 @@ class MovementSystem : public ISystem {
             return newpos;
         }
 
-        bool checkMovable(Pos pos) {
+        bool checkMovable(Pos pos, bool wallPass) {
             if (_colManager.collisionsWithWalls((RL::Vector3f){pos.x, pos.y, pos.z}, *_map.get()))
                 return false;
-            if (_colManager.collisionsWithCrates((RL::Vector3f){pos.x, pos.y, pos.z}, *_map.get()))
+            if (!wallPass && _colManager.collisionsWithCrates((RL::Vector3f){pos.x, pos.y, pos.z}, *_map.get()))
                 return false;
             // also check for collision with other objects at that new position
             return true;
         }
 
-        void moveLeft(Pos *pos, Velocity vel, Sprite *playerSprite)
+        void moveLeft(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
         {
             float z = translatePosCoordinates(pos->y, _map->getMapDepth());
             if (pos->x >= vel.x && checkMovable({
                 translatePosCoordinates(pos->x - vel.x, _map->getMapWidth()),
                 0.5f + (z * 0.01f),
                 z,
-            })) {
+            }, wallPass)) {
                 pos->x -= vel.x;
                 playerSprite->model->setPosition((RL::Vector3f){pos->x, pos->y, pos->z});
             }
         };
 
-        void moveRight(Pos *pos, Velocity vel, Sprite *playerSprite)
+        void moveRight(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
         {
             float z = translatePosCoordinates(pos->y, _map->getMapDepth());
             if (pos->x + vel.x < _map->getParsedMap()[pos->y].size() && checkMovable({
                 translatePosCoordinates(pos->x + vel.x, _map->getMapWidth()),
                 0.5f,
                 z,
-            })) {
+            }, wallPass)) {
                 pos->x += vel.x;
                 playerSprite->model->setPosition((RL::Vector3f){pos->x, pos->y, pos->z});
             }
         };
 
-        void moveUp(Pos *pos, Velocity vel, Sprite *playerSprite)
+        void moveUp(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
         {
             float z = translatePosCoordinates(pos->y - vel.y, _map->getMapDepth());
             if (pos->y >= vel.y && checkMovable({
                 translatePosCoordinates(pos->x, _map->getMapWidth()),
                 0.5f + (z * 0.01f),
                 z,
-            })) {
+            }, wallPass)) {
                 pos->y -= vel.y;
                 playerSprite->model->setPosition((RL::Vector3f){pos->x, pos->y, pos->z});
             }
         };
 
-        void moveDown(Pos *pos, Velocity vel, Sprite *playerSprite)
+        void moveDown(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
         {
             float z = translatePosCoordinates(pos->y + vel.y, _map->getMapDepth());
             if (pos->y + vel.y < _map->getParsedMap().size() && checkMovable({
                 translatePosCoordinates(pos->x, _map->getMapWidth()),
                 0.5f + (z * 0.01f),
                 z,
-            })) {
+            }, wallPass)) {
                 pos->y += vel.y;
                 playerSprite->model->setPosition((RL::Vector3f){pos->x, pos->y, pos->z});
             }

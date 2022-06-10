@@ -13,6 +13,7 @@
 #include "MovementSystem.hpp"
 #include "CollisionSystem.hpp"
 #include "DrawSystem.hpp"
+#include "Timer.hpp"
 #include "../Raylib/Drawables/Drawable3D.hpp"
 #include "../Raylib/InputManager.hpp"
 #include "../GameEngine/Map.hpp"
@@ -31,7 +32,9 @@ class Bomberman {
         void createMonster(Pos pos);
         void createBomb(Pos pos, EntityID bombOwner);
         void checkInput();
-        void runFrame();
+        void startGameTimers();
+        void stopGameTimers();
+        bool runFrame();
         void startDrawScene();
         void stopDrawScene();
         void checkGameEnd();
@@ -45,6 +48,9 @@ class Bomberman {
         std::vector<std::shared_ptr<ISystem>> _systems;
         std::vector<EntityID> _player;
         std::shared_ptr<EntityManager> _em;
+        Timer _gameTimer;
+        Timer _deltaTimer;
+        bool _gamePaused;
 };
 
 #endif /* !BOMBERMAN_HPP_ */
