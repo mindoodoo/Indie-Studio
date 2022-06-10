@@ -69,6 +69,7 @@ namespace RL {
 
             bool isAssetLoaded() const; // Check if model and texture are loaded
             void setTint(Color newTint); // Sets tint of model
+            void setRotation(float newRotation); // rotation in Clockwise Angle (0.0 to 360.0)
 
             void setPosition(Vector3f position);
             Vector3f getPosition();
@@ -103,5 +104,6 @@ namespace RL {
             int _currentFrame = 0;
             unsigned int _animCount;
             bool _animationLoaded = false;
+            float _rotationAngle = 0.0f;
     };
 }

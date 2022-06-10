@@ -77,6 +77,7 @@ class MovementSystem : public ISystem {
             })) {
                 pos->x -= vel.x;
                 playerSprite->model->setPosition((RL::Vector3f){pos->x, pos->y, pos->z});
+                playerSprite->model->setRotation(270.0f);
             }
         };
 
@@ -90,6 +91,7 @@ class MovementSystem : public ISystem {
             })) {
                 pos->x += vel.x;
                 playerSprite->model->setPosition((RL::Vector3f){pos->x, pos->y, pos->z});
+                playerSprite->model->setRotation(90.0f);
             }
         };
 
@@ -103,6 +105,7 @@ class MovementSystem : public ISystem {
             })) {
                 pos->y -= vel.y;
                 playerSprite->model->setPosition((RL::Vector3f){pos->x, pos->y, pos->z});
+                playerSprite->model->setRotation(180.0f);
             }
         };
 
@@ -116,6 +119,7 @@ class MovementSystem : public ISystem {
             })) {
                 pos->y += vel.y;
                 playerSprite->model->setPosition((RL::Vector3f){pos->x, pos->y, pos->z});
+                playerSprite->model->setRotation(0.0f);
             }
         };
 
