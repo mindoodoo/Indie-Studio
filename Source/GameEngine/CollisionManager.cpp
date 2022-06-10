@@ -86,8 +86,8 @@ bool RL::CollisionManager::collisionsWithModels(RL::Vector3f MovingPos, RL::Draw
 {
     float model2radius = 0.49f;
     if (Model2.getModelType() == RL::POWER)
-        model2radius = 0.25f;
-    bool collision = CheckCollisionSpheres(MovingPos, 0.45f, Model2.getPosition(), 0.49f);
+        model2radius = 0.18f;
+    bool collision = CheckCollisionSpheres(MovingPos, 0.45f, Model2.getPosition(), model2radius);
 
     //if model.IS_TRAVERSIBLE == TRUE then
     // collision == false;
