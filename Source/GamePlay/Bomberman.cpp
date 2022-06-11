@@ -20,7 +20,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     // createItem({5, 5, 1});
     //createBomb({5, 5, 1}, _player.back());
     //createMonster({5, 5, 1});
-    createExplosion({1,1,1}, _player.back());
+    //createExplosion({1,1,1}, _player.back());
 }
 
 Bomberman::~Bomberman()
