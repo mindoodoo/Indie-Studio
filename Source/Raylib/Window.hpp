@@ -15,7 +15,7 @@
 #include "Logger/Logger.hpp"
 #include "Camera.hpp"
 #include "Raylib/Drawables/IDrawable.hpp"
-#include "Raylib/Drawables/Drawable3D.hpp"
+#include "Drawables/Drawable3D.hpp"
 #include "RaylibTypeEncaps.hpp"
 
 
@@ -55,9 +55,12 @@ namespace RL {
         // Getters
         const Vector2i &getDimensions() const;
         const std::string &getTitle() const;
+        const std::vector<RL::IDrawable*> get3Dqueue() const;
 
         // Check if window is initiated and checks if window should close
         bool isWindowOpen();
+
+        void removeElemtfrom3Dqueue(int index);
 
         Camera _camera;
 

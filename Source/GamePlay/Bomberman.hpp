@@ -16,7 +16,7 @@
 #include "../Raylib/Drawables/Drawable3D.hpp"
 #include "../Raylib/InputManager.hpp"
 #include "../GameEngine/Map.hpp"
-#include "../Window.hpp"
+#include "../Raylib/Window.hpp"
 #include "Timer.hpp"
 
 class Bomberman {
@@ -29,7 +29,7 @@ class Bomberman {
         void createMonster(Pos pos);
         void layBomb(EntityID playerid);
         void checkBombalive();
-        void createBomb(Pos pos, EntityID bombOwner);
+        bool createBomb(Pos pos, EntityID bombOwner);
         void checkInput();
         void runFrame();
         void startDrawScene();
@@ -46,5 +46,7 @@ class Bomberman {
         std::vector<EntityID> _player;
         std::shared_ptr<EntityManager> _em;
 };
+
+float translateFigureCoordinates(float pos, int borderSize);
 
 #endif /* !BOMBERMAN_HPP_ */

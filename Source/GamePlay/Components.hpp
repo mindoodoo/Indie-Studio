@@ -77,6 +77,14 @@ struct Pos {
     float x;
     float y;
     float z;
+
+    bool operator==(Pos &position) {
+        if (this->x == position.x && \
+            this->y == position.y && \
+            this->z == position.z)
+            return true;
+        return false;
+    }
 };
 
 struct Velocity {

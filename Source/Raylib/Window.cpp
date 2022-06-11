@@ -138,3 +138,12 @@ bool RL::Window::isWindowOpen()
         this->_windowOpen = false;
     return this->_windowOpen;
 }
+
+const std::vector<RL::IDrawable*> RL::Window::get3Dqueue() const
+{
+    return this->_displayQueue3D;
+}
+
+void RL::Window::removeElemtfrom3Dqueue(int index) {
+    _displayQueue3D.erase(_displayQueue3D.begin() + index);
+}
