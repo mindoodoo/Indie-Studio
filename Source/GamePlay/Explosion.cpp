@@ -16,7 +16,7 @@ bool Bomberman::createExplosion(Pos pos, Skillset skills, EntityID bombOwner)
     Timer timer = Timer();
     timer.startTimer();
     _em->Assign<Timer>(id, timer);
-    float scale = 2;
+    float scale = 3;
     std::string explotex = "./RaylibTesting/Assets/Explosion/textures/fire3lambert1_baseColor.png";
     std::string explomod = "./RaylibTesting/Assets/Explosion/textures/fire.obj";
     RL::Drawable3D *Explosion = new RL::Drawable3D(explotex, explomod, "", RL::MODEL, scale);
@@ -29,4 +29,28 @@ bool Bomberman::createExplosion(Pos pos, Skillset skills, EntityID bombOwner)
     _em->Assign<Sprite>(id, Sprite{Explosion});
     _window->queueDrawable(Explosion);
     return true;
+}
+
+
+void Bomberman::checkExplosionalive() {
+    for (EntityID ent: EntityViewer<CollisionObjectType, Timer, Sprite>(*_em.get())) {
+        if (*_em->Get<CollisionObjectType>(ent) == EXPLOSION) {
+            if (_em->Get<Timer>(ent)->returnTime() >= 1) {
+                _em->Get<Sprite>(ent)->model->resize(2);
+            }
+            if (_em->Get<Timer>(ent)->returnTime() >= 1.5) {
+                std::cout << "EXPLOSION OVER" << std::endl;
+                //delete explosion
+                for (int i = 0; i < _window->get3Dqueue().size(); i++) {
+                    if (_window->get3Dqueue()[i]->id == ent) {
+                        _em->Remove<Sprite>(ent);
+                        _window->removeElemtfrom3Dqueue(i);
+                        _em->DestroyEntity(ent);
+
+                    }
+                }
+            }
+
+        }
+    }
 }

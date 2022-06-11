@@ -53,15 +53,14 @@ void Bomberman::layBomb(EntityID playerid)
 void Bomberman::checkBombalive() {
     for (EntityID ent: EntityViewer<CollisionObjectType, Timer, Sprite>(*_em.get())) {
         if (*_em->Get<CollisionObjectType>(ent) == BOMB) {
-            if (_em->Get<Timer>(ent)->returnTime() >= 2) {
+            if (_em->Get<Timer>(ent)->returnTime() >= 1) {
                 _em->Get<Sprite>(ent)->model->resize(3);
             }
-            if (_em->Get<Timer>(ent)->returnTime() >= 3) {
+            if (_em->Get<Timer>(ent)->returnTime() >= 2) {
                 std::cout << "BOOOM" << std::endl;
                 for (EntityID enty: EntityViewer<BombCapacity>(*_em.get())) {
                     _em->Get<BombCapacity>(enty)->curCapacity += 1;
                 }
-
                 //create explosion
                 for (EntityID thisid: EntityViewer<Skillset, Pos>(*_em.get())) {
                     createExplosion({*_em->Get<Pos>(ent)}, {*_em->Get<Skillset>(thisid)}, {thisid});

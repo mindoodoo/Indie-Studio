@@ -142,6 +142,7 @@ void Bomberman::runFrame()
         if (_player.size() <= 0)
             break;
         checkBombalive();
+        checkExplosionalive();
         startDrawScene();
         _inputManager->popInputs();
         _inputManager->recordInputs();
