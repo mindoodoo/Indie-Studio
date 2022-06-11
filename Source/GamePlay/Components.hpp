@@ -32,6 +32,7 @@ enum MapTranslation {
 
 // dont change order, it defines their dying priority
 enum CollisionObjectType {
+    EXPLOSION,
     ITEM,
     BREAKABLE_BLOCK,
     PLAYER,
@@ -42,6 +43,11 @@ enum CollisionObjectType {
 enum PlayerNumber {
     One = 0,
     Two = 1
+};
+
+enum ExplosionDirection {
+    Vertical = 0,
+    Horizontal = 1
 };
 
 struct Level {

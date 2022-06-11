@@ -64,7 +64,7 @@ void Bomberman::checkBombalive() {
 
                 //create explosion
                 for (EntityID thisid: EntityViewer<Skillset, Pos>(*_em.get())) {
-                    createExplosion(*_em->Get<Pos>(thisid), *_em->Get<Skillset>(thisid));
+                    createExplosion({*_em->Get<Pos>(ent)}, {*_em->Get<Skillset>(thisid)}, {thisid});
                 }
                 //delete bomb
                 for (int i = 0; i < _window->get3Dqueue().size(); i++) {
@@ -81,10 +81,3 @@ void Bomberman::checkBombalive() {
     }
 }
 
-
-void Bomberman::createExplosion(Pos position, Skillset skills) {
-    std::cout << "MOIN " << std::endl;
-    std::cout << position.y << std::endl;
-    //TODO
-    // create new entity == explosion (each entitiy is one field) --> remove after x seconds
-}

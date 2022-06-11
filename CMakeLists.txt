@@ -52,7 +52,7 @@ FILE(GLOB HEADERFILES
 
 
 #add to project
-add_executable(bomberman ${HEADERFILES} ${CFILES} Source/GamePlay/Bomb.cpp Source/GamePlay/Timer.hpp)
+add_executable(bomberman ${HEADERFILES} ${CFILES} Source/GamePlay/Bomb.cpp Source/GamePlay/Timer.hpp Source/GamePlay/Explosion.cpp)
 
 #add raylib
 

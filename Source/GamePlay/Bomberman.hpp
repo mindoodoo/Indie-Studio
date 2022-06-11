@@ -35,7 +35,7 @@ class Bomberman {
         void startDrawScene();
         void stopDrawScene();
         void checkGameEnd();
-        void createExplosion(Pos position, Skillset skills);
+        bool createExplosion(Pos pos, Skillset skills, EntityID bombOwner);
 
     protected:
     private:
