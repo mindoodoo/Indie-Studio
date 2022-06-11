@@ -35,7 +35,6 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner)
             translateFigureCoordinates(pos.y, _map->getMapDepth())
     });
     Bomb->id = id;
-    std::cout << Bomb->id << std::endl;
     _em->Assign<Sprite>(id, Sprite{Bomb});
     _window->queueDrawable(Bomb);
     return true;
