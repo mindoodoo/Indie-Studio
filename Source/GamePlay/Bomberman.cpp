@@ -13,7 +13,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _em = std::make_shared<EntityManager>();
     // take care with system order when adding to vector
     _systems.push_back(std::make_shared<CollisionSystem>(_em, _window));
-    _systems.push_back(std::make_shared<MovementSystem>(_em, _map));
+    _systems.push_back(std::make_shared<MovementSystem>(_em, _map, _inputManager));
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
     createPlayer({1, 1, 1});
     createSpeedUpItem({10, 10, 1});
@@ -49,7 +49,7 @@ void Bomberman::createPlayer(Pos pos)
     
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
-    _em->Assign<Velocity>(id, {0.1,0.1});
+    _em->Assign<Velocity>(id, {0.08,0.08});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, Score{0});
     _em->Assign<Health>(id, Health{100});

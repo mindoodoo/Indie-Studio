@@ -12,10 +12,11 @@
 #include "../GameEngine/Map.hpp"
 #include "../GameEngine/CollisionManager.hpp"
 #include "../RaylibTypeEncaps.hpp"
+#include "../Raylib/InputManager.hpp"
 
 class MovementSystem : public ISystem {
     public:
-        MovementSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Map> map) : _map(map)
+        MovementSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Map> map, std::shared_ptr<RL::InputManager> iM) : _map(map), _inputManager(iM)
         {
             _em = em;
         };
@@ -34,9 +35,8 @@ class MovementSystem : public ISystem {
                     skills = *_em->Get<Skillset>(ent);
                     wallPass = skills.wallPass;
                 }
-                Velocity vel = (*playerVel) * (deltaTime * 1000) + (skills.speedUp * 0.05);
+                Velocity vel = (*playerVel) * (deltaTime * 1000) + (skills.speedUp * 0.04);
 
-                // TODO: pressedKey as vector, for loop over it to make diagonal movement possible
                 switch (playerMovement->pressedKey) {
                     case UP:
                         moveUp(playerPos, vel, playerSprite, wallPass);
@@ -73,6 +73,14 @@ class MovementSystem : public ISystem {
 
         void moveLeft(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
         {
+            if (_inputManager->playerHasPressedKeyAsChar(UP)) {
+                moveUpLeft(pos, vel, playerSprite, wallPass);
+                return;
+            }
+            if (_inputManager->playerHasPressedKeyAsChar(DOWN)) {
+                moveDownLeft(pos, vel, playerSprite, wallPass);
+                return;
+            }
             float z = translatePosCoordinates(pos->y, _map->getMapDepth());
             if (pos->x >= vel.x && checkMovable({
                 translatePosCoordinates(pos->x - vel.x, _map->getMapWidth()),
@@ -87,6 +95,14 @@ class MovementSystem : public ISystem {
 
         void moveRight(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
         {
+            if (_inputManager->playerHasPressedKeyAsChar(UP)) {
+                moveUpRight(pos, vel, playerSprite, wallPass);
+                return;
+            }
+            if (_inputManager->playerHasPressedKeyAsChar(DOWN)) {
+                moveDownRight(pos, vel, playerSprite, wallPass);
+                return;
+            }
             float z = translatePosCoordinates(pos->y, _map->getMapDepth());
             if (pos->x + vel.x < _map->getParsedMap()[pos->y].size() && checkMovable({
                 translatePosCoordinates(pos->x + vel.x, _map->getMapWidth()),
@@ -101,6 +117,14 @@ class MovementSystem : public ISystem {
 
         void moveUp(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
         {
+            if (_inputManager->playerHasPressedKeyAsChar(LEFT)) {
+                moveUpLeft(pos, vel, playerSprite, wallPass);
+                return;
+            }
+            if (_inputManager->playerHasPressedKeyAsChar(RIGHT)) {
+                moveUpRight(pos, vel, playerSprite, wallPass);
+                return;
+            }
             float z = translatePosCoordinates(pos->y - vel.y, _map->getMapDepth());
             if (pos->y >= vel.y && checkMovable({
                 translatePosCoordinates(pos->x, _map->getMapWidth()),
@@ -115,6 +139,14 @@ class MovementSystem : public ISystem {
 
         void moveDown(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
         {
+            if (_inputManager->playerHasPressedKeyAsChar(LEFT)) {
+                moveDownLeft(pos, vel, playerSprite, wallPass);
+                return;
+            }
+            if (_inputManager->playerHasPressedKeyAsChar(RIGHT)) {
+                moveDownRight(pos, vel, playerSprite, wallPass);
+                return;
+            }
             float z = translatePosCoordinates(pos->y + vel.y, _map->getMapDepth());
             if (pos->y + vel.y < _map->getParsedMap().size() && checkMovable({
                 translatePosCoordinates(pos->x, _map->getMapWidth()),
@@ -127,8 +159,69 @@ class MovementSystem : public ISystem {
             }
         };
 
+        void moveUpLeft(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
+        {
+            float z = translatePosCoordinates(pos->y - (vel.y / 2), _map->getMapDepth());
+            if (pos->x >= vel.x && pos->y >= vel.y && checkMovable({
+                translatePosCoordinates(pos->x - (vel.x / 2), _map->getMapWidth()),
+                0.5f + (z * 0.01f),
+                z,
+            }, wallPass)) {
+                pos->x -= vel.x / 2;
+                pos->y -= vel.y / 2;
+                playerSprite->model->setPosition((RL::Vector3f){pos->x, pos->y, pos->z});
+                playerSprite->model->setRotation(225.0f);
+            }
+        };
+
+        void moveUpRight(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
+        {
+            float z = translatePosCoordinates(pos->y - (vel.y / 2), _map->getMapDepth());
+            if (pos->x + vel.x < _map->getParsedMap()[pos->y].size() && pos->y >= vel.y && checkMovable({
+                translatePosCoordinates(pos->x + (vel.x / 2), _map->getMapWidth()),
+                0.5f + (z * 0.01f),
+                z,
+            }, wallPass)) {
+                pos->x += vel.x / 2;
+                pos->y -= vel.y / 2;
+                playerSprite->model->setPosition((RL::Vector3f){pos->x, pos->y, pos->z});
+                playerSprite->model->setRotation(135.0f);
+            }
+        };
+
+        void moveDownLeft(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
+        {
+            float z = translatePosCoordinates(pos->y + (vel.y / 2), _map->getMapDepth());
+            if (pos->x >= vel.x && pos->y + vel.y < _map->getParsedMap().size() && checkMovable({
+                translatePosCoordinates(pos->x - (vel.x / 2), _map->getMapWidth()),
+                0.5f + (z * 0.01f),
+                z,
+            }, wallPass)) {
+                pos->x -= vel.x / 2;
+                pos->y += vel.y / 2;
+                playerSprite->model->setPosition((RL::Vector3f){pos->x, pos->y, pos->z});
+                playerSprite->model->setRotation(315.0f);
+            }
+        };
+
+        void moveDownRight(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
+        {
+            float z = translatePosCoordinates(pos->y + (vel.y / 2), _map->getMapDepth());
+            if (pos->x + vel.x < _map->getParsedMap()[pos->y].size() && pos->y + vel.y < _map->getParsedMap().size() && checkMovable({
+                translatePosCoordinates(pos->x + (vel.x / 2), _map->getMapWidth()),
+                0.5f + (z * 0.01f),
+                z,
+            }, wallPass)) {
+                pos->x += vel.x / 2;
+                pos->y += vel.y / 2;
+                playerSprite->model->setPosition((RL::Vector3f){pos->x, pos->y, pos->z});
+                playerSprite->model->setRotation(45.0f);
+            }
+        };
+
     private:
         std::shared_ptr<RL::Map> _map;
+        std::shared_ptr<RL::InputManager> _inputManager;
         RL::CollisionManager _colManager;
 };
 
