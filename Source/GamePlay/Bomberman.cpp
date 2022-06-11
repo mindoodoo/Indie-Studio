@@ -16,14 +16,15 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _systems.push_back(std::make_shared<MovementSystem>(_em, _map, _inputManager));
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
     createPlayer({1, 1, 1});
-    createSpeedUpItem({10, 10, 1});
-    createSpeedUpItem({4, 3, 1});
-    createBombUpItem({8, 5, 1});
-    createBombUpItem({9, 5, 1});
-    createFireUpItem({10, 5, 1});
-    createWallPassItem({2, 3, 1});
-    createBomb({5, 5, 1}, _player.back());
-    createMonster({5, 5, 1});
+    generateItems();
+    // createSpeedUpItem({10, 10, 1});
+    // createSpeedUpItem({4, 3, 1});
+    // createBombUpItem({8, 5, 1});
+    // createBombUpItem({9, 5, 1});
+    // createFireUpItem({10, 5, 1});
+    // createWallPassItem({2, 3, 1});
+    // createBomb({5, 5, 1}, _player.back());
+    // createMonster({5, 5, 1});
     _gamePaused = false;
     _gameTimer.startTimer();
     _deltaTimer.startTimer();
@@ -31,6 +32,39 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
 
 Bomberman::~Bomberman()
 {
+}
+
+void Bomberman::generateItems()
+{
+    int wallPassAmount = 1;
+    int placeItem;
+
+    for (int i = 0; i < _map->getMapDepth(); i++) {
+        for (int j = 0; j < _map->getMapWidth(); j++) {
+            if (_map->getParsedMap()[i][j].tile == 2) {
+                placeItem = rand() % 100;
+                if (placeItem > 77) {
+                    switch (rand() % 4) {
+                        case 0:
+                            createSpeedUpItem({(float)j, (float)i, 1});
+                            break;
+                        case 1:
+                            createBombUpItem({(float)j, (float)i, 1});
+                            break;
+                        case 2:
+                            createFireUpItem({(float)j, (float)i, 1});
+                            break;
+                        case 3:
+                            if (wallPassAmount) {
+                                wallPassAmount--;
+                                createWallPassItem({(float)j, (float)i, 1});
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+    }
 }
 
 float translateFigureCoordinates(float pos, int borderSize)

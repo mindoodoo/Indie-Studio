@@ -24,6 +24,7 @@ class Bomberman {
         Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map);
         ~Bomberman();
 
+        void generateItems();
         void createPlayer(Pos pos);
         void createSpeedUpItem(Pos pos);
         void createBombUpItem(Pos pos);
