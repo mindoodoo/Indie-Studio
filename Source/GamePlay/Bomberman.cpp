@@ -20,7 +20,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     // createItem({5, 5, 1});
     //createBomb({5, 5, 1}, _player.back());
     //createMonster({5, 5, 1});
-    //createExplosion({5,5,1},{1,1,1}, _player.back());
+    createExplosion({1,1,1}, _player.back());
 }
 
 Bomberman::~Bomberman()
@@ -51,7 +51,7 @@ void Bomberman::createPlayer(Pos pos)
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, Score{0});
     _em->Assign<Health>(id, Health{100});
-    _em->Assign<Skillset>(id, Skillset{0, 0, 0, false});
+    _em->Assign<Skillset>(id, Skillset{0, 0, 2, false});
     _em->Assign<BombCapacity>(id, BombCapacity{3, 3});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{PLAYER});
     RL::Drawable3D *Player = new RL::Drawable3D(playtex, playermod, "", RL::MODEL, 0.25);
@@ -68,7 +68,7 @@ void Bomberman::createItem(Pos pos)
 {
     EntityID id = _em->CreateNewEntity();
     _em->Assign<Pos>(id, pos);
-    _em->Assign<Skillset>(id, Skillset{0, 0, 0, false});
+    _em->Assign<Skillset>(id, Skillset{0, 0, 5, false});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
     std::string speedUpPath = "./Source/PowerUps/Speed.png";
     RL::Drawable3D *speedUp = new RL::Drawable3D(speedUpPath, "", "", RL::POWER);

@@ -9,7 +9,7 @@
 #include <math.h>
 
 
-bool Bomberman::createBomb(Pos pos, EntityID bombOwner)
+bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset)
 {
     pos = {round(pos.x),
            round(pos.y),
@@ -22,6 +22,7 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner)
     _em->Assign<Pos>(id, pos);
     _em->Assign<BombOwner>(id, BombOwner{bombOwner});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{BOMB});
+    _em->Assign<Skillset>(id, {skillset});
     Timer timer = Timer();
     timer.startTimer();
     _em->Assign<Timer>(id, timer);
@@ -45,13 +46,13 @@ void Bomberman::layBomb(EntityID playerid)
 {
     std::cout << "LAYING bomb" << std::endl;
     if (_em->Get<BombCapacity>(playerid)->curCapacity >= 1) {
-        if (createBomb(*_em->Get<Pos>(playerid), _player[One]))
+        if (createBomb(*_em->Get<Pos>(playerid), _player[One],*_em->Get<Skillset>(playerid)))
             _em->Get<BombCapacity>(playerid)->curCapacity -= 1;
     }
 }
 
 void Bomberman::checkBombalive() {
-    for (EntityID ent: EntityViewer<CollisionObjectType, Timer, Sprite>(*_em.get())) {
+    for (EntityID ent: EntityViewer<CollisionObjectType, Timer, Sprite, Skillset, BombOwner>(*_em.get())) {
         if (*_em->Get<CollisionObjectType>(ent) == BOMB) {
             if (_em->Get<Timer>(ent)->returnTime() >= 1) {
                 _em->Get<Sprite>(ent)->model->resize(3);
@@ -62,8 +63,23 @@ void Bomberman::checkBombalive() {
                     _em->Get<BombCapacity>(enty)->curCapacity += 1;
                 }
                 //create explosion
-                for (EntityID thisid: EntityViewer<Skillset, Pos>(*_em.get())) {
-                    createExplosion({*_em->Get<Pos>(ent)}, {*_em->Get<Skillset>(thisid)}, {thisid});
+                int fireup =  _em->Get<Skillset>(ent)->fireUp;
+                Pos mypos = *_em->Get<Pos>(ent);
+                    for (int x = 1; x <=  fireup; x++) {
+                        createExplosion(mypos , _em->Get<BombOwner>(ent)->id);
+                        createExplosion({mypos.x+x,
+                                         mypos.y,
+                                         1}, _em->Get<BombOwner>(ent)->id);
+                        createExplosion({mypos.x-x,
+                                         mypos.y,
+                                         1}, _em->Get<BombOwner>(ent)->id);
+                        createExplosion({mypos.x,
+                                         mypos.y+x,
+                                         1}, _em->Get<BombOwner>(ent)->id);
+                        createExplosion({mypos.x,
+                                         mypos.y-x,
+                                         1}, _em->Get<BombOwner>(ent)->id);
+
                 }
                 //delete bomb
                 for (int i = 0; i < _window->get3Dqueue().size(); i++) {
