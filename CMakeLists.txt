@@ -23,7 +23,9 @@ FILE(GLOB CFILES
         Source/Raylib/Camera.cpp
         Source/Raylib/InputManager.cpp
         Source/Raylib/SoundManager.cpp
-        Source/Raylib/Window.cpp)
+        Source/Raylib/Window.cpp
+        Source/GamePlay/Bomb.cpp
+        Source/GamePlay/Explosion.cpp)
 
 #add Header files
 FILE(GLOB HEADERFILES
@@ -48,11 +50,12 @@ FILE(GLOB HEADERFILES
         Source/Raylib/InputManager.hpp
         Source/Raylib/RaylibTypeEncaps.hpp
         Source/Raylib/SoundManager.hpp
-        Source/Raylib/Window.hpp)
+        Source/Raylib/Window.hpp
+        Source/GamePlay/Timer.hpp)
 
 
 #add to project
-add_executable(bomberman ${HEADERFILES} ${CFILES} Source/GamePlay/Bomb.cpp Source/GamePlay/Timer.hpp Source/GamePlay/Explosion.cpp)
+add_executable(bomberman ${HEADERFILES} ${CFILES})
 
 #add raylib
 
