@@ -25,10 +25,10 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner)
     Timer timer = Timer();
     timer.startTimer();
     _em->Assign<Timer>(id, timer);
-
+    float scale = 2;
     std::string bombtex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
     std::string bombmod = "./RaylibTesting/Assets/3d_models/Skull/Bomb.obj";
-    RL::Drawable3D *Bomb = new RL::Drawable3D(bombtex, bombmod, "", RL::MODEL, 2);
+    RL::Drawable3D *Bomb = new RL::Drawable3D(bombtex, bombmod, "", RL::MODEL, scale);
     Bomb->setPosition((RL::Vector3f){
             translateFigureCoordinates(pos.x, _map->getMapWidth()),
             pos.y,
@@ -51,23 +51,40 @@ void Bomberman::layBomb(EntityID playerid)
 }
 
 void Bomberman::checkBombalive() {
-    for (EntityID ent: EntityViewer<CollisionObjectType, Timer>(*_em.get())) {
+    for (EntityID ent: EntityViewer<CollisionObjectType, Timer, Sprite>(*_em.get())) {
         if (*_em->Get<CollisionObjectType>(ent) == BOMB) {
+            if (_em->Get<Timer>(ent)->returnTime() >= 2) {
+                _em->Get<Sprite>(ent)->model->resize(3);
+            }
             if (_em->Get<Timer>(ent)->returnTime() >= 3) {
-                        std::cout << "BOOOM" << std::endl;
+                std::cout << "BOOOM" << std::endl;
                 for (EntityID enty: EntityViewer<BombCapacity>(*_em.get())) {
                     _em->Get<BombCapacity>(enty)->curCapacity += 1;
                 }
+
+                //create explosion
+                for (EntityID thisid: EntityViewer<Skillset, Pos>(*_em.get())) {
+                    createExplosion(*_em->Get<Pos>(thisid), *_em->Get<Skillset>(thisid));
+                }
+                //delete bomb
                 for (int i = 0; i < _window->get3Dqueue().size(); i++) {
-                        std::cout << ent << std::endl;
                     if (_window->get3Dqueue()[i]->id == ent) {
                         _em->Remove<Sprite>(ent);
                         _window->removeElemtfrom3Dqueue(i);
                         _em->DestroyEntity(ent);
+
                     }
                 }
             }
 
         }
     }
+}
+
+
+void Bomberman::createExplosion(Pos position, Skillset skills) {
+    std::cout << "MOIN " << std::endl;
+    std::cout << position.y << std::endl;
+    //TODO
+    // create new entity == explosion (each entitiy is one field) --> remove after x seconds
 }
