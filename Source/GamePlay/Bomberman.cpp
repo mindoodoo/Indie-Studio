@@ -15,6 +15,8 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _systems.push_back(std::make_shared<MovementSystem>(_em, _map));
     _systems.push_back(std::make_shared<CollisionSystem>(_em, _map));
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
+    _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/3d_models/Skull/Skull.png", "./RaylibTesting/Assets/3d_models/Skull/Bomb.obj", "", RL::MODEL, 2));
+    _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Explosion/textures/fire3lambert1_baseColor.png", "./RaylibTesting/Assets/Explosion/textures/fire.obj", "", RL::MODEL, 2));
     createPlayer({1, 1, 1});
     createItem({10, 10, 1});
     // createItem({5, 5, 1});

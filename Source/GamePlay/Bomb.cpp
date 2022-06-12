@@ -8,6 +8,13 @@
 #include "Bomberman.hpp"
 #include <math.h>
 
+RL::Drawable3D* Bomberman::makeDrawable3DPointer(RL::Drawable3D Model)
+{
+    RL::Drawable3D *ModelPointer = new RL::Drawable3D(RL::MODEL, 2.0f);
+
+    ModelPointer->setModel(Model.getModel());
+    return ModelPointer;
+}
 
 bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset)
 {
@@ -27,9 +34,12 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset)
     timer.startTimer();
     _em->Assign<Timer>(id, timer);
     float scale = 2;
-    std::string bombtex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
-    std::string bombmod = "./RaylibTesting/Assets/3d_models/Skull/Bomb.obj";
-    RL::Drawable3D *Bomb = new RL::Drawable3D(bombtex, bombmod, "", RL::MODEL, scale);
+    // std::string bombtex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
+    // std::string bombmod = "./RaylibTesting/Assets/3d_models/Skull/Bomb.obj";
+    //RL::Drawable3D *Bomb = new RL::Drawable3D(bombtex, bombmod, "", RL::MODEL, scale);
+
+    //mcguyver fix for no multiple loads and no lags :D
+    RL::Drawable3D *Bomb = makeDrawable3DPointer(_allModels[0]);
     Bomb->setPosition((RL::Vector3f){
             translateFigureCoordinates(pos.x, _map->getMapWidth()),
             pos.y,
@@ -63,10 +73,6 @@ float Bomberman::smoothBombResize(RL::Drawable3D *BombModel)
         if (BombModel->getScale() <= 1.00f)
             BombModel->setUpvalue(1);
         }
-
-
-
-
 }
 
 void Bomberman::checkBombalive() {

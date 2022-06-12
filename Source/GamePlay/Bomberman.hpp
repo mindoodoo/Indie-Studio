@@ -38,6 +38,7 @@ class Bomberman {
         bool createExplosion(Pos pos, EntityID bombOwner);
         void checkExplosionalive();
         float smoothBombResize(RL::Drawable3D *BombModel);
+        RL::Drawable3D* makeDrawable3DPointer(RL::Drawable3D Model);
 
     protected:
     private:
@@ -48,6 +49,7 @@ class Bomberman {
         std::vector<std::shared_ptr<ISystem>> _systems;
         std::vector<EntityID> _player;
         std::shared_ptr<EntityManager> _em;
+        std::vector<RL::Drawable3D> _allModels;
 };
 
 float translateFigureCoordinates(float pos, int borderSize);

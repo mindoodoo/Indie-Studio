@@ -18,9 +18,10 @@ bool Bomberman::createExplosion(Pos pos, EntityID bombOwner)
     timer.startTimer();
     _em->Assign<Timer>(id, timer);
     float scale = 3;
-    std::string explotex = "./RaylibTesting/Assets/Explosion/textures/fire3lambert1_baseColor.png";
-    std::string explomod = "./RaylibTesting/Assets/Explosion/textures/fire.obj";
-    RL::Drawable3D *Explosion = new RL::Drawable3D(explotex, explomod, "", RL::MODEL, scale);
+    // std::string explotex = "./RaylibTesting/Assets/Explosion/textures/fire3lambert1_baseColor.png";
+    // std::string explomod = "./RaylibTesting/Assets/Explosion/textures/fire.obj";
+    // RL::Drawable3D *Explosion = new RL::Drawable3D(explotex, explomod, "", RL::MODEL, scale);
+    RL::Drawable3D *Explosion = makeDrawable3DPointer(_allModels[1]);
     Explosion->setPosition((RL::Vector3f){
             translateFigureCoordinates(pos.x, _map->getMapWidth()),
             pos.y,
