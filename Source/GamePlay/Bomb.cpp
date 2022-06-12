@@ -9,7 +9,7 @@
 #include <math.h>
 
 
-bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset)
+bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset, RL::Drawable3D *bomb)
 {
     pos = {round(pos.x),
            round(pos.y),
@@ -28,8 +28,8 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset)
     _em->Assign<Timer>(id, timer);
     float scale = 2;
     std::string bombtex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
-    std::string bombmod = "./RaylibTesting/Assets/3d_models/Skull/Bomb.obj";
-    RL::Drawable3D *Bomb = new RL::Drawable3D(bombtex, bombmod, "", RL::MODEL, scale);
+    std::string bombmod = "./RaylibTesting/Assets/Bomb/Bomb.obj";
+    RL::Drawable3D *Bomb = bomb;
     Bomb->setPosition((RL::Vector3f){
             translateFigureCoordinates(pos.x, _map->getMapWidth()),
             pos.y,
@@ -46,7 +46,7 @@ void Bomberman::layBomb(EntityID playerid)
 {
     std::cout << "LAYING bomb" << std::endl;
     if (_em->Get<BombCapacity>(playerid)->curCapacity >= 1) {
-        if (createBomb(*_em->Get<Pos>(playerid), _player[One],*_em->Get<Skillset>(playerid)))
+        if (createBomb(*_em->Get<Pos>(playerid), _player[One],*_em->Get<Skillset>(playerid), _Bomb ))
             _em->Get<BombCapacity>(playerid)->curCapacity -= 1;
     }
 }
@@ -72,11 +72,9 @@ float Bomberman::smoothBombResize(RL::Drawable3D *BombModel)
 void Bomberman::checkBombalive() {
     for (EntityID ent: EntityViewer<CollisionObjectType, Timer, Sprite, Skillset, BombOwner>(*_em.get())) {
         if (*_em->Get<CollisionObjectType>(ent) == BOMB) {
-            //if (_em->Get<Timer>(ent)->returnTime() >= 1) {
             if (_em->Get<Timer>(ent)->returnTime() <= 3) {
-                
-                //_em->Get<Sprite>(ent)->model->resize(3);
-                _em->Get<Sprite>(ent)->model->resize(smoothBombResize(_em->Get<Sprite>(ent)->model));
+                //TODO get this to work!
+                //_em->Get<Sprite>(ent)->model->resize(smoothBombResize(_em->Get<Sprite>(ent)->model));
             }
             if (_em->Get<Timer>(ent)->returnTime() >= 2) {
                 std::cout << "BOOOM" << std::endl;

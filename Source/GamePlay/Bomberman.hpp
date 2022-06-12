@@ -29,7 +29,7 @@ class Bomberman {
         void createMonster(Pos pos);
         void layBomb(EntityID playerid);
         void checkBombalive();
-        bool createBomb(Pos pos, EntityID bombOwner, Skillset skillset);
+        bool createBomb(Pos pos, EntityID bombOwner, Skillset skillset,  RL::Drawable3D *bomb);
         void checkInput();
         void runFrame();
         void startDrawScene();
@@ -38,6 +38,8 @@ class Bomberman {
         bool createExplosion(Pos pos, EntityID bombOwner);
         void checkExplosionalive();
         float smoothBombResize(RL::Drawable3D *BombModel);
+        void load3Dmodals();
+
 
     protected:
     private:
@@ -48,6 +50,7 @@ class Bomberman {
         std::vector<std::shared_ptr<ISystem>> _systems;
         std::vector<EntityID> _player;
         std::shared_ptr<EntityManager> _em;
+        RL::Drawable3D *_Bomb  = new RL::Drawable3D("./RaylibTesting/Assets/3d_models/Skull/Skull.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2);
 };
 
 float translateFigureCoordinates(float pos, int borderSize);
