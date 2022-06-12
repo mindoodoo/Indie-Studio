@@ -80,6 +80,11 @@ namespace RL {
             void setBoundingBox();
             BoundingBox getBoundingBox();
 
+            float getScale();
+
+            void setUpvalue(int newup);
+            int getUpvalue();
+
         protected:
             Vector3f _position = {0, 0, 0};
             Vector3f _boxSize;

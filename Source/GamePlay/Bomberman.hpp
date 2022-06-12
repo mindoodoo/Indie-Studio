@@ -37,6 +37,7 @@ class Bomberman {
         void checkGameEnd();
         bool createExplosion(Pos pos, Skillset skills, EntityID bombOwner);
         void checkExplosionalive();
+        float smoothBombResize(RL::Drawable3D *BombModel);
 
     protected:
     private:

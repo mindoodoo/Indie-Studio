@@ -50,11 +50,32 @@ void Bomberman::layBomb(EntityID playerid)
     }
 }
 
+float Bomberman::smoothBombResize(RL::Drawable3D *BombModel)
+{
+    if (BombModel->getScale() <= 3.01f && BombModel->getUpvalue() == 1) {
+        BombModel->resize(BombModel->getScale() + 0.05f);
+        if (BombModel->getScale() >= 3.20f)
+            BombModel->setUpvalue(0);
+        }
+    if (BombModel->getScale() >= 0.99f && BombModel->getUpvalue() == 0) {
+        BombModel->resize(BombModel->getScale() - 0.015f);
+        if (BombModel->getScale() <= 1.00f)
+            BombModel->setUpvalue(1);
+        }
+
+
+
+
+}
+
 void Bomberman::checkBombalive() {
     for (EntityID ent: EntityViewer<CollisionObjectType, Timer, Sprite>(*_em.get())) {
         if (*_em->Get<CollisionObjectType>(ent) == BOMB) {
-            if (_em->Get<Timer>(ent)->returnTime() >= 1) {
-                _em->Get<Sprite>(ent)->model->resize(3);
+            //if (_em->Get<Timer>(ent)->returnTime() >= 1) {
+            if (_em->Get<Timer>(ent)->returnTime() <= 3) {
+                
+                //_em->Get<Sprite>(ent)->model->resize(3);
+                _em->Get<Sprite>(ent)->model->resize(smoothBombResize(_em->Get<Sprite>(ent)->model));
             }
             if (_em->Get<Timer>(ent)->returnTime() >= 2) {
                 std::cout << "BOOOM" << std::endl;

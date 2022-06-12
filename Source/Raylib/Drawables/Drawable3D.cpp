@@ -216,3 +216,17 @@ RL::DrawableType RL::Drawable3D::getType() const
     return this->_type;
 }
 
+float RL::Drawable3D::getScale()
+{
+    return this->_scale;
+}
+
+void RL::Drawable3D::setUpvalue(int newup)
+{
+    this->up = newup;
+}
+
+int RL::Drawable3D::getUpvalue()
+{
+    return this->up;
+}

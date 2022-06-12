@@ -18,7 +18,7 @@ namespace RL {
     // structures and will be converted automatically
 
     template<class T>
-    requires std::is_arithmetic_v<T>
+    //requires std::is_arithmetic_v<T>
     class Vector2 {
     public:
         Vector2(T x, T y) {
@@ -47,7 +47,7 @@ namespace RL {
     };
 
     template<class T>
-    requires std::is_arithmetic_v<T>
+    //requires std::is_arithmetic_v<T>
     class Vector3 {
     public:
         Vector3(T x, T y, T z) {
