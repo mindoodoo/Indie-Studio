@@ -30,7 +30,7 @@ void RL::InputManager::recordInputs()
         this->_inputQueue.emplace_back(-3);
     if (IsKeyDown(KEY_RIGHT))
         this->_inputQueue.emplace_back(-1);
-    if (IsKeyDown(KEY_SPACE))
+    if (IsKeyPressed(KEY_SPACE))
         this->_inputQueue.emplace_back(-6);
     //std::this_thread::sleep_for(std::chrono::milliseconds(100)); // This should change
 }
