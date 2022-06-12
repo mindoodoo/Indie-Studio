@@ -29,13 +29,13 @@ class Bomberman {
         void createMonster(Pos pos);
         void layBomb(EntityID playerid);
         void checkBombalive();
-        bool createBomb(Pos pos, EntityID bombOwner);
+        bool createBomb(Pos pos, EntityID bombOwner, Skillset skillset);
         void checkInput();
         void runFrame();
         void startDrawScene();
         void stopDrawScene();
         void checkGameEnd();
-        bool createExplosion(Pos pos, Skillset skills, EntityID bombOwner);
+        bool createExplosion(Pos pos, EntityID bombOwner);
         void checkExplosionalive();
         float smoothBombResize(RL::Drawable3D *BombModel);
 

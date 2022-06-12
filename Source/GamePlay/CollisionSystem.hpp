@@ -82,7 +82,7 @@ class CollisionSystem : public ISystem {
                     return handleBombCollision(lowEnt, low, highEnt, high);
                 case EXPLOSION:
                     //TODO add collision
-                    std::cout << "Explosion" << std::endl;
+                    std::cout << "Explosion hit" << std::endl;
                     return handleBombCollision(lowEnt, low, highEnt, high);
             }
             return INVALID_ENTITY;

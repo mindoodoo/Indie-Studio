@@ -6,8 +6,9 @@
 */
 #include "Bomberman.hpp"
 
-bool Bomberman::createExplosion(Pos pos, Skillset skills, EntityID bombOwner)
+bool Bomberman::createExplosion(Pos pos, EntityID bombOwner)
 {
+    std::cout << pos.x << " " << pos.y << std::endl;
     EntityID id = _em->CreateNewEntity();
     _em->Assign<Pos>(id, pos);
     //BOMBOWNER == EXPLOSIONOWNER
