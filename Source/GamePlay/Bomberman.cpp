@@ -15,8 +15,8 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _systems.push_back(std::make_shared<MovementSystem>(_em, _map));
     _systems.push_back(std::make_shared<CollisionSystem>(_em, _map));
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
-    _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/3d_models/Skull/Skull.png", "./RaylibTesting/Assets/3d_models/Skull/Bomb.obj", "", RL::MODEL, 2));
-    _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Explosion/textures/fire3lambert1_baseColor.png", "./RaylibTesting/Assets/Explosion/textures/fire.obj", "", RL::MODEL, 2));
+    _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/3d_models/Skull/Skull.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));
+    _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Explosion/textures/fire3lambert1_baseColor.png", "./RaylibTesting/Assets/Explosion/textures/fire.obj", "", RL::MODEL, 3));
     createPlayer({1, 1, 1});
     createItem({10, 10, 1});
     // createItem({5, 5, 1});
@@ -53,7 +53,7 @@ void Bomberman::createPlayer(Pos pos)
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, Score{0});
     _em->Assign<Health>(id, Health{100});
-    _em->Assign<Skillset>(id, Skillset{0, 0, 2, false});
+    _em->Assign<Skillset>(id, Skillset{0, 0, 1, false});
     _em->Assign<BombCapacity>(id, BombCapacity{3, 3});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{PLAYER});
     RL::Drawable3D *Player = new RL::Drawable3D(playtex, playermod, "", RL::MODEL, 0.25);
