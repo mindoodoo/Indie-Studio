@@ -284,11 +284,11 @@ bool Bomberman::runFrame()
     _event = _inputManager->getInputs();
   
     checkInput();
+    checkBombalive();
+    checkExplosionalive();
     for (std::shared_ptr<ISystem> system : _systems) {
         system->update(_deltaTimer.returnTime(), _player);
     }
-    checkBombalive();
-    checkExplosionalive();
     if (isGameEnd())
         return false;
     startDrawScene();

@@ -37,12 +37,12 @@ enum MapTranslation {
 
 // dont change order, it defines their dying priority
 enum CollisionObjectType {
-    EXPLOSION,
     ITEM,
     BREAKABLE_BLOCK,
     PLAYER,
     MONSTER,
-    BOMB
+    BOMB,
+    EXPLOSION
 };
 
 enum PlayerNumber {

@@ -80,12 +80,8 @@ class CollisionSystem : public ISystem {
                 case ITEM:
                     return handleItemCollision(lowEnt, low, highEnt, high);
                 case BREAKABLE_BLOCK:
-                //case PLAYER:
+                case PLAYER:
                 case MONSTER:
-                    return handleBombCollision(lowEnt, low, highEnt, high);
-                case EXPLOSION:
-                    //TODO add collision
-                    std::cout << "Explosion hit" << std::endl;
                     return handleBombCollision(lowEnt, low, highEnt, high);
             }
             return INVALID_ENTITY;
