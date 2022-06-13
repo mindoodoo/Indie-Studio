@@ -13,6 +13,7 @@
 #include "MovementSystem.hpp"
 #include "CollisionSystem.hpp"
 #include "DrawSystem.hpp"
+#include "SoundManager.hpp"
 #include "Timer.hpp"
 #include "../Raylib/Drawables/Drawable3D.hpp"
 #include "../Raylib/InputManager.hpp"
@@ -22,7 +23,7 @@
 
 class Bomberman {
     public:
-        Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map);
+        Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager);
         ~Bomberman();
 
         void generateItems();
@@ -54,6 +55,7 @@ class Bomberman {
     private:
         std::shared_ptr<RL::Window> _window;
         std::shared_ptr<RL::InputManager> _inputManager;
+        std::shared_ptr<RL::SoundManager> _soundManager;
         std::shared_ptr<RL::Map> _map;
         std::vector<int> _event;
         std::vector<std::shared_ptr<ISystem>> _systems;

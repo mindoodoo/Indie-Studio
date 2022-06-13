@@ -7,8 +7,8 @@
 
 #include "Bomberman.hpp"
 
-Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map)
-    : _window(Window), _map(Map), _inputManager(InputManager)
+Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager)
+    : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager)
 {
     _em = std::make_shared<EntityManager>();
     // take care with system order when adding to vector

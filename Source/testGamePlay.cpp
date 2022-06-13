@@ -15,6 +15,7 @@ int main(void)
     //for everything to work, we need to init everything else AFTER THE WINDOW
     std::shared_ptr<RL::InputManager> InputManager = std::make_shared<RL::InputManager>();
     std::shared_ptr<RL::Map> Map = std::make_shared<RL::Map>("./RaylibTesting/Assets/Maps/TestMap/test.csv", "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png" );
+    std::shared_ptr<RL::SoundManager> SoundManager = std::make_shared<RL::SoundManager>();
 
     SetTargetFPS(60);
 
@@ -23,7 +24,7 @@ int main(void)
     Window->_camera.setPosition(cameraPos);
     Window->_camera.setRotation({0.0f, 1.0f, 0.0f });
 
-    Bomberman game(Window, InputManager, Map);
+    Bomberman game(Window, InputManager, Map, SoundManager);
     game.runFrame();
 
     Window->close();

@@ -83,6 +83,8 @@ void Bomberman::checkBombalive() {
                 smoothBombResize(_em->Get<Sprite>(ent)->model);
             if (_em->Get<Timer>(ent)->returnTime() >= 2) {
                 std::cout << "BOOOM" << std::endl;
+                //I DONT KNOW IF WE WANT TO LEAVE THIS LIKE THIS
+                _soundManager->playSpecificSoundFx("ExplosionTest");
                 for (EntityID enty: EntityViewer<BombCapacity>(*_em.get())) {
                     _em->Get<BombCapacity>(enty)->curCapacity += 1;
                 }
