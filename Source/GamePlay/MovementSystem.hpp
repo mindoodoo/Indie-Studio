@@ -16,6 +16,11 @@
 
 class MovementSystem : public ISystem {
     public:
+        enum PlayerType {
+            Player_One,
+            Player_Two,
+            Other
+        };
         MovementSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Map> map, std::shared_ptr<RL::InputManager> iM) : _map(map), _inputManager(iM)
         {
             _em = em;
@@ -32,6 +37,12 @@ class MovementSystem : public ISystem {
                 Skillset skills({0, 0, 0, false});
                 bool wallPass = false;
                 if (*playerType == PLAYER) {
+                    if (ent == playerIds[0])
+                        type = Player_One;
+                    else if (ent == playerIds[1])
+                        type = Player_Two;
+                    else
+                        type = Other;
                     skills = *_em->Get<Skillset>(ent);
                     wallPass = skills.wallPass;
                 }
@@ -39,15 +50,19 @@ class MovementSystem : public ISystem {
 
                 switch (playerMovement->pressedKey) {
                     case UP:
+                    case UP2:
                         moveUp(playerPos, vel, playerSprite, wallPass);
                         break;
                     case DOWN:
+                    case DOWN2:
                         moveDown(playerPos, vel, playerSprite, wallPass);
                         break;
                     case LEFT:
+                    case LEFT2:
                         moveLeft(playerPos, vel, playerSprite,wallPass);
                         break;
                     case RIGHT:
+                    case RIGHT2:
                         moveRight(playerPos, vel, playerSprite, wallPass);
                         break;
                 }
@@ -67,17 +82,16 @@ class MovementSystem : public ISystem {
                 return false;
             if (!wallPass && _colManager.collisionsWithCrates((RL::Vector3f){pos.x, pos.y, pos.z}, *_map.get()))
                 return false;
-            // also check for collision with other objects at that new position
             return true;
         }
 
         void moveLeft(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
         {
-            if (_inputManager->playerHasPressedKeyAsChar(UP)) {
+            if (_inputManager->playerHasPressedKeyAsChar(type != Player_Two ? UP : UP2)) {
                 moveUpLeft(pos, vel, playerSprite, wallPass);
                 return;
             }
-            if (_inputManager->playerHasPressedKeyAsChar(DOWN)) {
+            if (_inputManager->playerHasPressedKeyAsChar(type != Player_Two ? DOWN : DOWN2)) {
                 moveDownLeft(pos, vel, playerSprite, wallPass);
                 return;
             }
@@ -95,11 +109,11 @@ class MovementSystem : public ISystem {
 
         void moveRight(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
         {
-            if (_inputManager->playerHasPressedKeyAsChar(UP)) {
+            if (_inputManager->playerHasPressedKeyAsChar(type != Player_Two ? UP : UP2)) {
                 moveUpRight(pos, vel, playerSprite, wallPass);
                 return;
             }
-            if (_inputManager->playerHasPressedKeyAsChar(DOWN)) {
+            if (_inputManager->playerHasPressedKeyAsChar(type != Player_Two ? DOWN : DOWN2)) {
                 moveDownRight(pos, vel, playerSprite, wallPass);
                 return;
             }
@@ -117,11 +131,11 @@ class MovementSystem : public ISystem {
 
         void moveUp(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
         {
-            if (_inputManager->playerHasPressedKeyAsChar(LEFT)) {
+            if (_inputManager->playerHasPressedKeyAsChar(type != Player_Two ? LEFT : LEFT2)) {
                 moveUpLeft(pos, vel, playerSprite, wallPass);
                 return;
             }
-            if (_inputManager->playerHasPressedKeyAsChar(RIGHT)) {
+            if (_inputManager->playerHasPressedKeyAsChar(type != Player_Two ? RIGHT : RIGHT2)) {
                 moveUpRight(pos, vel, playerSprite, wallPass);
                 return;
             }
@@ -139,11 +153,11 @@ class MovementSystem : public ISystem {
 
         void moveDown(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
         {
-            if (_inputManager->playerHasPressedKeyAsChar(LEFT)) {
+            if (_inputManager->playerHasPressedKeyAsChar(type != Player_Two ? LEFT : LEFT2)) {
                 moveDownLeft(pos, vel, playerSprite, wallPass);
                 return;
             }
-            if (_inputManager->playerHasPressedKeyAsChar(RIGHT)) {
+            if (_inputManager->playerHasPressedKeyAsChar(type != Player_Two ? RIGHT : RIGHT2)) {
                 moveDownRight(pos, vel, playerSprite, wallPass);
                 return;
             }
@@ -223,6 +237,7 @@ class MovementSystem : public ISystem {
         std::shared_ptr<RL::Map> _map;
         std::shared_ptr<RL::InputManager> _inputManager;
         RL::CollisionManager _colManager;
+        PlayerType type = Other;
 };
 
 #endif /* !MOVEMENTSYSTEM_HPP_ */

@@ -33,12 +33,14 @@ class Bomberman {
         void createMonster(Pos pos);
         void createBomb(Pos pos, EntityID bombOwner);
         void checkInput();
+        void getFirstPlayerInput();
+        void getSecondPlayerInput();
         void startGameTimers();
         void stopGameTimers();
         bool runFrame();
         void startDrawScene();
         void stopDrawScene();
-        void checkGameEnd();
+        bool isGameEnd();
 
     protected:
     private:

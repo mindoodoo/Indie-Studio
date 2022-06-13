@@ -52,7 +52,7 @@ class CollisionSystem : public ISystem {
                     _window->removeDrawable(entModel->model);
                 }
                 if (checkIfVectorContains(playerIds, id)) {
-                    playerIds.erase(std::remove(playerIds.begin(), playerIds.end(), id), playerIds.end());
+                    std::replace(playerIds.begin(), playerIds.end(), id, INVALID_ENTITY);
                 }
             }
         }

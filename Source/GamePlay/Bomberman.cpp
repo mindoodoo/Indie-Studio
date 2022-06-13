@@ -16,6 +16,8 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _systems.push_back(std::make_shared<MovementSystem>(_em, _map, _inputManager));
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
     createPlayer({1, 1, 1});
+    // if only one player, fill _player[1] with INVALID_ENTITY
+    createPlayer({13, 11, 1});
     generateItems();
     // createSpeedUpItem({10, 10, 1});
     // createSpeedUpItem({4, 3, 1});
@@ -208,9 +210,11 @@ void Bomberman::createBomb(Pos pos, EntityID bombOwner)
     _window->queueDrawable(Skull);
 }
 
-void Bomberman::checkInput()
+void Bomberman::getFirstPlayerInput()
 {
-    Input* playerInput = _em->Get<Input>(_player.at(0));
+    if (_player[0] == INVALID_ENTITY)
+        return;
+    Input* playerInput = _em->Get<Input>(_player[0]);
 
     if (!_event.size())
         playerInput->pressedKey = NONE;
@@ -227,6 +231,35 @@ void Bomberman::checkInput()
                 playerInput->pressedKey = NONE;
         }
     }
+}
+
+void Bomberman::getSecondPlayerInput()
+{
+    if (_player[1] == INVALID_ENTITY)
+        return;
+    Input* playerInput = _em->Get<Input>(_player[1]);
+
+    if (!_event.size())
+        playerInput->pressedKey = NONE;
+
+    for (int input : _event) {
+        switch ((UserInput)input) {
+            case UP2:
+            case DOWN2:
+            case LEFT2:
+            case RIGHT2:
+                playerInput->pressedKey = (UserInput)input;
+                break;
+            default:
+                playerInput->pressedKey = NONE;
+        }
+    }
+}
+
+void Bomberman::checkInput()
+{
+    getFirstPlayerInput();
+    getSecondPlayerInput();
 }
 
 void Bomberman::startGameTimers()
@@ -257,7 +290,7 @@ bool Bomberman::runFrame()
     for (std::shared_ptr<ISystem> system : _systems) {
         system->update(_deltaTimer.returnTime(), _player);
     }
-    if (_player.size() <= 0)
+    if (isGameEnd())
         return false;
     startDrawScene();
     _deltaTimer.restartTimer();
@@ -280,7 +313,11 @@ void Bomberman::stopDrawScene()
     // _drawer->endDrawing();
 }
 
-void Bomberman::checkGameEnd()
+bool Bomberman::isGameEnd()
 {
-    
+    for (EntityID id : _player) {
+        if (id != INVALID_ENTITY)
+            return false;
+    }
+    return true;
 }
