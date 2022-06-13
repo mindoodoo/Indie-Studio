@@ -12,6 +12,8 @@ bool Bomberman::createExplosion(Pos pos, EntityID bombOwner)
         return false;
     if (pos.x + 1 >= _map->getMapWidth() || pos.y + 1 >= _map->getMapDepth())
         return false;
+    if (_map->getParsedMap()[pos.y][pos.x].tile == 1)
+        return false;
     std::cout << pos.x << " " << pos.y << std::endl;
     EntityID id = _em->CreateNewEntity();
     _em->Assign<Pos>(id, pos);
@@ -34,6 +36,7 @@ bool Bomberman::createExplosion(Pos pos, EntityID bombOwner)
     Explosion->id = id;
     _em->Assign<Sprite>(id, Sprite{Explosion});
     _window->queueDrawable(Explosion);
+    _map->removeCrate({(int)pos.x, (int)pos.y});
     return true;
 }
 
