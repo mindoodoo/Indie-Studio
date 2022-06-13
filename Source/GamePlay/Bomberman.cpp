@@ -203,25 +203,6 @@ void Bomberman::createMonster(Pos pos)
 }
 
 
-void Bomberman::createBomb(Pos pos, EntityID bombOwner)
-{
-    EntityID id = _em->CreateNewEntity();
-    _em->Assign<Pos>(id, pos);
-    _em->Assign<BombOwner>(id, BombOwner{bombOwner});
-    _em->Assign<CollisionObjectType>(id, CollisionObjectType{BOMB});
-
-    std::string skulltex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
-    std::string skullmod = "./RaylibTesting/Assets/3d_models/Skull/Skull.obj";
-    RL::Drawable3D *Skull = new RL::Drawable3D(skulltex, skullmod, "", RL::MODEL, 0.04);
-    Skull->setPosition((RL::Vector3f){
-        translateFigureCoordinates(pos.x, _map->getMapWidth()),
-        pos.y,
-        translateFigureCoordinates(pos.y, _map->getMapDepth())
-    });
-    _em->Assign<Sprite>(id, Sprite{Skull});
-    _window->queueDrawable(Skull);
-}
-
 void Bomberman::getFirstPlayerInput()
 {
     if (_player[0] == INVALID_ENTITY)

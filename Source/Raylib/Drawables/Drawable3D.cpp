@@ -254,7 +254,7 @@ void RL::Drawable3D::setModel(Model model)
 {
     this->_model = model;
 }
-=======
+
 RL::ModelType RL::Drawable3D::getModelType()
 {
     return this->_modelType;
