@@ -24,6 +24,8 @@ FILE(GLOB CFILES
         Source/Raylib/InputManager.cpp
         Source/Raylib/SoundManager.cpp
         Source/Raylib/Window.cpp
+        Source/GamePlay/Bomb.cpp
+        Source/GamePlay/Explosion.cpp)
         Source/Core.cpp)
 
 #add Header files
@@ -50,6 +52,7 @@ FILE(GLOB HEADERFILES
         Source/Raylib/RaylibTypeEncaps.hpp
         Source/Raylib/SoundManager.hpp
         Source/Raylib/Window.hpp
+        Source/GamePlay/Timer.hpp)
         Source/Core.hpp)
 
 

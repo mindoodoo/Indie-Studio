@@ -25,6 +25,7 @@ namespace RL {
     class Drawable3D: public IDrawable {
         public:
             // Model path is a .iqm and texturepath is a .png
+            Drawable3D(RL::ModelType type, float scale);
             Drawable3D(std::string texturePath, std::string modelPath, std::string animationPath, RL::ModelType type, float scale=1);
             ~Drawable3D();
 
@@ -81,6 +82,14 @@ namespace RL {
             Vector3f getBoxSize();
             void setBoundingBox();
             BoundingBox getBoundingBox();
+
+            float getScale();
+
+            void setUpvalue(int newup);
+            int getUpvalue();
+
+            Model getModel();
+            void setModel(Model model);
 
         protected:
             Vector3f _position = {0, 0, 0};

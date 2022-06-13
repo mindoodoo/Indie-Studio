@@ -6,6 +6,14 @@
 */
 
 #include "Drawable3D.hpp"
+RL::Drawable3D::Drawable3D(RL::ModelType type, float scale)
+{
+    this->_modelType = type;
+    this->_scale = scale;
+    this->up = 0;
+    this->_assetLoaded = true;
+
+}
 
 RL::Drawable3D::Drawable3D(std::string texturePath, std::string modelPath, std::string animationPath, RL::ModelType type, float scale)
 {
@@ -221,6 +229,32 @@ RL::DrawableType RL::Drawable3D::getType() const
     return this->_type;
 }
 
+
+float RL::Drawable3D::getScale()
+{
+    return this->_scale;
+}
+
+void RL::Drawable3D::setUpvalue(int newup)
+{
+    this->up = newup;
+}
+
+int RL::Drawable3D::getUpvalue()
+{
+    return this->up;
+}
+
+Model RL::Drawable3D::getModel()
+{
+    return this->_model;
+}
+
+void RL::Drawable3D::setModel(Model model)
+{
+    this->_model = model;
+}
+=======
 RL::ModelType RL::Drawable3D::getModelType()
 {
     return this->_modelType;

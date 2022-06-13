@@ -16,8 +16,9 @@
 #include "Logger/Logger.hpp"
 #include "Camera.hpp"
 #include "Raylib/Drawables/IDrawable.hpp"
-#include "Raylib/Drawables/Drawable3D.hpp"
+#include "Drawables/Drawable3D.hpp"
 #include "RaylibTypeEncaps.hpp"
+
 
 namespace RL {
     class Window {
@@ -25,7 +26,7 @@ namespace RL {
         // Creation of window
         // By default, window is initialized immediately, but can be done later
         // by passing initLater = true
-        Window(std::string title, Vector2i dimensions = {1920, 1080},
+        Window(std::string title, Vector2i dimensions = {1200, 800},
                bool initLater = false);
         ~Window();
 
@@ -60,11 +61,14 @@ namespace RL {
         // Getters
         const Vector2i &getDimensions() const;
         const std::string &getTitle() const;
+        const std::vector<RL::IDrawable*> get3Dqueue() const;
 
         Font getFont();
 
         // Check if window is initiated and checks if window should close
         bool isWindowOpen();
+
+        void removeElemtfrom3Dqueue(int index);
 
         Camera _camera;
 

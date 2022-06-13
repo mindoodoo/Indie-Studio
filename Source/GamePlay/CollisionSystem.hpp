@@ -80,8 +80,12 @@ class CollisionSystem : public ISystem {
                 case ITEM:
                     return handleItemCollision(lowEnt, low, highEnt, high);
                 case BREAKABLE_BLOCK:
-                case PLAYER:
+                //case PLAYER:
                 case MONSTER:
+                    return handleBombCollision(lowEnt, low, highEnt, high);
+                case EXPLOSION:
+                    //TODO add collision
+                    std::cout << "Explosion hit" << std::endl;
                     return handleBombCollision(lowEnt, low, highEnt, high);
             }
             return INVALID_ENTITY;
@@ -110,13 +114,13 @@ class CollisionSystem : public ISystem {
         };
 
         EntityID handleBombCollision(EntityID lowEnt, CollisionObjectType* low, EntityID highEnt, CollisionObjectType* high) {
-            if (*high == BOMB && *low == MONSTER && !checkIfVectorContains(_destroyQueue, lowEnt)) {
+            if (*high == EXPLOSION && *low == MONSTER && !checkIfVectorContains(_destroyQueue, lowEnt)) {
                 BombOwner* player = _em->Get<BombOwner>(highEnt);
                 Score* scoreIncrease = _em->Get<Score>(lowEnt);
                 _em->Get<Score>(player->id)->score += scoreIncrease->score;
                 std::cout << "bomb killed monster, score increase by " << scoreIncrease->score << std::endl;
                 return lowEnt;
-            } else if (*high == BOMB && !checkIfVectorContains(_destroyQueue, lowEnt)) {
+            } else if (*high == EXPLOSION && !checkIfVectorContains(_destroyQueue, lowEnt)) {
                 std::cout << "bomb killed player or breakable block " << std::endl;
                 return lowEnt;
             }

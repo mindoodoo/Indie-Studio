@@ -31,7 +31,7 @@ namespace RL {
             // Function called by the Window to draw
             // Should NOT contain BeginDrawing(), EndDrawing() etc...
             virtual void draw() = 0;
-
+            unsigned long long id;
             virtual DrawableType getType() const = 0;
 
         protected:
