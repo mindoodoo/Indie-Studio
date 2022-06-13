@@ -12,7 +12,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
 {
     _em = std::make_shared<EntityManager>();
     // take care with system order when adding to vector
-    _systems.push_back(std::make_shared<CollisionSystem>(_em, _window));
+    _systems.push_back(std::make_shared<CollisionSystem>(_em, _window, _soundManager));
     _systems.push_back(std::make_shared<MovementSystem>(_em, _map, _inputManager));
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/3d_models/Skull/Skull.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));

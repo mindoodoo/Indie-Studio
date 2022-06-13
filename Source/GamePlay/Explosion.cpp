@@ -37,6 +37,7 @@ bool Bomberman::createExplosion(Pos pos, EntityID bombOwner)
     _em->Assign<Sprite>(id, Sprite{Explosion});
     _window->queueDrawable(Explosion);
     _map->removeCrate({(int)pos.x, (int)pos.y});
+    // _soundManager->playSpecificSoundFx("Wallsbreak");
     return true;
 }
 

@@ -14,7 +14,6 @@ Core::Core()
     _map = std::make_shared<RL::Map>("./RaylibTesting/Assets/Maps/TestMap/test.csv", "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png");
      _soundManager = std::make_shared<RL::SoundManager>();
 
-    SetTargetFPS(60);
     RL::Vector3f cameraPos(0, 15, 8);
     _window->_camera.setPosition(cameraPos);
     _window->_camera.setRotation({0.0f, 1.0f, 0.0f });

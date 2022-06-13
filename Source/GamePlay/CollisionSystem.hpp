@@ -14,11 +14,12 @@
 #include "../GameEngine/Map.hpp"
 #include "../GameEngine/CollisionManager.hpp"
 #include "../Raylib/RaylibTypeEncaps.hpp"
+#include "../SoundManager.hpp"
 #include "../Window.hpp"
 
 class CollisionSystem : public ISystem {
     public:
-        CollisionSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Window> window) : _window(window)
+        CollisionSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Window> window, std::shared_ptr<RL::SoundManager> sM) : _window(window), _soundManager(sM)
         {
             _em = em;
         };
@@ -50,9 +51,10 @@ class CollisionSystem : public ISystem {
                     Sprite *entModel = _em->Get<Sprite>(id);
                     _em->DestroyEntity(id);
                     _window->removeDrawable(entModel->model);
-                }
-                if (checkIfVectorContains(playerIds, id)) {
-                    std::replace(playerIds.begin(), playerIds.end(), id, INVALID_ENTITY);
+                    if (checkIfVectorContains(playerIds, id)) {
+                        _soundManager->playSpecificSoundFx("hurt");
+                        std::replace(playerIds.begin(), playerIds.end(), id, INVALID_ENTITY);
+                    }
                 }
             }
         }
@@ -104,6 +106,7 @@ class CollisionSystem : public ISystem {
                     std::cout << "updated speed up" << std::endl;
                 if (skillIncrease->wallPass)
                     std::cout << "updated wallPass" << std::endl;
+                _soundManager->playSpecificSoundFx("Item1");
                 return itemEnt;
             }
             return INVALID_ENTITY;
@@ -127,6 +130,7 @@ class CollisionSystem : public ISystem {
         std::shared_ptr<RL::Window> _window;
         RL::CollisionManager _colManager;
         std::vector<EntityID> _destroyQueue;
+        std::shared_ptr<RL::SoundManager> _soundManager;
 };
 
 #endif /* !COLLISIONSYSTEM_HPP_ */

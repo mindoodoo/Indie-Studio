@@ -48,6 +48,7 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset)
     Bomb->id = id;
     _em->Assign<Sprite>(id, Sprite{Bomb});
     _window->queueDrawable(Bomb);
+    _soundManager->playSpecificSoundFx("layBomb");
     return true;
 }
 
