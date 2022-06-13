@@ -81,8 +81,8 @@ void Bomberman::checkBombalive() {
             //if (_em->Get<Timer>(ent)->returnTime() >= 1) {
             if (_em->Get<Timer>(ent)->returnTime() <= 3) {
                 
-                //_em->Get<Sprite>(ent)->model->resize(3);
-                _em->Get<Sprite>(ent)->model->resize(smoothBombResize(_em->Get<Sprite>(ent)->model));
+                _em->Get<Sprite>(ent)->model->resize(3);
+                //_em->Get<Sprite>(ent)->model->resize(smoothBombResize(_em->Get<Sprite>(ent)->model));
             }
             if (_em->Get<Timer>(ent)->returnTime() >= 2) {
                 std::cout << "BOOOM" << std::endl;
