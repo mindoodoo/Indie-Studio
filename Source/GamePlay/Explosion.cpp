@@ -8,6 +8,10 @@
 
 bool Bomberman::createExplosion(Pos pos, EntityID bombOwner)
 {
+    if (pos.x <= 0 || pos.y <= 0) 
+        return false;
+    if (pos.x + 1 >= _map->getMapWidth() || pos.y + 1 >= _map->getMapDepth())
+        return false;
     std::cout << pos.x << " " << pos.y << std::endl;
     EntityID id = _em->CreateNewEntity();
     _em->Assign<Pos>(id, pos);
