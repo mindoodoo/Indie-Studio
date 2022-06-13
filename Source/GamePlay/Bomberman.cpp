@@ -17,7 +17,11 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/3d_models/Skull/Skull.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Explosion/textures/fire3lambert1_baseColor.png", "./RaylibTesting/Assets/Explosion/textures/fire.obj", "", RL::MODEL, 3));
-
+    
+    //this is respndible for the music being played then shuffle enabled, comment out to cancel
+    _soundManager->playSpecificMusic("MiraiKaraKitaShonen");
+    _soundManager->enableDisableShuffle();
+    
     // if only one player, fill _player[1] with INVALID_ENTITY
     createPlayer({13, 11, 1});
     createPlayer({1, 1, 1});
@@ -279,6 +283,7 @@ void Bomberman::stopGameTimers()
 // event as argument?
 bool Bomberman::runFrame()
 {
+    _soundManager->updateMusicStream();
     _inputManager->popInputs();
     _inputManager->recordInputs();
     _event = _inputManager->getInputs();

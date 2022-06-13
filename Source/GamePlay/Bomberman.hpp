@@ -13,12 +13,13 @@
 #include "MovementSystem.hpp"
 #include "CollisionSystem.hpp"
 #include "DrawSystem.hpp"
-#include "SoundManager.hpp"
+#include "AudioSystem.hpp"
 #include "Timer.hpp"
 #include "../Raylib/Drawables/Drawable3D.hpp"
 #include "../Raylib/InputManager.hpp"
 #include "../GameEngine/Map.hpp"
 #include "../Raylib/Window.hpp"
+#include "SoundManager.hpp"
 #include "Timer.hpp"
 
 class Bomberman {
