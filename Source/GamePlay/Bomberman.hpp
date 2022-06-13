@@ -13,6 +13,7 @@
 #include "MovementSystem.hpp"
 #include "CollisionSystem.hpp"
 #include "DrawSystem.hpp"
+#include "Timer.hpp"
 #include "../Raylib/Drawables/Drawable3D.hpp"
 #include "../Raylib/InputManager.hpp"
 #include "../GameEngine/Map.hpp"
@@ -24,14 +25,22 @@ class Bomberman {
         Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map);
         ~Bomberman();
 
+        void generateItems();
         void createPlayer(Pos pos);
-        void createItem(Pos pos);
+        void createSpeedUpItem(Pos pos);
+        void createBombUpItem(Pos pos);
+        void createFireUpItem(Pos pos);
+        void createWallPassItem(Pos pos);
         void createMonster(Pos pos);
         void layBomb(EntityID playerid);
         void checkBombalive();
         bool createBomb(Pos pos, EntityID bombOwner, Skillset skillset);
         void checkInput();
-        void runFrame();
+        void getFirstPlayerInput();
+        void getSecondPlayerInput();
+        void startGameTimers();
+        void stopGameTimers();
+        bool runFrame();
         void startDrawScene();
         void stopDrawScene();
         void checkGameEnd();
@@ -39,6 +48,7 @@ class Bomberman {
         void checkExplosionalive();
         float smoothBombResize(RL::Drawable3D *BombModel);
         RL::Drawable3D* makeDrawable3DPointer(RL::Drawable3D Model);
+        bool isGameEnd();
 
     protected:
     private:
@@ -50,6 +60,9 @@ class Bomberman {
         std::vector<EntityID> _player;
         std::shared_ptr<EntityManager> _em;
         std::vector<RL::Drawable3D> _allModels;
+        Timer _gameTimer;
+        Timer _deltaTimer;
+        bool _gamePaused;
 };
 
 float translateFigureCoordinates(float pos, int borderSize);

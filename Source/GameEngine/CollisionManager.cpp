@@ -66,9 +66,31 @@ bool RL::CollisionManager::collisionsWithWalls(RL::Vector3f ModelPos, RL::Map Ma
     return collision;
 }
 
-bool RL::CollisionManager::collisionsWithModels(RL::Vector3f MovingPos, RL::Drawable3D Model2)
+bool RL::CollisionManager::collisionsWithCrates(RL::Vector3f ModelPos, RL::Map Map)
 {
-    bool collision = CheckCollisionSpheres(MovingPos, 0.45f, Model2.getPosition(), 0.49f);
+    bool collision = false;
+    for (int i = 0; i < Map.getMapDepth(); i++) {
+        for (int j = 0; j < Map.getMapWidth(); j++) {
+            if (Map.getParsedMap()[i][j].tile == 2) {
+                //COLLISION HANDLER 
+                collision = do_collision_walls(ModelPos, i, j, Map);
+                if (collision == true)
+                    return collision;
+            }   
+        }
+    }
+    return collision;
+}
+
+bool RL::CollisionManager::collisionsWithModels(RL::Drawable3D Model1, RL::Drawable3D Model2)
+{
+    float model2radius = 0.45f;
+    float model1radius = 0.45f;
+    if (Model2.getModelType() == RL::POWER)
+        model2radius = 0.28f;
+    if (Model1.getModelType() == RL::POWER)
+        model1radius = 0.28f;
+    bool collision = CheckCollisionSpheres(Model1.getPosition(), model1radius, Model2.getPosition(), model2radius);
 
     //if model.IS_TRAVERSIBLE == TRUE then
     // collision == false;

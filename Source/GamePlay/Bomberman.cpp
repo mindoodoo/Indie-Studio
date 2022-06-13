@@ -12,21 +12,66 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
 {
     _em = std::make_shared<EntityManager>();
     // take care with system order when adding to vector
-    _systems.push_back(std::make_shared<MovementSystem>(_em, _map));
-    _systems.push_back(std::make_shared<CollisionSystem>(_em, _map));
+    _systems.push_back(std::make_shared<CollisionSystem>(_em, _window));
+    _systems.push_back(std::make_shared<MovementSystem>(_em, _map, _inputManager));
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/3d_models/Skull/Skull.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Explosion/textures/fire3lambert1_baseColor.png", "./RaylibTesting/Assets/Explosion/textures/fire.obj", "", RL::MODEL, 3));
-    createPlayer({1, 1, 1});
-    createItem({10, 10, 1});
     // createItem({5, 5, 1});
     //createBomb({5, 5, 1}, _player.back());
     //createMonster({5, 5, 1});
     //createExplosion({1,1,1}, _player.back());
+    // if only one player, fill _player[1] with INVALID_ENTITY
+    createPlayer({13, 11, 1});
+    generateItems();
+    // createSpeedUpItem({10, 10, 1});
+    // createSpeedUpItem({4, 3, 1});
+    // createBombUpItem({8, 5, 1});
+    // createBombUpItem({9, 5, 1});
+    // createFireUpItem({10, 5, 1});
+    // createWallPassItem({2, 3, 1});
+    // createBomb({5, 5, 1}, _player.back());
+    // createMonster({5, 5, 1});
+    _gamePaused = false;
+    _gameTimer.startTimer();
+    _deltaTimer.startTimer();
 }
 
 Bomberman::~Bomberman()
 {
+}
+
+void Bomberman::generateItems()
+{
+    int wallPassAmount = 1;
+    int placeItem;
+
+    for (int i = 0; i < _map->getMapDepth(); i++) {
+        for (int j = 0; j < _map->getMapWidth(); j++) {
+            if (_map->getParsedMap()[i][j].tile == 2) {
+                placeItem = rand() % 100;
+                if (placeItem > 77) {
+                    switch (rand() % 4) {
+                        case 0:
+                            createSpeedUpItem({(float)j, (float)i, 1});
+                            break;
+                        case 1:
+                            createBombUpItem({(float)j, (float)i, 1});
+                            break;
+                        case 2:
+                            createFireUpItem({(float)j, (float)i, 1});
+                            break;
+                        case 3:
+                            if (wallPassAmount) {
+                                wallPassAmount--;
+                                createWallPassItem({(float)j, (float)i, 1});
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+    }
 }
 
 float translateFigureCoordinates(float pos, int borderSize)
@@ -46,16 +91,18 @@ void Bomberman::createPlayer(Pos pos)
     // std::string skullmod = "RaylibTesting/Assets/3d_models/Guy/guy.iqm";
     // std::string modelAnimPath = "RaylibTesting/Assets/3d_models/Guy/guyanim.iqm";
     // std::string skulltex = "RaylibTesting/Assets/3d_models/Guy/guytex.png";
+
     
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
-    _em->Assign<Velocity>(id, {0.1,0.1});
+    _em->Assign<Velocity>(id, {0.08,0.08});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, Score{0});
     _em->Assign<Health>(id, Health{100});
     _em->Assign<Skillset>(id, Skillset{0, 0, 1, false});
     _em->Assign<BombCapacity>(id, BombCapacity{3, 3});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{PLAYER});
+
     RL::Drawable3D *Player = new RL::Drawable3D(playtex, playermod, "", RL::MODEL, 0.25);
     Player->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
@@ -66,11 +113,11 @@ void Bomberman::createPlayer(Pos pos)
     _window->queueDrawable(Player);
 }
 
-void Bomberman::createItem(Pos pos)
+void Bomberman::createSpeedUpItem(Pos pos)
 {
     EntityID id = _em->CreateNewEntity();
     _em->Assign<Pos>(id, pos);
-    _em->Assign<Skillset>(id, Skillset{0, 0, 5, false});
+    _em->Assign<Skillset>(id, Skillset{0, 1, 0, false});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
     std::string speedUpPath = "./Source/PowerUps/Speed.png";
     RL::Drawable3D *speedUp = new RL::Drawable3D(speedUpPath, "", "", RL::POWER);
@@ -83,6 +130,57 @@ void Bomberman::createItem(Pos pos)
     _window->queueDrawable(speedUp);
 }
 
+void Bomberman::createBombUpItem(Pos pos)
+{
+    EntityID id = _em->CreateNewEntity();
+    _em->Assign<Pos>(id, pos);
+    _em->Assign<Skillset>(id, Skillset{1, 0, 0, false});
+    _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
+    std::string bombUpPath = "./Source/PowerUps/BombUp.png";
+    RL::Drawable3D *bombUp = new RL::Drawable3D(bombUpPath, "", "", RL::POWER);
+    bombUp->setPosition((RL::Vector3f){
+        translateFigureCoordinates(pos.x, _map->getMapWidth()),
+        1.0f,
+        translateFigureCoordinates(pos.y, _map->getMapDepth())
+    });
+    _em->Assign<Sprite>(id, Sprite{bombUp});
+    _window->queueDrawable(bombUp);
+}
+
+void Bomberman::createFireUpItem(Pos pos)
+{
+    EntityID id = _em->CreateNewEntity();
+    _em->Assign<Pos>(id, pos);
+    _em->Assign<Skillset>(id, Skillset{0, 0, 1, false});
+    _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
+    std::string fireUpPath = "./Source/PowerUps/PowerUp.png";
+    RL::Drawable3D *fireUp = new RL::Drawable3D(fireUpPath, "", "", RL::POWER);
+    fireUp->setPosition((RL::Vector3f){
+        translateFigureCoordinates(pos.x, _map->getMapWidth()),
+        1.0f,
+        translateFigureCoordinates(pos.y, _map->getMapDepth())
+    });
+    _em->Assign<Sprite>(id, Sprite{fireUp});
+    _window->queueDrawable(fireUp);
+}
+
+void Bomberman::createWallPassItem(Pos pos)
+{
+    EntityID id = _em->CreateNewEntity();
+    _em->Assign<Pos>(id, pos);
+    _em->Assign<Skillset>(id, Skillset{0, 0, 0, true});
+    _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
+    std::string wallPassPath = "./Source/PowerUps/WallsWalkable.png";
+    RL::Drawable3D *wallPass = new RL::Drawable3D(wallPassPath, "", "", RL::POWER);
+    wallPass->setPosition((RL::Vector3f){
+        translateFigureCoordinates(pos.x, _map->getMapWidth()),
+        1.0f,
+        translateFigureCoordinates(pos.y, _map->getMapDepth())
+    });
+    _em->Assign<Sprite>(id, Sprite{wallPass});
+    _window->queueDrawable(wallPass);
+}
+
 void Bomberman::createMonster(Pos pos)
 {
     EntityID id = _em->CreateNewEntity();
@@ -91,7 +189,6 @@ void Bomberman::createMonster(Pos pos)
     _em->Assign<Score>(id, Score{0}); //defines how player score increases when killing monster
     _em->Assign<Health>(id, Health{100});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{MONSTER});
-    // _em->Assign<Sprite>(id, Sprite{""});
 
     std::string skulltex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
     std::string skullmod = "./RaylibTesting/Assets/3d_models/Skull/Skull.obj";
@@ -105,9 +202,31 @@ void Bomberman::createMonster(Pos pos)
     _window->queueDrawable(Skull);
 }
 
-void Bomberman::checkInput()
+
+void Bomberman::createBomb(Pos pos, EntityID bombOwner)
 {
-    Input* playerInput = _em->Get<Input>(_player.at(0));
+    EntityID id = _em->CreateNewEntity();
+    _em->Assign<Pos>(id, pos);
+    _em->Assign<BombOwner>(id, BombOwner{bombOwner});
+    _em->Assign<CollisionObjectType>(id, CollisionObjectType{BOMB});
+
+    std::string skulltex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
+    std::string skullmod = "./RaylibTesting/Assets/3d_models/Skull/Skull.obj";
+    RL::Drawable3D *Skull = new RL::Drawable3D(skulltex, skullmod, "", RL::MODEL, 0.04);
+    Skull->setPosition((RL::Vector3f){
+        translateFigureCoordinates(pos.x, _map->getMapWidth()),
+        pos.y,
+        translateFigureCoordinates(pos.y, _map->getMapDepth())
+    });
+    _em->Assign<Sprite>(id, Sprite{Skull});
+    _window->queueDrawable(Skull);
+}
+
+void Bomberman::getFirstPlayerInput()
+{
+    if (_player[0] == INVALID_ENTITY)
+        return;
+    Input* playerInput = _em->Get<Input>(_player[0]);
 
     if (!_event.size())
         playerInput->pressedKey = NONE;
@@ -129,27 +248,70 @@ void Bomberman::checkInput()
     }
 }
 
-void Bomberman::runFrame()
+void Bomberman::getSecondPlayerInput()
 {
+    if (_player[1] == INVALID_ENTITY)
+        return;
+    Input* playerInput = _em->Get<Input>(_player[1]);
+
+    if (!_event.size())
+        playerInput->pressedKey = NONE;
+
+    for (int input : _event) {
+        switch ((UserInput)input) {
+            case UP2:
+            case DOWN2:
+            case LEFT2:
+            case RIGHT2:
+                playerInput->pressedKey = (UserInput)input;
+                break;
+            default:
+                playerInput->pressedKey = NONE;
+        }
+    }
+}
+
+void Bomberman::checkInput()
+{
+    getFirstPlayerInput();
+    getSecondPlayerInput();
+}
+
+void Bomberman::startGameTimers()
+{
+    if (!_gamePaused) {
+        _gameTimer.restartTimer();
+    } else {
+        _gameTimer.stopPause();
+        _gamePaused = false;
+    }
+    _deltaTimer.restartTimer();
+}
+
+void Bomberman::stopGameTimers()
+{
+    _gamePaused = true;
+    _gameTimer.startPause();
+}
+
+// event as argument?
+bool Bomberman::runFrame()
+{
+    _inputManager->popInputs();
     _inputManager->recordInputs();
     _event = _inputManager->getInputs();
-    float deltaTime = 1;
-    while (_window->isWindowOpen()) {
-        // update deltatime
-        checkInput();
-
-        for (std::shared_ptr<ISystem> system : _systems) {
-            system->update(deltaTime, _player);
-        }
-        if (_player.size() <= 0)
-            break;
-        checkBombalive();
-        checkExplosionalive();
-        startDrawScene();
-        _inputManager->popInputs();
-        _inputManager->recordInputs();
-        _event = _inputManager->getInputs();
+  
+    checkInput();
+    for (std::shared_ptr<ISystem> system : _systems) {
+        system->update(_deltaTimer.returnTime(), _player);
     }
+    checkBombalive();
+    checkExplosionalive();
+    if (isGameEnd())
+        return false;
+    startDrawScene();
+    _deltaTimer.restartTimer();
+    return true;
 }
 
 void Bomberman::startDrawScene()
@@ -168,7 +330,11 @@ void Bomberman::stopDrawScene()
     // _drawer->endDrawing();
 }
 
-void Bomberman::checkGameEnd()
+bool Bomberman::isGameEnd()
 {
-    
+    for (EntityID id : _player) {
+        if (id != INVALID_ENTITY)
+            return false;
+    }
+    return true;
 }

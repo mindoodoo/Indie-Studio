@@ -19,6 +19,7 @@ RL::Window::Window(std::string title, Vector2i dimensions, bool initLater)
     this->_camera.setPosition((Vector3f){ 0.0f, 15.0f, 8.0f });  // Camera position
     this->_camera.setTarget((Vector3f){ 0.0f, 0.0f, 0.0f });      // Camera looking at point
     this->_camera.setRotation((Vector3f){ 0.0f, 1.0f, 0.0f });          // Camera up vector (rotation towards target)
+    this->_windowFont = LoadFontEx(".RaylibTesting/Assets/Fonts/Game_Of_Squids.ttf", 20, 0, 250);
 }
 
 RL::Window::~Window()
@@ -80,6 +81,16 @@ void RL::Window::queueDrawable(IDrawable *drawable)
         this->_displayQueue2D.push_back(drawable);
 }
 
+void RL::Window::removeDrawable(IDrawable *drawable)
+{
+    RL::DrawableType type = drawable->getType();
+    
+    if (type == RL::DrawableType::Type3D)
+        this->_displayQueue3D.erase(std::remove(this->_displayQueue3D.begin(), this->_displayQueue3D.end(), drawable), this->_displayQueue3D.end());
+    if (type == RL::DrawableType::Type2D)
+        this->_displayQueue2D.erase(std::remove(this->_displayQueue2D.begin(), this->_displayQueue2D.end(), drawable), this->_displayQueue2D.end());
+}
+
 void RL::Window::displayDrawables(Map map)
 {
     BeginDrawing();
@@ -93,6 +104,14 @@ void RL::Window::displayDrawables(Map map)
     for (auto drawable: this->_displayQueue2D)
         drawable->draw();
     EndDrawing();
+}
+
+void RL::Window::draw_text(std::string text, Color color, int x, int y, Font font, float size)
+{
+    //DrawText(text.c_str(), x, y, 20, color);
+
+    //use this function when we get font handled
+    DrawTextEx(font, text.c_str(), Vector2 {float(x), float(y)}, size, 2, color);
 }
 
 // Returns true if open, false otherwise
@@ -139,6 +158,7 @@ bool RL::Window::isWindowOpen()
     return this->_windowOpen;
 }
 
+
 const std::vector<RL::IDrawable*> RL::Window::get3Dqueue() const
 {
     return this->_displayQueue3D;
@@ -146,4 +166,9 @@ const std::vector<RL::IDrawable*> RL::Window::get3Dqueue() const
 
 void RL::Window::removeElemtfrom3Dqueue(int index) {
     _displayQueue3D.erase(_displayQueue3D.begin() + index);
+}
+
+Font RL::Window::getFont()
+{
+    return this->_windowFont;
 }

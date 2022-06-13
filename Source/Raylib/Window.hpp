@@ -11,6 +11,7 @@
 #include <string>
 #include <raylib.h>
 #include <vector>
+#include <algorithm>
 #include "GameEngine/Map.hpp"
 #include "Logger/Logger.hpp"
 #include "Camera.hpp"
@@ -40,9 +41,14 @@ namespace RL {
 
         // Add drawable to queue to be displayed when displayDrawables() is called
         void queueDrawable(IDrawable *drawable);
+        void removeDrawable(IDrawable *drawable);
         
         // Display all 2D and 3D Drawables in queue
         void displayDrawables(Map map);
+
+        // Draw some text on the window
+        void draw_text(std::string text, Color color, int x, int y, Font font, float size); // temporary, should create text class with font and size
+
 
         // Misc
         // Checks if a window is initiated and prints if not
@@ -56,6 +62,8 @@ namespace RL {
         const Vector2i &getDimensions() const;
         const std::string &getTitle() const;
         const std::vector<RL::IDrawable*> get3Dqueue() const;
+
+        Font getFont();
 
         // Check if window is initiated and checks if window should close
         bool isWindowOpen();
@@ -75,6 +83,8 @@ namespace RL {
         
         std::string _title;
         bool _windowOpen;
+        
+        Font _windowFont;
     };
 }
 

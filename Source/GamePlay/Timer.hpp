@@ -53,3 +53,45 @@ private:
 };
 
 #endif /* !TIMER_HPP_ */
+=======
+    public:
+        Timer() {};
+        ~Timer() {};
+        void startTimer() {
+            _pauseTime = 0;
+            _start = std::chrono::system_clock::now();
+        };
+
+        float returnTime() {
+            _currentTime = std::chrono::system_clock::now();
+            std::chrono::duration<float> diff = _currentTime - _start;
+            // std::chrono::duration<float> diff = std::chrono::duration_cast<std::chrono::seconds>(_currentTime - _start);
+
+            float elapsedTime = diff.count() - _pauseTime;
+
+            return elapsedTime;
+        };
+
+        void restartTimer() {
+            _pauseTime = 0;
+            _start = std::chrono::system_clock::now();
+        };
+
+        void startPause() {
+            _pauseStart = std::chrono::system_clock::now();
+        };
+        void stopPause() {
+            _pauseEnd = std::chrono::system_clock::now();
+            std::chrono::duration<float> diff = _pauseEnd - _pauseStart;
+            _pauseTime += diff.count();
+        };
+
+    private:
+        std::chrono::system_clock::time_point _start;
+        std::chrono::system_clock::time_point _currentTime;
+        std::chrono::system_clock::time_point _pauseStart;
+        std::chrono::system_clock::time_point _pauseEnd;
+        float _pauseTime;
+};
+
+#endif /* !TIMER_HPP_ */

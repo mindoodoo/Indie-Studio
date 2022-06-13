@@ -14,10 +14,11 @@
 #include "../GameEngine/Map.hpp"
 #include "../GameEngine/CollisionManager.hpp"
 #include "../Raylib/RaylibTypeEncaps.hpp"
+#include "../Window.hpp"
 
 class CollisionSystem : public ISystem {
     public:
-        CollisionSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Map> map) : _map(map)
+        CollisionSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Window> window) : _window(window)
         {
             _em = em;
         };
@@ -35,7 +36,7 @@ class CollisionSystem : public ISystem {
                     CollisionObjectType* type2 = _em->Get<CollisionObjectType>(other);
                     if (*type1 == ITEM)
                         pos = entModel->model->getPosition();
-                    if (ent != other && _colManager.collisionsWithModels(pos, *otherModel->model)) {
+                    if (ent != other && _colManager.collisionsWithModels(*entModel->model, *otherModel->model)) {
                         _destroyQueue.push_back(checkCollisionType(ent, other));
                     }
                 }
@@ -46,10 +47,12 @@ class CollisionSystem : public ISystem {
         void destroyEntities(std::vector<EntityID> _destroyQueue, std::vector<EntityID> &playerIds) {
             for (EntityID id : _destroyQueue) {
                 if (id != INVALID_ENTITY) {
+                    Sprite *entModel = _em->Get<Sprite>(id);
                     _em->DestroyEntity(id);
+                    _window->removeDrawable(entModel->model);
                 }
                 if (checkIfVectorContains(playerIds, id)) {
-                    playerIds.erase(std::remove(playerIds.begin(), playerIds.end(), id), playerIds.end());
+                    std::replace(playerIds.begin(), playerIds.end(), id, INVALID_ENTITY);
                 }
             }
         }
@@ -93,7 +96,18 @@ class CollisionSystem : public ISystem {
                 Skillset* playerSkills = _em->Get<Skillset>(highEnt);
                 Skillset* skillIncrease = _em->Get<Skillset>(itemEnt);
                 *playerSkills += *skillIncrease;
-                std::cout << "picked up item, increase skills" << std::endl;
+                if (skillIncrease->bombUp) {
+                    BombCapacity* playerBombCapacity = _em->Get<BombCapacity>(highEnt);
+                    playerBombCapacity->curCapacity += skillIncrease->bombUp;
+                    playerBombCapacity->totalAmount += skillIncrease->bombUp;
+                    std::cout << "updated bomb capacity to " << playerBombCapacity->totalAmount << std::endl;
+                }
+                if (skillIncrease->fireUp)
+                    std::cout << "updated fire up" << std::endl;
+                if (skillIncrease->speedUp)
+                    std::cout << "updated speed up" << std::endl;
+                if (skillIncrease->wallPass)
+                    std::cout << "updated wallPass" << std::endl;
                 return itemEnt;
             }
             return INVALID_ENTITY;
@@ -114,7 +128,7 @@ class CollisionSystem : public ISystem {
         };
 
     private:
-        std::shared_ptr<RL::Map> _map;
+        std::shared_ptr<RL::Window> _window;
         RL::CollisionManager _colManager;
         std::vector<EntityID> _destroyQueue;
 };

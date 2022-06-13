@@ -7,12 +7,13 @@
 
 #include "Map.hpp"
 
-RL::Map::Map(std::string mapCSVPath, std::string wallTexturePath, std::string floorTexturePath)
-:_wallModel(Drawable3D(wallTexturePath, "", "", RL::WALL)), _floorModel(RL::Drawable3D(floorTexturePath, "","", RL::FLOOR))
+RL::Map::Map(std::string mapCSVPath, std::string wallTexturePath, std::string floorTexturePath, std::string crateTexturePath)
+:_wallModel(Drawable3D(wallTexturePath, "", "", RL::WALL)), _floorModel(RL::Drawable3D(floorTexturePath, "","", RL::FLOOR)), _crateModel(RL::Drawable3D(crateTexturePath, "", "", RL::CRATE))
 {
     this->_parsedMap = parseMap(mapCSVPath);
     this->mapDepth = _parsedMap.size();
     this->mapWidth = _parsedMap[0].size();
+    generate_all_crates();
     this->_wallTexturepath = wallTexturePath;
 }
 
@@ -133,8 +134,11 @@ void RL::Map::draw_map()
         for (int j = 0; j < mapWidth; j++) {
             WallBoxPos.x = translateCoordinatestoWorld(j, mapWidth);
             WallBoxPos.z = translateCoordinatestoWorld(i, mapDepth);
-            if (_parsedMap[i][j].tile == 1) { // each if here can represend the drawable u want in the map  
-                DrawCubeTexture(_wallModel.getTexture(), WallBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, WHITE);
+            if (_parsedMap[i][j].tile == 1) { // each if here can represend the drawable u want in the map 
+                DrawCubeTexture(_wallModel.getTexture(), WallBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, WHITE);           
+            }
+            if (_parsedMap[i][j].tile == 2) { // each if here can represend the drawable u want in the map  
+                DrawCubeTexture(_crateModel.getTexture(), WallBoxPos, WallBoxSize.x, WallBoxSize.y, WallBoxSize.z, WHITE);  
                 //DrawSphere(WallBoxPos, 0.5f, WHITE);
                 //we can also draw anything else if its in the drawables of the map. we can actually add anything here and draw it while its in the list              
             }
@@ -151,6 +155,37 @@ float RL::Map::translateCoordinatestoWorld(int pos, int borderSize)
     if (borderSize % 2 == 0)
         newpos += 0.5;
     return newpos;
+}
+
+//random crate generator
+
+bool RL::Map::skip_start_areas(int i, int j)
+{
+    //check first row 
+    if (i == 1 || i == this->mapDepth - 2) {
+        if (j == 1 || j == this->mapWidth - 2 || j == 2 || j == this->mapWidth - 3)
+            return true;
+    }
+    //check first column 
+    if (j == 1 || j == this->mapWidth - 2) {
+        if (i == 1 || i == this->mapDepth - 2 || i == 2 || i == this->mapDepth - 3)
+            return true;
+    }
+    return false;
+}
+
+void RL::Map::generate_all_crates()
+{
+    int placeCrate;
+    for (int i = 0; i < mapDepth; i++) {
+        for (int j = 0; j < mapWidth; j++) {
+            placeCrate = rand() % 100;
+            if (!skip_start_areas(i, j) && _parsedMap[i][j].tile == 0 && placeCrate > 25)
+                
+                //here we do a randomiser and change the tile to == 2;
+                _parsedMap[i][j].tile = 2;
+            }
+        }
 }
 
 //Getters
