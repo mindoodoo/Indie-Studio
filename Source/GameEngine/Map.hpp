@@ -33,6 +33,9 @@ namespace RL {
         void generate_all_crates();
         bool skip_start_areas(int i, int j);
 
+        // remove crate
+        void removeCrate(RL::Vector2i pos);
+
         //Drawer
         void draw_map();
 

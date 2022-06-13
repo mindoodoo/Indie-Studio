@@ -14,11 +14,12 @@
 #include "../GameEngine/Map.hpp"
 #include "../GameEngine/CollisionManager.hpp"
 #include "../Raylib/RaylibTypeEncaps.hpp"
+#include "../SoundManager.hpp"
 #include "../Window.hpp"
 
 class CollisionSystem : public ISystem {
     public:
-        CollisionSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Window> window) : _window(window)
+        CollisionSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Window> window, std::shared_ptr<RL::SoundManager> sM) : _window(window), _soundManager(sM)
         {
             _em = em;
         };
@@ -50,9 +51,10 @@ class CollisionSystem : public ISystem {
                     Sprite *entModel = _em->Get<Sprite>(id);
                     _em->DestroyEntity(id);
                     _window->removeDrawable(entModel->model);
-                }
-                if (checkIfVectorContains(playerIds, id)) {
-                    std::replace(playerIds.begin(), playerIds.end(), id, INVALID_ENTITY);
+                    if (checkIfVectorContains(playerIds, id)) {
+                        _soundManager->playSpecificSoundFx("hurt");
+                        std::replace(playerIds.begin(), playerIds.end(), id, INVALID_ENTITY);
+                    }
                 }
             }
         }
@@ -104,19 +106,20 @@ class CollisionSystem : public ISystem {
                     std::cout << "updated speed up" << std::endl;
                 if (skillIncrease->wallPass)
                     std::cout << "updated wallPass" << std::endl;
+                _soundManager->playSpecificSoundFx("Item1");
                 return itemEnt;
             }
             return INVALID_ENTITY;
         };
 
         EntityID handleBombCollision(EntityID lowEnt, CollisionObjectType* low, EntityID highEnt, CollisionObjectType* high) {
-            if (*high == BOMB && *low == MONSTER && !checkIfVectorContains(_destroyQueue, lowEnt)) {
+            if (*high == EXPLOSION && *low == MONSTER && !checkIfVectorContains(_destroyQueue, lowEnt)) {
                 BombOwner* player = _em->Get<BombOwner>(highEnt);
                 Score* scoreIncrease = _em->Get<Score>(lowEnt);
                 _em->Get<Score>(player->id)->score += scoreIncrease->score;
                 std::cout << "bomb killed monster, score increase by " << scoreIncrease->score << std::endl;
                 return lowEnt;
-            } else if (*high == BOMB && !checkIfVectorContains(_destroyQueue, lowEnt)) {
+            } else if (*high == EXPLOSION && !checkIfVectorContains(_destroyQueue, lowEnt)) {
                 std::cout << "bomb killed player or breakable block " << std::endl;
                 return lowEnt;
             }
@@ -127,6 +130,7 @@ class CollisionSystem : public ISystem {
         std::shared_ptr<RL::Window> _window;
         RL::CollisionManager _colManager;
         std::vector<EntityID> _destroyQueue;
+        std::shared_ptr<RL::SoundManager> _soundManager;
 };
 
 #endif /* !COLLISIONSYSTEM_HPP_ */

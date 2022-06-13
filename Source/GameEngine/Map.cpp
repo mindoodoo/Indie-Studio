@@ -117,6 +117,12 @@ std::vector<std::vector<gfx_tile_t>> RL::Map::parseMap(const std::string &path)
     return map;
 }
 
+void RL::Map::removeCrate(RL::Vector2i pos)
+{
+    if (_parsedMap[pos.y][pos.x].tile == 2)
+        _parsedMap[pos.y][pos.x].tile = 0;
+}
+
 //drawing the map from MAP Class
 
 void RL::Map::draw_map()

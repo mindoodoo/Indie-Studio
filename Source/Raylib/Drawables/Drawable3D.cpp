@@ -6,6 +6,14 @@
 */
 
 #include "Drawable3D.hpp"
+RL::Drawable3D::Drawable3D(RL::ModelType type, float scale)
+{
+    this->_modelType = type;
+    this->_scale = scale;
+    this->up = 0;
+    this->_assetLoaded = true;
+
+}
 
 RL::Drawable3D::Drawable3D(std::string texturePath, std::string modelPath, std::string animationPath, RL::ModelType type, float scale)
 {
@@ -33,7 +41,7 @@ void RL::Drawable3D::draw()
     if (this->_modelType == RL::MODEL) {
         DrawModelEx(this->_model, this->_position, {0, 1, 0}, this->_rotationAngle, (Vector3f) {this->_scale,this->_scale,this->_scale} , WHITE);
         //DrawModel(this->_model, this->_position, this->_scale, WHITE);
-        DrawSphere(this->_position, 0.5f, RED);
+        //DrawSphere(this->_position, 0.5f, RED);
     }
     if (this->_modelType == RL::POWER)
         drawPower();  //here we implement the movement and rotation of the poweup and bouncy etc etc and smaller size etc etc
@@ -69,10 +77,10 @@ void RL::Drawable3D::load3DModel(std::string texturePath, std::string modelPath,
         throw std::invalid_argument("Asset path is a directory");
     if (this->_assetLoaded)
         this->unloadAll();
-    if (this->_modelType != RL::MODEL) {
+    // if (this->_modelType != RL::MODEL) {
         this->_img = LoadImage(texturePath.c_str());
         this->_texture = LoadTextureFromImage(this->_img);
-    }
+    // }
     if (this->_modelType == RL::MODEL) {
         this->_model = LoadModel(modelPath.c_str());
         SetMaterialTexture(&this->_model.materials[0], MATERIAL_MAP_DIFFUSE, this->_texture);
@@ -219,6 +227,32 @@ Texture2D RL::Drawable3D::getTexture()
 RL::DrawableType RL::Drawable3D::getType() const
 {
     return this->_type;
+}
+
+
+float RL::Drawable3D::getScale()
+{
+    return this->_scale;
+}
+
+void RL::Drawable3D::setUpvalue(int newup)
+{
+    this->up = newup;
+}
+
+int RL::Drawable3D::getUpvalue()
+{
+    return this->up;
+}
+
+Model RL::Drawable3D::getModel()
+{
+    return this->_model;
+}
+
+void RL::Drawable3D::setModel(Model model)
+{
+    this->_model = model;
 }
 
 RL::ModelType RL::Drawable3D::getModelType()

@@ -15,6 +15,7 @@
 
 enum UserInput {
     LAY_BOMB = -6,
+    LAY_BOMB2 = 103,
     CLOSED_WINDOW = -5,
     UP = -4,
     LEFT = -3,
@@ -40,7 +41,18 @@ enum CollisionObjectType {
     BREAKABLE_BLOCK,
     PLAYER,
     MONSTER,
-    BOMB
+    BOMB,
+    EXPLOSION
+};
+
+enum PlayerNumber {
+    One = 0,
+    Two = 1
+};
+
+enum ExplosionDirection {
+    Vertical = 0,
+    Horizontal = 1
 };
 
 struct Level {
@@ -76,6 +88,14 @@ struct Pos {
     float x;
     float y;
     float z;
+
+    bool operator==(Pos &position) {
+        if (this->x == position.x && \
+            this->y == position.y && \
+            this->z == position.z)
+            return true;
+        return false;
+    }
 };
 
 struct Velocity {
@@ -126,5 +146,6 @@ struct Sprite {
 struct Map {
     std::vector<std::vector<int>> map;
 };
+
 
 #endif /* !COMPONENTS_HPP_ */

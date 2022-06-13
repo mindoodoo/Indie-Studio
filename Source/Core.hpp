@@ -28,6 +28,7 @@ class Core {
         std::shared_ptr<RL::Window> _window;
         std::shared_ptr<RL::InputManager> _inputManager;
         std::shared_ptr<RL::Map> _map;
+        std::shared_ptr<RL::SoundManager> _soundManager;
         Bomberman *_game = nullptr;
 };
 
