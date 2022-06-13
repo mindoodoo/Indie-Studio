@@ -265,4 +265,12 @@ void RL::Drawable3D::setRotation(float newRotation)
     this->_rotationAngle = newRotation;
 }
 
+void RL::Drawable3D::setHidden(bool hidden)
+{
+    _hidden = hidden;
+}
 
+bool RL::Drawable3D::isHidden() const
+{
+    return _hidden;
+}

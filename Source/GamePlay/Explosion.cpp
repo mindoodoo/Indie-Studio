@@ -37,6 +37,13 @@ bool Bomberman::createExplosion(Pos pos, EntityID bombOwner)
     _em->Assign<Sprite>(id, Sprite{Explosion});
     _window->queueDrawable(Explosion);
     _map->removeCrate({(int)pos.x, (int)pos.y});
+    for (EntityID ent: EntityViewer<CollisionObjectType, Pos, Sprite>(*_em.get())) {
+        CollisionObjectType *objectType = _em->Get<CollisionObjectType>(ent);
+        Pos *itemPos = _em->Get<Pos>(ent);
+        Sprite *itemAsset = _em->Get<Sprite>(ent);
+        if (*objectType == ITEM && itemPos->x == pos.x && itemPos->y == pos.y)
+            itemAsset->model->setHidden(false);
+    }
     // _soundManager->playSpecificSoundFx("Wallsbreak");
     return true;
 }

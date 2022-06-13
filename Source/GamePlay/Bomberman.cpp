@@ -129,6 +129,7 @@ void Bomberman::createSpeedUpItem(Pos pos)
         1.0f,
         translateFigureCoordinates(pos.y, _map->getMapDepth())
     });
+    speedUp->setHidden(true);
     _em->Assign<Sprite>(id, Sprite{speedUp});
     _window->queueDrawable(speedUp);
 }
@@ -146,6 +147,7 @@ void Bomberman::createBombUpItem(Pos pos)
         1.0f,
         translateFigureCoordinates(pos.y, _map->getMapDepth())
     });
+    bombUp->setHidden(true);
     _em->Assign<Sprite>(id, Sprite{bombUp});
     _window->queueDrawable(bombUp);
 }
@@ -163,6 +165,7 @@ void Bomberman::createFireUpItem(Pos pos)
         1.0f,
         translateFigureCoordinates(pos.y, _map->getMapDepth())
     });
+    fireUp->setHidden(true);
     _em->Assign<Sprite>(id, Sprite{fireUp});
     _window->queueDrawable(fireUp);
 }
@@ -180,6 +183,7 @@ void Bomberman::createWallPassItem(Pos pos)
         1.0f,
         translateFigureCoordinates(pos.y, _map->getMapDepth())
     });
+    wallPass->setHidden(true);
     _em->Assign<Sprite>(id, Sprite{wallPass});
     _window->queueDrawable(wallPass);
 }

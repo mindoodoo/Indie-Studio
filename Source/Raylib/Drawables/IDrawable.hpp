@@ -33,8 +33,10 @@ namespace RL {
             virtual void draw() = 0;
             unsigned long long id;
             virtual DrawableType getType() const = 0;
+            virtual bool isHidden() const = 0;
 
         protected:
             DrawableType _type;
+            bool _hidden = false;
     };
 }

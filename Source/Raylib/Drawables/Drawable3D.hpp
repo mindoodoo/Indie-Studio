@@ -91,6 +91,9 @@ namespace RL {
             Model getModel();
             void setModel(Model model);
 
+            void setHidden(bool hidden);
+            bool isHidden() const override;
+
         protected:
             Vector3f _position = {0, 0, 0};
             Vector3f _boxSize;

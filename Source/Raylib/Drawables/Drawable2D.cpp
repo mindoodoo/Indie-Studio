@@ -86,3 +86,8 @@ RL::DrawableType RL::Drawable2D::getType() const
 {
     return this->_type;
 }
+
+bool RL::Drawable2D::isHidden() const
+{
+    return _hidden;
+}

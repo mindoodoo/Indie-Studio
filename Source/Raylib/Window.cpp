@@ -97,8 +97,10 @@ void RL::Window::displayDrawables(Map map)
     if (!this->_displayQueue3D.empty()) {
         BeginMode3D(this->_camera.getCamera());
         map.draw_map();
-        for (auto drawable: this->_displayQueue3D)
-            drawable->draw();
+        for (auto drawable: this->_displayQueue3D) {
+            if (!drawable->isHidden())
+                drawable->draw();
+        }
         EndMode3D();
     }
     for (auto drawable: this->_displayQueue2D)
