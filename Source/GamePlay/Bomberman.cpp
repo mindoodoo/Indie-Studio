@@ -19,8 +19,9 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Explosion/textures/fire3lambert1_baseColor.png", "./RaylibTesting/Assets/Explosion/textures/fire.obj", "", RL::MODEL, 3));
     
     //this is respndible for the music being played then shuffle enabled, comment out to cancel
-    _soundManager->playSpecificMusic("MiraiKaraKitaShonen");
-    _soundManager->enableDisableShuffle();
+    //_soundManager->playSpecificMusic("MiraiKaraKitaShonen");
+    _soundManager->playRandomMusic();
+    //_soundManager->enableDisableShuffle();
     
     // if only one player, fill _player[1] with INVALID_ENTITY
     createPlayer({13, 11, 1});
