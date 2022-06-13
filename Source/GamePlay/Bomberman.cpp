@@ -17,10 +17,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/3d_models/Skull/Skull.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Explosion/textures/fire3lambert1_baseColor.png", "./RaylibTesting/Assets/Explosion/textures/fire.obj", "", RL::MODEL, 3));
-    // createItem({5, 5, 1});
-    //createBomb({5, 5, 1}, _player.back());
-    //createMonster({5, 5, 1});
-    //createExplosion({1,1,1}, _player.back());
+
     // if only one player, fill _player[1] with INVALID_ENTITY
     createPlayer({13, 11, 1});
     generateItems();
