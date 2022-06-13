@@ -79,11 +79,8 @@ void Bomberman::checkBombalive() {
     for (EntityID ent: EntityViewer<CollisionObjectType, Timer, Sprite, Skillset, BombOwner>(*_em.get())) {
         if (*_em->Get<CollisionObjectType>(ent) == BOMB) {
             //if (_em->Get<Timer>(ent)->returnTime() >= 1) {
-            if (_em->Get<Timer>(ent)->returnTime() <= 3) {
-                
-                _em->Get<Sprite>(ent)->model->resize(3);
-                //_em->Get<Sprite>(ent)->model->resize(smoothBombResize(_em->Get<Sprite>(ent)->model));
-            }
+            if (_em->Get<Timer>(ent)->returnTime() <= 3)
+                smoothBombResize(_em->Get<Sprite>(ent)->model);
             if (_em->Get<Timer>(ent)->returnTime() >= 2) {
                 std::cout << "BOOOM" << std::endl;
                 for (EntityID enty: EntityViewer<BombCapacity>(*_em.get())) {

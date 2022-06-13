@@ -15,6 +15,7 @@
 
 enum UserInput {
     LAY_BOMB = -6,
+    LAY_BOMB2 = 103,
     CLOSED_WINDOW = -5,
     UP = -4,
     LEFT = -3,

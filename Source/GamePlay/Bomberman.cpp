@@ -20,6 +20,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
 
     // if only one player, fill _player[1] with INVALID_ENTITY
     createPlayer({13, 11, 1});
+    createPlayer({1, 1, 1});
     generateItems();
     // createSpeedUpItem({10, 10, 1});
     // createSpeedUpItem({4, 3, 1});
@@ -243,6 +244,9 @@ void Bomberman::getSecondPlayerInput()
             case RIGHT2:
                 playerInput->pressedKey = (UserInput)input;
                 break;
+            case LAY_BOMB2:
+               layBomb(_player[Two]);
+               break;
             default:
                 playerInput->pressedKey = NONE;
         }
