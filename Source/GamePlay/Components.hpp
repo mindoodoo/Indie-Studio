@@ -14,12 +14,17 @@
 #include "../Raylib/RaylibTypeEncaps.hpp"
 
 enum UserInput {
+    LAY_BOMB = -6,
+    LAY_BOMB2 = 103,
     CLOSED_WINDOW = -5,
     UP = -4,
     LEFT = -3,
     DOWN = -2,
     RIGHT = -1,
-    LAY_BOMB,
+    UP2 = 119,
+    LEFT2 = 97,
+    DOWN2 = 115,
+    RIGHT2 = 100,
     NONE
 };
 
@@ -36,7 +41,18 @@ enum CollisionObjectType {
     BREAKABLE_BLOCK,
     PLAYER,
     MONSTER,
-    BOMB
+    BOMB,
+    EXPLOSION
+};
+
+enum PlayerNumber {
+    One = 0,
+    Two = 1
+};
+
+enum ExplosionDirection {
+    Vertical = 0,
+    Horizontal = 1
 };
 
 struct Level {
@@ -72,6 +88,14 @@ struct Pos {
     float x;
     float y;
     float z;
+
+    bool operator==(Pos &position) {
+        if (this->x == position.x && \
+            this->y == position.y && \
+            this->z == position.z)
+            return true;
+        return false;
+    }
 };
 
 struct Velocity {
@@ -80,20 +104,22 @@ struct Velocity {
     float z;
 
     Velocity operator*(const float &factor) {
-        this->x *= factor;
-        this->y *= factor;
-        this->z *= factor;  // is it necessary to change the z coordinate?
-        return *this;
+        Velocity vel = Velocity();
+        vel.x = this->x * factor;
+        vel.y = this->y * factor;
+        vel.z = this->z * factor;
+        return vel;
     };
 
     Velocity operator+(const float &factor) {
+        Velocity vel = Velocity(*this);
         if (this->x)
-            this->x += factor;
+            vel.x = this->x + factor;
         if (this->y)
-            this->y += factor;
+            vel.y = this->y + factor;
         if (this->z)
-            this->z += factor;
-        return *this;
+            vel.z = this->z + factor;
+        return vel;
     };
 };
 
@@ -120,5 +146,6 @@ struct Sprite {
 struct Map {
     std::vector<std::vector<int>> map;
 };
+
 
 #endif /* !COMPONENTS_HPP_ */

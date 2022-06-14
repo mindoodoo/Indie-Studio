@@ -18,6 +18,14 @@ RL::InputManager::~InputManager()
 // -4 = UP ; -3 = LEFT ; -2 = DOWN ; -1 = RIGHT
 void RL::InputManager::recordInputs()
 {
+    if (IsKeyDown(KEY_W))
+        this->_inputQueue.emplace_back('w');
+    if (IsKeyDown(KEY_A))
+        this->_inputQueue.emplace_back('a');
+    if (IsKeyDown(KEY_S))
+        this->_inputQueue.emplace_back('s');
+    if (IsKeyDown(KEY_D))
+        this->_inputQueue.emplace_back('d');
     char pressedKey = GetCharPressed();
     if (pressedKey != 0)
         this->_inputQueue.emplace_back(pressedKey);
@@ -30,6 +38,8 @@ void RL::InputManager::recordInputs()
         this->_inputQueue.emplace_back(-3);
     if (IsKeyDown(KEY_RIGHT))
         this->_inputQueue.emplace_back(-1);
+    if (IsKeyPressed(KEY_SPACE))
+        this->_inputQueue.emplace_back(-6);
     //std::this_thread::sleep_for(std::chrono::milliseconds(100)); // This should change
 }
 

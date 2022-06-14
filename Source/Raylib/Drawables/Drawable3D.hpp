@@ -25,6 +25,7 @@ namespace RL {
     class Drawable3D: public IDrawable {
         public:
             // Model path is a .iqm and texturepath is a .png
+            Drawable3D(RL::ModelType type, float scale);
             Drawable3D(std::string texturePath, std::string modelPath, std::string animationPath, RL::ModelType type, float scale=1);
             ~Drawable3D();
 
@@ -69,16 +70,29 @@ namespace RL {
 
             bool isAssetLoaded() const; // Check if model and texture are loaded
             void setTint(Color newTint); // Sets tint of model
+            void setRotation(float newRotation); // rotation in Clockwise Angle (0.0 to 360.0)
 
             void setPosition(Vector3f position);
             Vector3f getPosition();
 
             Texture2D getTexture();
             DrawableType getType() const;
+            ModelType getModelType();
 
             Vector3f getBoxSize();
             void setBoundingBox();
             BoundingBox getBoundingBox();
+
+            float getScale();
+
+            void setUpvalue(int newup);
+            int getUpvalue();
+
+            Model getModel();
+            void setModel(Model model);
+
+            void setHidden(bool hidden);
+            bool isHidden() const override;
 
         protected:
             Vector3f _position = {0, 0, 0};
@@ -102,5 +116,6 @@ namespace RL {
             int _currentFrame = 0;
             unsigned int _animCount;
             bool _animationLoaded = false;
+            float _rotationAngle = 0.0f;
     };
 }

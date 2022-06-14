@@ -39,6 +39,7 @@ namespace RL {
             Texture2D getTexture();
 
             DrawableType getType() const;
+            bool isHidden() const override;
             
         protected:
             Vector3f _position = {0, 0, 0};

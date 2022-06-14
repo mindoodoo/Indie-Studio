@@ -16,8 +16,8 @@ RL::SoundManager::SoundManager()
     this->_musicPaused = false;
     this->_songTimePlayed = 0.0f;
     this->_shuffleEnabled = false;
-    this->_musicVolume = 0.6f;
-    this->_soundEffectVolume = 0.6f;
+    this->_musicVolume = 0.4f;
+    this->_soundEffectVolume = 0.3f;
 }
 
 RL::SoundManager::~SoundManager()
@@ -187,8 +187,8 @@ void RL::SoundManager::playSpecificSoundFx(std::string EffectName)
     for (std::size_t i = 0; i < this->_soundfx.size(); ++i) {
         if (this->_soundfx[i]._name == EffectName) {
             std::cout << "Im playing this sound effect : " << this->_soundfx[i]._name << std::endl;
-            PlaySoundMulti(this->_soundfx[i]._soundEffect);
             SetSoundVolume(this->_soundfx[i]._soundEffect, this->_soundEffectVolume);
+            PlaySoundMulti(this->_soundfx[i]._soundEffect);
             //this->_currentSongPlaying = i;
             return;
         }
