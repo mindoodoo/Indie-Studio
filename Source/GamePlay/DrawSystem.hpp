@@ -19,7 +19,7 @@ class DrawSystem : public ISystem {
         }
         ~DrawSystem() {};
 
-        void update(float deltaTime, std::vector<EntityID> &playerIds) override {
+        void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying) override {
             // _map->draw_map();
             for (EntityID ent : EntityViewer<Pos, Sprite, CollisionObjectType>(*_em.get())) {
                 Pos *objectPos = _em->Get<Pos>(ent);

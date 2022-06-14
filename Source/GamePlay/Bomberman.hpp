@@ -13,6 +13,7 @@
 #include "MovementSystem.hpp"
 #include "CollisionSystem.hpp"
 #include "DrawSystem.hpp"
+#include "AISystem.hpp"
 #include "AudioSystem.hpp"
 #include "Timer.hpp"
 #include "../Raylib/Drawables/Drawable3D.hpp"
@@ -29,6 +30,7 @@ class Bomberman {
 
         void generateItems();
         void createPlayer(Pos pos);
+        void createAI(Pos pos);
         void createSpeedUpItem(Pos pos);
         void createBombUpItem(Pos pos);
         void createFireUpItem(Pos pos);
@@ -43,6 +45,7 @@ class Bomberman {
         void startGameTimers();
         void stopGameTimers();
         bool runFrame();
+        bool checkIfVectorContain(std::vector<EntityID> vector, EntityID id);
         void startDrawScene();
         void stopDrawScene();
         void checkGameEnd();
@@ -62,6 +65,7 @@ class Bomberman {
         std::vector<int> _event;
         std::vector<std::shared_ptr<ISystem>> _systems;
         std::vector<EntityID> _player;
+        std::vector<EntityID> _aiBombLaying;
         std::shared_ptr<EntityManager> _em;
         std::vector<RL::Drawable3D> _allModels;
         Timer _gameTimer;

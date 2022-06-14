@@ -40,9 +40,17 @@ enum CollisionObjectType {
     ITEM,
     BREAKABLE_BLOCK,
     PLAYER,
+    AI,
     MONSTER,
     BOMB,
     EXPLOSION
+};
+
+enum ItemType {
+    SPEED_UP = 's',
+    BOMB_UP = 'b',
+    FIRE_UP = 'f',
+    WALLPASS = 'w'
 };
 
 enum PlayerNumber {

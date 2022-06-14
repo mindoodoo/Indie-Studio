@@ -57,7 +57,7 @@ void Bomberman::layBomb(EntityID playerid)
 {
     std::cout << "LAYING bomb" << std::endl;
     if (_em->Get<BombCapacity>(playerid)->curCapacity >= 1) {
-        if (createBomb(*_em->Get<Pos>(playerid), _player[One],*_em->Get<Skillset>(playerid)))
+        if (createBomb(*_em->Get<Pos>(playerid), playerid,*_em->Get<Skillset>(playerid)))
             _em->Get<BombCapacity>(playerid)->curCapacity -= 1;
     }
 }
@@ -117,9 +117,8 @@ void Bomberman::checkBombalive() {
                 std::cout << "BOOOM" << std::endl;
                 //I DONT KNOW IF WE WANT TO LEAVE THIS LIKE THIS
                 _soundManager->playSpecificSoundFx("ExplosionTest");
-                for (EntityID enty: EntityViewer<BombCapacity>(*_em.get())) {
-                    _em->Get<BombCapacity>(enty)->curCapacity += 1;
-                }
+                if (checkIfVectorContain(_player, _em->Get<BombOwner>(ent)->id))
+                    _em->Get<BombCapacity>(_em->Get<BombOwner>(ent)->id)->curCapacity += 1;
                 //create explosion
                 createBombExplosions(ent);
                     

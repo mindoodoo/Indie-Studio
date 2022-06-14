@@ -27,7 +27,7 @@ class MovementSystem : public ISystem {
         };
         ~MovementSystem() {};
 
-        void update(float deltaTime, std::vector<EntityID> &playerIds) override {
+        void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying) override {
             for (EntityID ent : EntityViewer<Pos, Velocity, Input, Sprite, CollisionObjectType>(*_em.get())) {
                 Pos* playerPos = _em->Get<Pos>(ent);
                 Velocity* playerVel = _em->Get<Velocity>(ent);

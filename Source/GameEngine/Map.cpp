@@ -123,6 +123,18 @@ void RL::Map::removeCrate(RL::Vector2i pos)
         _parsedMap[pos.y][pos.x].tile = 0;
 }
 
+void RL::Map::removeItem(RL::Vector2i pos)
+{
+    if (_parsedMap[pos.y][pos.x].tile != 1 && _parsedMap[pos.y][pos.x].tile != 2)
+        _parsedMap[pos.y][pos.x].tile = 0;
+}
+
+void RL::Map::addItem(RL::Vector2i pos, int itemValue)
+{
+    if (_parsedMap[pos.y][pos.x].tile != 1 && _parsedMap[pos.y][pos.x].tile != 2)
+        _parsedMap[pos.y][pos.x].tile = itemValue;
+}
+
 //drawing the map from MAP Class
 
 void RL::Map::draw_map()
