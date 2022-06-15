@@ -30,29 +30,37 @@ class AISystem : public ISystem {
                 _foundTarget = false;
                 Pos* pos = _em->Get<Pos>(ent);
                 CollisionObjectType* type = _em->Get<CollisionObjectType>(ent);
+                Input* input = _em->Get<Input>(ent);
                 if (*type == AI) {
-                    // TODO: avoid bomb as first priority
-                    scanForPlayers(pos, ent, playerIds);
-                    if (!_foundTarget)
-                        scanForItem(pos);
-                    if (!_foundTarget)
-                        scanForBreakableBlock(pos);
-                    if (!_foundTarget)
-                        setRandomTarget();
-                    Input* input = _em->Get<Input>(ent);
-                    coordinates_t AIPos = {pos->x, pos->y};
-                    coordinates_t targetPosition = {_target.x, _target.y};
-                    // after setting a target, move there with pathfinding algorithm (movement over Input component)
-                    std::cout << "MY Pos is : " << pos->x << " " << pos->y << " " << pos->z << std::endl;
-                    std::cout << "Target is: " <<_target.x << " " << _target.y << " " <<_target.z << std::endl;
-
-                    _path = calculateAStar(AIPos, targetPosition, _map->getParsedMap());
-
-                    for (int i = 0; i < _path.size(); i++) {
-                        std::cout << "found   " ;
-                        std::cout << _path[i].first << " " << _path[i].second << "/";
+                    // when do we lay bombs?
+                    if (_path.empty())
+                        scanForNewTarget(pos, ent, playerIds);
+                    coordinates_t nextWalkingPoint = _path.front();
+                    Pos roundedPos = Pos({round_up(pos->x, 1), round_up(pos->y, 1)});
+                    if (roundedPos.x == nextWalkingPoint.second && roundedPos.y == nextWalkingPoint.first) {
+                        if (_path.empty()) {
+                            input->pressedKey = NONE;
+                            return;
+                        }
+                        _path.pop_front();
+                        nextWalkingPoint = _path.front();
                     }
-                    std::cout << std::endl;
+
+                    Pos walkingDirection = Pos({roundedPos.x - nextWalkingPoint.second, roundedPos.y - nextWalkingPoint.first, 0});
+
+                    if (abs(walkingDirection.x) > abs(walkingDirection.y)) {
+                        if (walkingDirection.x > 0)
+                            input->pressedKey = LEFT;
+                        else if (walkingDirection.x < 0)
+                            input->pressedKey = RIGHT;
+                    } else {
+                        if (walkingDirection.y > 0)
+                            input->pressedKey = UP;
+                        else if (walkingDirection.y < 0)
+                            input->pressedKey = DOWN;
+                    }
+                    if (walkingDirection.x == 0 && walkingDirection.y == 0)
+                        input->pressedKey = NONE;
 
                     // random (stupid) actions
                     // switch (rand() % 6) {
@@ -79,6 +87,45 @@ class AISystem : public ISystem {
             }
         };
 
+        float round_up(float number, int decimal_places) {
+            float multiplier = std::pow(10.0, decimal_places);
+            return std::ceil(number * multiplier) / multiplier;
+        }
+
+        void scanForNewTarget(Pos *pos, EntityID ent, std::vector<EntityID> playerIds) {
+            // TODO: avoid bomb as first priority
+            scanForPlayers(pos, ent, playerIds);
+            if (!_foundTarget)
+                scanForItem(pos);
+            if (!_foundTarget)
+                scanForBreakableBlock(pos);
+            if (!_foundTarget)
+                setRandomTarget();
+        }
+
+        void checkForPath(Pos *pos) {
+            coordinates_t AIPos = {round(pos->x), round(pos->y)};
+            coordinates_t targetPosition = {_target.x, _target.y};
+            // after setting a target, move there with pathfinding algorithm (movement over Input component)
+            std::cout << "MY Pos is : " << AIPos.first << " " << AIPos.second << std::endl;
+            std::cout << "Target is: " <<_target.x << " " << _target.y << " " <<_target.z << std::endl;
+
+            if (AIPos == targetPosition)
+                return;
+            _path = calculateAStar(AIPos, targetPosition, _map->getParsedMap());
+
+            for (int i = 0; i < _path.size(); i++) {
+                std::cout << "found   " ;
+                std::cout << _path[i].first << " " << _path[i].second << "/";
+            }
+            if (_path.empty()) {
+                _foundTarget = false;
+                std::cout << "cant go there, path is blocked";
+            } else
+                _foundTarget = true;
+            std::cout << std::endl << std::endl;
+        }
+
         void scanForPlayers(Pos* pos, EntityID ent, std::vector<EntityID> playerIds) {
             std::vector<Pos> playerPos;
             for (EntityID id : playerIds) {
@@ -95,9 +142,12 @@ class AISystem : public ISystem {
                     for (int x = startX; x <= endX; x++) {
                         for (Pos curPos : playerPos) {
                             if (round(curPos.x) == x && round(curPos.y) == y) {
-                                std::cout << "found PLAYER" << std::endl;
                                 _target = {(float)x, (float)y, 1};
-                                _foundTarget = true;
+                                // _foundTarget = true;
+                                checkForPath(pos);
+                                if (!_foundTarget)
+                                    continue;
+                                std::cout << "found PLAYER" << std::endl;
                                 return;
                             }
                         }
@@ -118,9 +168,12 @@ class AISystem : public ISystem {
                             _map->getParsedMap()[y][x].tile == BOMB_UP ||
                             _map->getParsedMap()[y][x].tile == FIRE_UP ||
                             _map->getParsedMap()[y][x].tile == WALLPASS) {
-                            std::cout << "found ITEM" << std::endl;
                             _target = {(float)x, (float)y, 1};
-                            _foundTarget = true;
+                            // _foundTarget = true;
+                            checkForPath(pos);
+                            if (!_foundTarget)
+                                continue;
+                            std::cout << "found ITEM" << std::endl;
                             return;
                         }
                     }
@@ -137,9 +190,12 @@ class AISystem : public ISystem {
                 for (int y = startY; y <= endY; y++) {
                     for (int x = startX; x <= endX; x++) {
                         if (_map->getParsedMap()[y][x].tile == BREAKABLE_OBJECT) {
-                            std::cout << "found CRATE" << std::endl;
                             _target = {(float)x, (float)y, 1};
-                            _foundTarget = true;
+                            // _foundTarget = true;
+                            checkForPath(pos);
+                            if (!_foundTarget)
+                                continue;
+                            std::cout << "found CRATE" << std::endl;
                             return;
                         }
                     }

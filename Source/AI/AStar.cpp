@@ -22,7 +22,7 @@ void reverseQueue(std::queue<coordinates_t> &Queue)
     }
 }
 
-std::deque<coordinates_t> returnPath(Node currentNode)
+std::deque<coordinates_t> returnPath(Node currentNode, std::vector<std::vector<gfx_tile_t>> map)
 {
     std::deque<coordinates_t> path;
 
@@ -34,6 +34,13 @@ std::deque<coordinates_t> returnPath(Node currentNode)
         path.push_front(currentNode.position);
         currentNode = *currentNode.parent;
     }
+    coordinates_t end = {path.back().first, path.back().second};
+    int _blockingTiles[2] = {
+        1, 2
+    };
+    for (int blockingTile : _blockingTiles)
+        if (map[end.first][end.second].tile == blockingTile)
+            path.pop_back();
 
     return path;
 }
@@ -86,11 +93,11 @@ std::deque<coordinates_t> calculateAStar(coordinates_t start, coordinates_t end,
 
         // Timeour check
         if (totalIterations > max_iterations)
-            return returnPath(currNode);
+            return returnPath(currNode, map);
 
         // Check if at target
         if (currNode == endNode)
-            return returnPath(currNode);
+            return returnPath(currNode, map);
 
         // Generate neighbours
         std::deque<Node> neighbours;
@@ -111,7 +118,7 @@ std::deque<coordinates_t> calculateAStar(coordinates_t start, coordinates_t end,
             // Make sure walkable terrain
             int isBlocked = 0;
             for (int blockingTile: _blockingTiles)
-                if (nodePosition.first != end.first && nodePosition.second != end.second &&
+                if ((nodePosition.first != end.first || nodePosition.second != end.second) &&
                     map[nodePosition.first][nodePosition.second].tile == blockingTile)
                     isBlocked = 1;
             if (isBlocked)
