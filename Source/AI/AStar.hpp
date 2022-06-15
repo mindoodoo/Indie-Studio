@@ -7,12 +7,17 @@
 
 #pragma once
 
-#include "Terrain.hpp"
+#include "../GameEngine/Map.hpp"
 #include <algorithm>
 #include <valarray>
 #include <iostream>
 #include <stack>
 #include <cmath>
+#include <cstddef>
+#include <string>
+#include <queue>
+
+typedef std::pair<size_t, size_t> coordinates_t;
 
 class Node
 {
@@ -28,6 +33,6 @@ class Node
         int f = 0;
 };
 
-std::deque<coordinates_t> calculateAStar(coordinates_t start, coordinates_t end, map_t map);
+std::deque<coordinates_t> calculateAStar(coordinates_t start, coordinates_t end, std::vector<std::vector<gfx_tile_t>> map);
 
 bool operator==(Node y, Node x);

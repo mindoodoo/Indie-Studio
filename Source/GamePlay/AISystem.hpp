@@ -14,6 +14,7 @@
 #include "../GameEngine/Map.hpp"
 #include "../GameEngine/CollisionManager.hpp"
 #include "../Raylib/RaylibTypeEncaps.hpp"
+#include "../AI/AStar.hpp"
 
 class AISystem : public ISystem {
     public:
@@ -39,8 +40,20 @@ class AISystem : public ISystem {
                     if (!_foundTarget)
                         setRandomTarget();
                     Input* input = _em->Get<Input>(ent);
+                    coordinates_t AIPos = {pos->x, pos->y};
+                    coordinates_t targetPosition = {_target.x, _target.y};
                     // after setting a target, move there with pathfinding algorithm (movement over Input component)
-                    
+                    std::cout << "MY Pos is : " << pos->x << " " << pos->y << " " << pos->z << std::endl;
+                    std::cout << "Target is: " <<_target.x << " " << _target.y << " " <<_target.z << std::endl;
+
+                    _path = calculateAStar(AIPos, targetPosition, _map->getParsedMap());
+
+                    for (int i = 0; i < _path.size(); i++) {
+                        std::cout << "found   " ;
+                        std::cout << _path[i].first << " " << _path[i].second << "/";
+                    }
+                    std::cout << std::endl;
+
                     // random (stupid) actions
                     // switch (rand() % 6) {
                     //     case 0:
@@ -146,6 +159,10 @@ class AISystem : public ISystem {
         bool _foundTarget;
         Pos _target;
         int _scanRadius;
+
+        //AStar implementation test
+        std::deque<coordinates_t> _path;
+
 };
 
 #endif /* !AISYSTEM_HPP_ */

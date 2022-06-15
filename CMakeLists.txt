@@ -26,7 +26,8 @@ FILE(GLOB CFILES
         Source/Raylib/Window.cpp
         Source/GamePlay/Bomb.cpp
         Source/GamePlay/Explosion.cpp
-        Source/Core.cpp)
+        Source/Core.cpp
+        Source/AI/AStar.cpp)
 
 #add Header files
 FILE(GLOB HEADERFILES
@@ -53,7 +54,8 @@ FILE(GLOB HEADERFILES
         Source/Raylib/SoundManager.hpp
         Source/Raylib/Window.hpp
         Source/GamePlay/Timer.hpp
-        Source/Core.hpp)
+        Source/Core.hpp
+        Source/AI/AStar.hpp)
 
 
 #add to project

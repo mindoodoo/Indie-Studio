@@ -62,7 +62,7 @@ void Bomberman::layBomb(EntityID playerid)
     }
 }
 
-float Bomberman::smoothBombResize(RL::Drawable3D *BombModel)
+void Bomberman::smoothBombResize(RL::Drawable3D *BombModel)
 {
     if (BombModel->getScale() <= 3.01f && BombModel->getUpvalue() == 1) {
         BombModel->resize(BombModel->getScale() + 0.05f);

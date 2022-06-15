@@ -52,7 +52,7 @@ class Bomberman {
         void createBombExplosions(EntityID ent);
         bool createExplosion(Pos pos, EntityID bombOwner);
         void checkExplosionalive();
-        float smoothBombResize(RL::Drawable3D *BombModel);
+        void smoothBombResize(RL::Drawable3D *BombModel);
         RL::Drawable3D* makeDrawable3DPointer(RL::Drawable3D Model);
         bool isGameEnd();
 

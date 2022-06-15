@@ -28,7 +28,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     // TODO: make pos dependant from map size
     createPlayer({13, 11, 1});
     createPlayer({1, 1, 1});
-    createAI({13, 1, 1});
+    //createAI({13, 1, 1});
     createAI({1, 11, 1});
     generateItems();
     // createSpeedUpItem({10, 10, 1});
