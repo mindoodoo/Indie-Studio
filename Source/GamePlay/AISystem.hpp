@@ -18,49 +18,50 @@
 
 class AISystem : public ISystem {
     public:
+        enum TargetType {
+            CRATE,
+            ITEM,
+            PLAYER,
+            BOMB,
+            RANDOM
+        };
         AISystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Map> map) : _map(map) {
             _em = em;
             _target = {0, 0, 0};
             _scanRadius = 5;
+            _detectedBomb = false;
+            _targetType = RANDOM;
         };
         ~AISystem() {};
 
         void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying) {
             for (EntityID ent : EntityViewer<Pos, Sprite, CollisionObjectType>(*_em.get())) {
                 _foundTarget = false;
-                Pos* pos = _em->Get<Pos>(ent);
                 CollisionObjectType* type = _em->Get<CollisionObjectType>(ent);
-                Input* input = _em->Get<Input>(ent);
                 if (*type == AI) {
-                    // when do we lay bombs?
-                    if (_path.empty())
-                        scanForNewTarget(pos, ent, playerIds);
-                    coordinates_t nextWalkingPoint = _path.front();
-                    Pos roundedPos = Pos({round_up(pos->x, 1), round_up(pos->y, 1)});
-                    if (roundedPos.x == nextWalkingPoint.second && roundedPos.y == nextWalkingPoint.first) {
+                    Pos* pos = _em->Get<Pos>(ent);
+                    Input* input = _em->Get<Input>(ent);
+                    bool saveDetectedBomb = _detectedBomb;
+                    _detectedBomb = false;
+                    scanForBombs(pos);
+                    if (_detectedBomb && !saveDetectedBomb)
+                        escapeBombRadius(pos);
+                    if (_detectedBomb) {
                         if (_path.empty()) {
                             input->pressedKey = NONE;
                             return;
                         }
-                        _path.pop_front();
-                        nextWalkingPoint = _path.front();
-                    }
-
-                    Pos walkingDirection = Pos({roundedPos.x - nextWalkingPoint.second, roundedPos.y - nextWalkingPoint.first, 0});
-
-                    if (abs(walkingDirection.x) > abs(walkingDirection.y)) {
-                        if (walkingDirection.x > 0)
-                            input->pressedKey = LEFT;
-                        else if (walkingDirection.x < 0)
-                            input->pressedKey = RIGHT;
                     } else {
-                        if (walkingDirection.y > 0)
-                            input->pressedKey = UP;
-                        else if (walkingDirection.y < 0)
-                            input->pressedKey = DOWN;
+                        if (_path.empty()) {
+                            if (_target.x != 0 && _target.y != 0 && _target.z != 0 && _detectedBomb == saveDetectedBomb && _targetType != ITEM) {
+                                // lay bomb at target position
+                                aiBombLaying.push_back(ent);
+                            }
+                            scanForNewTarget(pos, ent, playerIds);
+                        }
                     }
-                    if (walkingDirection.x == 0 && walkingDirection.y == 0)
-                        input->pressedKey = NONE;
+                    findTarget(ent, pos, input, playerIds);
+                    
 
                     // random (stupid) actions
                     // switch (rand() % 6) {
@@ -87,26 +88,77 @@ class AISystem : public ISystem {
             }
         };
 
+        void findTarget(EntityID ent, Pos *pos, Input *input, std::vector<EntityID> playerIds) {
+            coordinates_t nextWalkingPoint = _path.front();
+            Pos roundedPos = Pos({round_up(pos->x, 1), round_up(pos->y, 1)});
+            if (roundedPos.x == nextWalkingPoint.second && roundedPos.y == nextWalkingPoint.first) {
+                if (_path.empty()) {
+                    input->pressedKey = NONE;
+                    return;
+                }
+                _path.pop_front();
+                nextWalkingPoint = _path.front();
+            }
+
+            Pos walkingDirection = Pos({roundedPos.x - nextWalkingPoint.second, roundedPos.y - nextWalkingPoint.first, 0});
+
+            if (abs(walkingDirection.x) > abs(walkingDirection.y)) {
+                if (walkingDirection.x > 0)
+                    input->pressedKey = LEFT;
+                else if (walkingDirection.x < 0)
+                    input->pressedKey = RIGHT;
+            } else {
+                if (walkingDirection.y > 0)
+                    input->pressedKey = UP;
+                else if (walkingDirection.y < 0)
+                    input->pressedKey = DOWN;
+            }
+            if (walkingDirection.x == 0 && walkingDirection.y == 0)
+                input->pressedKey = NONE;
+        }
+
         float round_up(float number, int decimal_places) {
             float multiplier = std::pow(10.0, decimal_places);
             return std::ceil(number * multiplier) / multiplier;
         }
 
+        coordinates_t roundPos(float x, float y) {
+            int roundX = round(x);
+            int roundY = round(y);
+            if (_map->getParsedMap()[roundY][roundX].tile != 1 &&
+                _map->getParsedMap()[roundY][roundX].tile != 2)
+                return {roundX, roundY};
+            int ceilX = std::ceil(x);
+            int ceilY = std::ceil(y);
+            int floorX = std::floor(x);
+            int floorY = std::floor(y);
+            if (_map->getParsedMap()[ceilY][ceilX].tile != 1 &&
+                _map->getParsedMap()[ceilY][ceilX].tile != 2)
+                return {ceilX, ceilY};
+            if (_map->getParsedMap()[floorY][floorX].tile != 1 &&
+                _map->getParsedMap()[floorY][floorX].tile != 2)
+                return {floorX, floorY};
+            if (_map->getParsedMap()[ceilY][floorX].tile != 1 &&
+                _map->getParsedMap()[ceilY][floorX].tile != 2)
+                return {floorX, ceilY};
+            if (_map->getParsedMap()[floorY][ceilX].tile != 1 &&
+                _map->getParsedMap()[floorY][ceilX].tile != 2)
+                return {ceilX, floorY};
+        }
+
         void scanForNewTarget(Pos *pos, EntityID ent, std::vector<EntityID> playerIds) {
-            // TODO: avoid bomb as first priority
             scanForPlayers(pos, ent, playerIds);
             if (!_foundTarget)
                 scanForItem(pos);
             if (!_foundTarget)
                 scanForBreakableBlock(pos);
             if (!_foundTarget)
-                setRandomTarget();
+                setRandomTarget(pos);
         }
 
         void checkForPath(Pos *pos) {
-            coordinates_t AIPos = {round(pos->x), round(pos->y)};
+            coordinates_t AIPos = roundPos(pos->x, pos->y);
             coordinates_t targetPosition = {_target.x, _target.y};
-            // after setting a target, move there with pathfinding algorithm (movement over Input component)
             std::cout << "MY Pos is : " << AIPos.first << " " << AIPos.second << std::endl;
             std::cout << "Target is: " <<_target.x << " " << _target.y << " " <<_target.z << std::endl;
 
@@ -126,6 +178,54 @@ class AISystem : public ISystem {
             std::cout << std::endl << std::endl;
         }
 
+        void escapeBombRadius(Pos *pos) {
+            coordinates_t AIPos = roundPos(pos->x, pos->y);
+            coordinates_t bombPosition = {_target.x, _target.y};
+
+            _path = avoidBomb(AIPos, bombPosition, _map->getParsedMap());
+
+            for (int i = 0; i < _path.size(); i++) {
+                std::cout << "found bomb, will go to  " ;
+                std::cout << _path[i].first << " " << _path[i].second << "/";
+            }
+            if (_path.empty()) {
+                _foundTarget = false;
+                std::cout << "cant go there, path is blocked";
+            } else
+                _foundTarget = true;
+            std::cout << std::endl << std::endl;
+        }
+
+        void scanForBombs(Pos* pos) {
+            std::vector<Pos> bombPos;
+            for (EntityID ent : EntityViewer<Pos, CollisionObjectType>(*_em.get())) {
+                CollisionObjectType type = *_em->Get<CollisionObjectType>(ent);
+                if (type == CollisionObjectType::BOMB || type == EXPLOSION)
+                    bombPos.push_back(*_em->Get<Pos>(ent));
+            }
+
+            for (int radius = 0; radius < _scanRadius; radius++) {
+                int startX = (pos->x - radius) <= 0 ? 1 : (pos->x - radius);
+                int startY = (pos->y - radius) <= 0 ? 1 : (pos->y - radius);
+                int endX = (pos->x + radius) >= _map->getMapWidth() ? (_map->getMapWidth() - 1) : (pos->x + radius);
+                int endY = (pos->y + radius) >= _map->getMapDepth() ? (_map->getMapDepth() - 1) : (pos->y + radius);
+                for (int y = startY; y <= endY; y++) {
+                    for (int x = startX; x <= endX; x++) {
+                        for (Pos curPos : bombPos) {
+                            if (round(curPos.x) == x && round(curPos.y) == y) {
+                                // std::cout << "found BOMB" << std::endl;
+                                _target = {(float)x, (float)y, 1};
+                                _detectedBomb = true;
+                                _targetType = BOMB;
+                                return;
+                            }
+                        }
+                        
+                    }
+                }
+            }
+        };
+
         void scanForPlayers(Pos* pos, EntityID ent, std::vector<EntityID> playerIds) {
             std::vector<Pos> playerPos;
             for (EntityID id : playerIds) {
@@ -143,10 +243,10 @@ class AISystem : public ISystem {
                         for (Pos curPos : playerPos) {
                             if (round(curPos.x) == x && round(curPos.y) == y) {
                                 _target = {(float)x, (float)y, 1};
-                                // _foundTarget = true;
                                 checkForPath(pos);
                                 if (!_foundTarget)
                                     continue;
+                                _targetType = PLAYER;
                                 std::cout << "found PLAYER" << std::endl;
                                 return;
                             }
@@ -169,10 +269,10 @@ class AISystem : public ISystem {
                             _map->getParsedMap()[y][x].tile == FIRE_UP ||
                             _map->getParsedMap()[y][x].tile == WALLPASS) {
                             _target = {(float)x, (float)y, 1};
-                            // _foundTarget = true;
                             checkForPath(pos);
                             if (!_foundTarget)
                                 continue;
+                            _targetType = ITEM;
                             std::cout << "found ITEM" << std::endl;
                             return;
                         }
@@ -191,10 +291,10 @@ class AISystem : public ISystem {
                     for (int x = startX; x <= endX; x++) {
                         if (_map->getParsedMap()[y][x].tile == BREAKABLE_OBJECT) {
                             _target = {(float)x, (float)y, 1};
-                            // _foundTarget = true;
                             checkForPath(pos);
                             if (!_foundTarget)
                                 continue;
+                            _targetType = CRATE;
                             std::cout << "found CRATE" << std::endl;
                             return;
                         }
@@ -203,18 +303,27 @@ class AISystem : public ISystem {
             }
         };
 
-        void setRandomTarget() {
-            float x = (rand() % (_map->getMapWidth() - 1)) + 1;
-            float y = (rand() % (_map->getMapDepth() - 1)) + 1;
-            _target = {x, y, 1};
+        void setRandomTarget(Pos *pos) {
+            while (!_foundTarget) {
+                int randX = rand() % (_map->getMapWidth() - 1);
+                int randY = rand() % (_map->getMapDepth() - 1);
+                std::cout << "RANDOM VALS: " << randX << ", " << randY << std::endl;
+                float x = randX + 1;
+                float y = randY + 1;
+                _target = {x, y, 1};
+                checkForPath(pos);
+            }
+            _targetType = RANDOM;
         }
 
     private:
         std::shared_ptr<RL::Map> _map;
         RL::CollisionManager _colManager;
+        bool _detectedBomb;
         bool _foundTarget;
         Pos _target;
         int _scanRadius;
+        TargetType _targetType;
 
         //AStar implementation test
         std::deque<coordinates_t> _path;

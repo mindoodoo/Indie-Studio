@@ -160,6 +160,92 @@ std::deque<coordinates_t> calculateAStar(coordinates_t start, coordinates_t end,
     return {};
 }
 
+std::deque<coordinates_t> avoidBomb(coordinates_t start, coordinates_t bombPos, std::vector<std::vector<gfx_tile_t>> map)
+{
+    start = {start.second, start.first};
+    bombPos = {bombPos.second, bombPos.first};
+    // Set blocking tiles (walls)
+    int _blockingTiles[2] = {
+        1, 2
+    };
+
+    if ((start.first != bombPos.first && start.second != bombPos.second)
+        || abs(start.first - bombPos.first) > 3 || abs(start.second - bombPos.second) > 3)
+        return {};
+
+    // Start
+    Node startNode = Node(nullptr, start);
+
+    // Possible relative pos
+    // Used to initiate neighbours
+    std::deque<std::pair<int, int>> possiblePos;
+
+    // Init lists
+    std::deque<Node> openList;
+    std::deque<Node> closedList;
+
+    // Add start node to the list
+    openList.push_back(startNode);
+
+    size_t totalIterations = 0;
+    size_t max_iterations = map[0].size() * map.size();
+
+    // Initialize neighbour list
+    possiblePos.push_front({0, -1});
+    possiblePos.push_front({0, 1});
+    possiblePos.push_front({-1, 0});
+    possiblePos.push_front({1, 0});
+
+    while (!openList.empty()) {
+        // Inc total Iteration
+        totalIterations += 1;
+
+        // Get the current node
+        Node currNode = openList.front();
+
+        // Remove from openList
+        openList.pop_front();
+        // ... and add to closed list
+        closedList.push_back(currNode);
+
+        // Timeour check
+        if (totalIterations > max_iterations)
+            return returnPath(currNode, map);
+
+        // Check if at target
+        if ((currNode.position.first != bombPos.first && currNode.position.second != bombPos.second)
+            || abs(currNode.position.first - bombPos.first) > 3 || abs(currNode.position.second - bombPos.second) > 3) // if behind corner/ 3-6 pos away from start pos
+            return returnPath(currNode, map);
+
+        // Instantiate neighbour nodes
+        // Note : f, g, and h are all instatiated to 0
+        for (std::pair<int, int> posOffset: possiblePos) {
+            // Get node position
+            coordinates_t nodePosition = {
+                currNode.position.first + posOffset.first,
+                currNode.position.second + posOffset.second
+            };
+
+            // Make sure within range
+            if (nodePosition.first >= map.size() || nodePosition.second >= map[0].size())
+                continue;
+
+            // Make sure walkable terrain
+            int isBlocked = 0;
+            for (int blockingTile: _blockingTiles)
+                if (map[nodePosition.first][nodePosition.second].tile == blockingTile)
+                    isBlocked = 1;
+            if (isBlocked)
+                continue;
+
+            // Create new node
+            Node newNode = Node(&closedList.back(), nodePosition);
+            openList.push_back(newNode);
+        }
+    }
+    return {};
+}
+
 Node::Node(Node *parent, coordinates_t position)
 {
     this->position = position;

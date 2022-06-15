@@ -37,17 +37,15 @@ class MovementSystem : public ISystem {
                 CollisionObjectType* playerType = _em->Get<CollisionObjectType>(ent);
                 Skillset skills({0, 0, 0, false});
                 bool wallPass = false;
-                if (*playerType == PLAYER) {
+                if (*playerType == PLAYER || *playerType == AI) {
                     if (ent == playerIds[0])
                         _type = Player_One;
                     else if (ent == playerIds[1])
                         _type = Player_Two;
                     else
-                        _type = Other;
+                        _type = Player_AI;
                     skills = *_em->Get<Skillset>(ent);
                     wallPass = skills.wallPass;
-                } else if (*playerType == AI) {
-                    _type = Player_AI;
                 }
                 Velocity vel = (*playerVel) + (skills.speedUp * 0.04);
 

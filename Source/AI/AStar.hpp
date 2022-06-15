@@ -34,5 +34,6 @@ class Node
 };
 
 std::deque<coordinates_t> calculateAStar(coordinates_t start, coordinates_t end, std::vector<std::vector<gfx_tile_t>> map);
+std::deque<coordinates_t> avoidBomb(coordinates_t start, coordinates_t bombPos, std::vector<std::vector<gfx_tile_t>> map);
 
 bool operator==(Node y, Node x);
