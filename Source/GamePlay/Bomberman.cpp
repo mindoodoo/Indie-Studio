@@ -128,7 +128,7 @@ void Bomberman::createAI(Pos pos)
 
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
-    _em->Assign<Velocity>(id, {0.08,0.08});
+    _em->Assign<Velocity>(id, {0.04,0.04});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, Score{0});
     _em->Assign<Health>(id, Health{100});
