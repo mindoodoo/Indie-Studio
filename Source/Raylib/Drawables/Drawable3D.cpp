@@ -129,11 +129,12 @@ void RL::Drawable3D::updateModelsAnimation()
     this->_currentFrame++;
     
     //mcguyver fix for bomb laying? if this->_currentFrame > 24 setCurrentAnim(0); and set
-    //_bombAnimState to -1
+    //_bombAnimState to -1 --edit : not needed after all, we just tell the movement system to not go
+    // to idle if its in state 2
     //it means that when the animation loop is over we go above the 24 frames, and
     // and automatically it reverts the animation to IDLE (0);
 
-    if (this->_currentFrame > 24 && this->_currentAnim == 2) {
+    if (this->_currentFrame > this->_animations[this->_currentAnim].frameCount && this->_currentAnim == 2) {
         setCurrentAnim(0);
     }
     
