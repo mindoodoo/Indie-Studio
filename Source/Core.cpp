@@ -18,6 +18,16 @@ Core::Core()
     _window->_camera.setPosition(cameraPos);
     _window->_camera.setRotation({0.0f, 1.0f, 0.0f });
 
+    _startMenu = new Win::StartMenu(_window, _inputManager, _soundManager);
+    _endMenu = new Win::EndMenu(_window, _inputManager, _soundManager);
+    _pauseMenu = new Win::PauseMenu(_window, _inputManager, _soundManager);
+    _settings = new Win::Settings(_window, _inputManager, _soundManager);
+    _charSelec = new Win::CharacterSelect(_window, _inputManager, _soundManager);
+    _mapSelect = new Win::MapSelect(_window, _inputManager, _soundManager);
+    _prevS = 0;
+    _prevM = 0;
+    _screen = 0;
+
     _game = new Bomberman(_window, _inputManager, _map, _soundManager);
 }
 
@@ -26,12 +36,60 @@ Core::~Core()
     _window->close();
     if (_game)
         delete _game;
+    if (_startMenu)
+        delete _startMenu;
+    if (_endMenu)
+        delete _endMenu;
+    if (_settings)
+        delete _settings;
+    if (_pauseMenu)
+        delete _pauseMenu;
+    if (_charSelec)
+        delete _charSelec;
+    if (_mapSelect)
+        delete _mapSelect;
 }
 
 void Core::startLoop()
 {
-    while (_window->isWindowOpen()) {
-        if (!_game->runFrame())
-            break;
+   while (_window->isWindowOpen()) {
+        switch (_screen) {
+            case 0:
+                _screen = _startMenu->openStartMenu();
+                _prevS = 0;
+                break;
+            case 1:
+                _screen = _charSelec->openCharSelect(_screen);
+                _prevM = 1;
+                break;
+            case 2:
+                _screen = _charSelec->openCharSelect(_screen);
+                _prevM = 2;
+                break;
+            case 3:
+                _screen = _settings->openSettings(_prevS);
+                break;
+            case 4:
+                _window->close();
+                break;
+            case 5:
+                _screen = _mapSelect->openMapMenu(_prevM);
+                _prevS = 5;
+                break;
+            case 6:
+                _screen = 6;
+                if (!_game->runFrame())
+                    _screen = 4;
+                break;
+            case 7:
+                _screen = _pauseMenu->openPauseMenu();
+                _prevS = 7;
+                break;
+            default:
+                _screen = 0;
+                break;
+        }
+        // if (!_game->runFrame())
+        //     break;
     }
 }

@@ -20,6 +20,8 @@ RL::Window::Window(std::string title, Vector2i dimensions, bool initLater)
     this->_camera.setTarget((Vector3f){ 0.0f, 0.0f, 0.0f });      // Camera looking at point
     this->_camera.setRotation((Vector3f){ 0.0f, 1.0f, 0.0f });          // Camera up vector (rotation towards target)
     this->_windowFont = LoadFontEx(".RaylibTesting/Assets/Fonts/Game_Of_Squids.ttf", 20, 0, 250);
+    this->_headFont = LoadFontEx(".RaylibTesting/Assets/Fonts/Game_Of_Squids.ttf", 100, 0, 250);
+    this->_txtFont = LoadFontEx(".RaylibTesting/Assets/Fonts/Game_Of_Squids.ttf", 50, 0, 250);
 }
 
 RL::Window::~Window()
@@ -173,4 +175,14 @@ void RL::Window::removeElemtfrom3Dqueue(int index) {
 Font RL::Window::getFont()
 {
     return this->_windowFont;
+}
+
+Font RL::Window::getHeadFont()
+{
+    return this->_headFont;
+}
+
+Font RL::Window::getTxtFont()
+{
+    return this->_txtFont;
 }

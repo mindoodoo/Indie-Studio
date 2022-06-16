@@ -16,6 +16,12 @@
 #include "GameEngine/Map.hpp"
 #include "GamePlay/Bomberman.hpp"
 #include "GamePlay/ISystem.hpp"
+#include "../menu_source/StartMenu.hpp"
+#include "../menu_source/EndMenu.hpp"
+#include "../menu_source/PauseMenu.hpp"
+#include "../menu_source/Settings.hpp"
+#include "../menu_source/CharacterSelect.hpp"
+#include "../menu_source/MapSelect.hpp"
 
 class Core {
     public:
@@ -29,7 +35,16 @@ class Core {
         std::shared_ptr<RL::InputManager> _inputManager;
         std::shared_ptr<RL::Map> _map;
         std::shared_ptr<RL::SoundManager> _soundManager;
+        Win::StartMenu *_startMenu = nullptr;
+        Win::EndMenu *_endMenu = nullptr;
+        Win::PauseMenu *_pauseMenu = nullptr;
+        Win::Settings *_settings = nullptr;
+        Win::CharacterSelect *_charSelec = nullptr;
+        Win::MapSelect *_mapSelect = nullptr;
         Bomberman *_game = nullptr;
+        int _prevS;
+        int _prevM;
+        int _screen;
 };
 
 #endif /* !CORE_HPP_ */

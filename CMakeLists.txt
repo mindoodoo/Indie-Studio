@@ -26,7 +26,14 @@ FILE(GLOB CFILES
         Source/Raylib/Window.cpp
         Source/GamePlay/Bomb.cpp
         Source/GamePlay/Explosion.cpp
-        Source/Core.cpp)
+        Source/Core.cpp
+        menu_source/Button.cpp
+        menu_source/CharacterSelect.cpp
+        menu_source/EndMenu.cpp
+        menu_source/PauseMenu.cpp
+        menu_source/Settings.cpp
+        menu_source/StartMenu.cpp
+        menu_source/MapSelect.cpp)
 
 #add Header files
 FILE(GLOB HEADERFILES
@@ -53,7 +60,14 @@ FILE(GLOB HEADERFILES
         Source/Raylib/SoundManager.hpp
         Source/Raylib/Window.hpp
         Source/GamePlay/Timer.hpp
-        Source/Core.hpp)
+        Source/Core.hpp
+        menu_source/Button.hpp
+        menu_source/CharacterSelect.hpp
+        menu_source/EndMenu.hpp
+        menu_source/PauseMenu.hpp
+        menu_source/Settings.hpp
+        menu_source/StartMenu.hpp
+        menu_source/MapSelect.hpp)
 
 
 #add to project
