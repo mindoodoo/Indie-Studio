@@ -92,6 +92,9 @@ class CollisionSystem : public ISystem {
 
         EntityID handleItemCollision(EntityID itemEnt, CollisionObjectType* item, EntityID highEnt, CollisionObjectType* high) {
             if ((*high == PLAYER || *high == AI) && !checkIfVectorContains(_destroyQueue, itemEnt)) {
+                Sprite* itemSprite = _em->Get<Sprite>(itemEnt);
+                if (itemSprite->model->isHidden())
+                    return INVALID_ENTITY;
                 Skillset* playerSkills = _em->Get<Skillset>(highEnt);
                 Skillset* skillIncrease = _em->Get<Skillset>(itemEnt);
                 Pos* itemPos = _em->Get<Pos>(itemEnt);
