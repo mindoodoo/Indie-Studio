@@ -28,10 +28,13 @@ class AISystem : public ISystem {
         AISystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Map> map) : _map(map) {
             _em = em;
             _target = {0, 0, 0};
+            _path = {};
             _scanRadius = 5;
             _bombScanRadius = 5;
             _detectedBomb = false;
             _targetType = RANDOM;
+            _blockingTiles.push_back(1);
+            _blockingTiles.push_back(2);
         };
         ~AISystem() {};
 
@@ -43,6 +46,8 @@ class AISystem : public ISystem {
                 if (*type == AI) {
                     Pos* pos = _em->Get<Pos>(ent);
                     Skillset* skills = _em->Get<Skillset>(ent);
+                    if (_blockingTiles.size() == 2 && skills->wallPass)
+                        _blockingTiles.pop_back();
                     _bombScanRadius = 5 + skills->fireUp;
                     Input* input = _em->Get<Input>(ent);
                     bool saveDetectedBomb = _detectedBomb;
@@ -52,7 +57,8 @@ class AISystem : public ISystem {
                         escapeBombRadius(pos);
                     if (_path.empty()) {
                         if (_targetType != ITEM && _target.x != 0 && _target.y != 0 && _target.z != 0 && 
-                            (_detectedBomb == saveDetectedBomb || (!_detectedBomb && saveDetectedBomb))) {
+                            (_detectedBomb == saveDetectedBomb || (!_detectedBomb && saveDetectedBomb))
+                            && hasBombEffect(pos)) {
                             // lay bomb at target position
                             if (canEscapeBomb(pos)) {
                                 aiBombLaying.push_back(ent);
@@ -70,6 +76,28 @@ class AISystem : public ISystem {
             }
         };
 
+        bool hasBombEffect(Pos *pos) {
+            std::vector<Pos> opponents;
+            std::vector<Pos> surroundingPos;
+            for (EntityID ent : EntityViewer<Pos, BombCapacity>(*_em.get())) {
+                opponents.push_back(*_em->Get<Pos>(ent));
+            }
+            surroundingPos.push_back({pos->x - 1, pos->y});
+            surroundingPos.push_back({pos->x + 1, pos->y});
+            surroundingPos.push_back({pos->x, pos->y - 1});
+            surroundingPos.push_back({pos->x, pos->y + 1});
+
+            for (Pos curPos : surroundingPos) {
+                for (Pos opponent : opponents) {
+                    if (round_up(opponent.x, 1) == round_up(curPos.x, 1) && round_up(opponent.y, 1) == round_up(curPos.y, 1))
+                        return true;
+                }
+                if (_map->getParsedMap()[round(curPos.y)][round(curPos.x)].tile == 2)
+                    return true;
+            }
+            return false;
+        }
+
         void findTarget(EntityID ent, Pos *pos, Input *input, std::vector<EntityID> playerIds) {
             coordinates_t nextWalkingPoint = _path.front();
             Pos roundedPos = Pos({round_up(pos->x, 1), round_up(pos->y, 1)});
@@ -79,6 +107,10 @@ class AISystem : public ISystem {
                     return;
                 }
                 _path.pop_front();
+                if (_path.empty()) {
+                    input->pressedKey = NONE;
+                    return;
+                }
                 nextWalkingPoint = _path.front();
             }
 
@@ -107,25 +139,7 @@ class AISystem : public ISystem {
         coordinates_t roundPos(float x, float y) {
             int roundX = round(x);
             int roundY = round(y);
-            if (_map->getParsedMap()[roundY][roundX].tile != 1 &&
-                _map->getParsedMap()[roundY][roundX].tile != 2)
-                return {roundX, roundY};
-            int ceilX = std::ceil(x);
-            int ceilY = std::ceil(y);
-            int floorX = std::floor(x);
-            int floorY = std::floor(y);
-            if (_map->getParsedMap()[ceilY][ceilX].tile != 1 &&
-                _map->getParsedMap()[ceilY][ceilX].tile != 2)
-                return {ceilX, ceilY};
-            if (_map->getParsedMap()[floorY][floorX].tile != 1 &&
-                _map->getParsedMap()[floorY][floorX].tile != 2)
-                return {floorX, floorY};
-            if (_map->getParsedMap()[ceilY][floorX].tile != 1 &&
-                _map->getParsedMap()[ceilY][floorX].tile != 2)
-                return {floorX, ceilY};
-            if (_map->getParsedMap()[floorY][ceilX].tile != 1 &&
-                _map->getParsedMap()[floorY][ceilX].tile != 2)
-                return {ceilX, floorY};
+            return {roundX, roundY};
         }
 
         void scanForNewTarget(Pos *pos, EntityID ent, std::vector<EntityID> playerIds) {
@@ -156,7 +170,7 @@ class AISystem : public ISystem {
 
             if (AIPos == targetPosition)
                 return;
-            _path = calculateAStar(AIPos, targetPosition, _map->getParsedMap());
+            _path = calculateAStar(AIPos, targetPosition, _map->getParsedMap(), _blockingTiles);
 
             for (int i = 0; i < _path.size(); i++) {
                 // check that all paths are out of bomb radius
@@ -176,7 +190,7 @@ class AISystem : public ISystem {
             coordinates_t AIPos = roundPos(pos->x, pos->y);
             coordinates_t bombPosition = {_target.x, _target.y};
 
-            _path = avoidBomb(AIPos, bombPosition, _bombScanRadius - 2, _map->getParsedMap());
+            _path = avoidBomb(AIPos, bombPosition, _bombScanRadius - 2, _map->getParsedMap(), _blockingTiles);
 
             if (_path.empty()) {
                 _foundTarget = false;
@@ -187,7 +201,7 @@ class AISystem : public ISystem {
         bool canEscapeBomb(Pos *pos) {
             coordinates_t AIPos = roundPos(pos->x, pos->y);
             coordinates_t bombPosition = roundPos(pos->x, pos->y);
-            std::deque<coordinates_t> path = avoidBomb(AIPos, bombPosition, _bombScanRadius - 2, _map->getParsedMap());
+            std::deque<coordinates_t> path = avoidBomb(AIPos, bombPosition, _bombScanRadius - 2, _map->getParsedMap(), _blockingTiles);
 
             for (int i = 0; i < path.size(); i++) {
                 if (!isOutOfBombReach({(float)path[i].second, (float)path[i].first, 1}))
@@ -343,6 +357,7 @@ class AISystem : public ISystem {
         //AStar implementation test
         std::deque<coordinates_t> _path;
         std::vector<Pos> _bombPos;
+        std::vector<int> _blockingTiles;
 };
 
 #endif /* !AISYSTEM_HPP_ */

@@ -22,7 +22,7 @@ void reverseQueue(std::queue<coordinates_t> &Queue)
     }
 }
 
-std::deque<coordinates_t> returnPath(Node currentNode, std::vector<std::vector<gfx_tile_t>> map)
+std::deque<coordinates_t> returnPath(Node currentNode, std::vector<std::vector<gfx_tile_t>> map, std::vector<int> _blockingTiles)
 {
     std::deque<coordinates_t> path;
 
@@ -35,9 +35,6 @@ std::deque<coordinates_t> returnPath(Node currentNode, std::vector<std::vector<g
         currentNode = *currentNode.parent;
     }
     coordinates_t end = {path.back().first, path.back().second};
-    int _blockingTiles[2] = {
-        1, 2
-    };
     for (int blockingTile : _blockingTiles)
         if (map[end.first][end.second].tile == blockingTile)
             path.pop_back();
@@ -45,14 +42,11 @@ std::deque<coordinates_t> returnPath(Node currentNode, std::vector<std::vector<g
     return path;
 }
 
-std::deque<coordinates_t> calculateAStar(coordinates_t start, coordinates_t end, std::vector<std::vector<gfx_tile_t>> map)
+std::deque<coordinates_t> calculateAStar(coordinates_t start, coordinates_t end,
+    std::vector<std::vector<gfx_tile_t>> map, std::vector<int> _blockingTiles)
 {
     end = {end.second, end.first};
     start = {start.second, start.first};
-    // Set blocking tiles (walls)
-    int _blockingTiles[2] = {
-        1, 2
-    };
 
     // Start / End
     Node startNode = Node(nullptr, start);
@@ -92,11 +86,11 @@ std::deque<coordinates_t> calculateAStar(coordinates_t start, coordinates_t end,
 
         // Timeour check
         if (totalIterations > max_iterations)
-            return returnPath(currNode, map);
+            return {};
 
         // Check if at target
         if (currNode == endNode)
-            return returnPath(currNode, map);
+            return returnPath(currNode, map, _blockingTiles);
 
         // Generate neighbours
         std::deque<Node> neighbours;
@@ -159,14 +153,11 @@ std::deque<coordinates_t> calculateAStar(coordinates_t start, coordinates_t end,
     return {};
 }
 
-std::deque<coordinates_t> avoidBomb(coordinates_t start, coordinates_t bombPos, int bombRadius, std::vector<std::vector<gfx_tile_t>> map)
+std::deque<coordinates_t> avoidBomb(coordinates_t start, coordinates_t bombPos, int bombRadius,
+    std::vector<std::vector<gfx_tile_t>> map, std::vector<int> _blockingTiles)
 {
     start = {start.second, start.first};
     bombPos = {bombPos.second, bombPos.first};
-    // Set blocking tiles (walls)
-    int _blockingTiles[2] = {
-        1, 2
-    };
 
     if ((start.first != bombPos.first && start.second != bombPos.second)
         || abs(start.first - bombPos.first) > bombRadius || abs(start.second - bombPos.second) > bombRadius)
@@ -209,12 +200,12 @@ std::deque<coordinates_t> avoidBomb(coordinates_t start, coordinates_t bombPos, 
 
         // Timeour check
         if (totalIterations > max_iterations)
-            return returnPath(currNode, map);
+            return {};
 
         // Check if at target
         if ((currNode.position.first != bombPos.first && currNode.position.second != bombPos.second)
             || abs(currNode.position.first - bombPos.first) > 3 || abs(currNode.position.second - bombPos.second) > 3) // if behind corner/ 3-6 pos away from start pos
-            return returnPath(currNode, map);
+            return returnPath(currNode, map, _blockingTiles);
 
         // Instantiate neighbour nodes
         // Note : f, g, and h are all instatiated to 0
