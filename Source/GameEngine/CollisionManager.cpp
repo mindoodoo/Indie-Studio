@@ -84,8 +84,8 @@ bool RL::CollisionManager::collisionsWithCrates(RL::Vector3f ModelPos, RL::Map M
 
 bool RL::CollisionManager::collisionsWithModels(RL::Drawable3D Model1, RL::Drawable3D Model2)
 {
-    float model2radius = 0.45f;
-    float model1radius = 0.45f;
+    float model2radius = 0.39f;
+    float model1radius = 0.39f;
     if (Model2.getModelType() == RL::POWER)
         model2radius = 0.28f;
     if (Model1.getModelType() == RL::POWER)
