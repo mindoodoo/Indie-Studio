@@ -88,8 +88,9 @@ float translateFigureCoordinates(float pos, int borderSize)
 void Bomberman::createPlayer(Pos pos)
 {
     EntityID id = _em->CreateNewEntity();
-    std::string playtex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
-    std::string playermod = "./RaylibTesting/Assets/3d_models/Skull/mainplayerAnimated.glb";
+    std::string playtex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
+    std::string playermod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
+    std::string playeranim = playermod;
 
     // std::string skullmod = "RaylibTesting/Assets/3d_models/Guy/guy.iqm";
     // std::string modelAnimPath = "RaylibTesting/Assets/3d_models/Guy/guyanim.iqm";
@@ -106,7 +107,7 @@ void Bomberman::createPlayer(Pos pos)
     _em->Assign<BombCapacity>(id, BombCapacity{3, 3});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{PLAYER});
 
-    RL::Drawable3D *Player = new RL::Drawable3D(playtex, playermod, "", RL::MODEL, 0.25);
+    RL::Drawable3D *Player = new RL::Drawable3D(playtex, playermod, playeranim, RL::MODEL, 0.25);
     Player->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
         pos.y,
