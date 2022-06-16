@@ -47,7 +47,6 @@ std::deque<coordinates_t> returnPath(Node currentNode, std::vector<std::vector<g
 
 std::deque<coordinates_t> calculateAStar(coordinates_t start, coordinates_t end, std::vector<std::vector<gfx_tile_t>> map)
 {
-    std::cout << "MAP SIZE DEBUGGING  " << map.size() << " " << map[0].size() << std::endl;
     end = {end.second, end.first};
     start = {start.second, start.first};
     // Set blocking tiles (walls)
@@ -160,7 +159,7 @@ std::deque<coordinates_t> calculateAStar(coordinates_t start, coordinates_t end,
     return {};
 }
 
-std::deque<coordinates_t> avoidBomb(coordinates_t start, coordinates_t bombPos, std::vector<std::vector<gfx_tile_t>> map)
+std::deque<coordinates_t> avoidBomb(coordinates_t start, coordinates_t bombPos, int bombRadius, std::vector<std::vector<gfx_tile_t>> map)
 {
     start = {start.second, start.first};
     bombPos = {bombPos.second, bombPos.first};
@@ -170,7 +169,7 @@ std::deque<coordinates_t> avoidBomb(coordinates_t start, coordinates_t bombPos, 
     };
 
     if ((start.first != bombPos.first && start.second != bombPos.second)
-        || abs(start.first - bombPos.first) > 3 || abs(start.second - bombPos.second) > 3)
+        || abs(start.first - bombPos.first) > bombRadius || abs(start.second - bombPos.second) > bombRadius)
         return {};
 
     // Start

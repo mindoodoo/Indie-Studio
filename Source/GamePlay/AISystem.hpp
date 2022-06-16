@@ -29,6 +29,7 @@ class AISystem : public ISystem {
             _em = em;
             _target = {0, 0, 0};
             _scanRadius = 5;
+            _bombScanRadius = 5;
             _detectedBomb = false;
             _targetType = RANDOM;
         };
@@ -37,53 +38,34 @@ class AISystem : public ISystem {
         void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying) {
             for (EntityID ent : EntityViewer<Pos, Sprite, CollisionObjectType>(*_em.get())) {
                 _foundTarget = false;
+                _bombPos.clear();
                 CollisionObjectType* type = _em->Get<CollisionObjectType>(ent);
                 if (*type == AI) {
                     Pos* pos = _em->Get<Pos>(ent);
+                    Skillset* skills = _em->Get<Skillset>(ent);
+                    _bombScanRadius = 5 + skills->fireUp;
                     Input* input = _em->Get<Input>(ent);
                     bool saveDetectedBomb = _detectedBomb;
                     _detectedBomb = false;
                     scanForBombs(pos);
                     if (_detectedBomb && !saveDetectedBomb)
                         escapeBombRadius(pos);
-                    if (_detectedBomb) {
-                        if (_path.empty()) {
-                            input->pressedKey = NONE;
-                            return;
-                        }
-                    } else {
-                        if (_path.empty()) {
-                            if (_target.x != 0 && _target.y != 0 && _target.z != 0 && _detectedBomb == saveDetectedBomb && _targetType != ITEM) {
-                                // lay bomb at target position
+                    if (_path.empty()) {
+                        if (_targetType != ITEM && _target.x != 0 && _target.y != 0 && _target.z != 0 && 
+                            (_detectedBomb == saveDetectedBomb || (!_detectedBomb && saveDetectedBomb))) {
+                            // lay bomb at target position
+                            if (canEscapeBomb(pos)) {
                                 aiBombLaying.push_back(ent);
+                                return;
                             }
-                            scanForNewTarget(pos, ent, playerIds);
                         }
+                        scanForNewTarget(pos, ent, playerIds);
+                    }
+                    if (_path.empty()) {
+                        input->pressedKey = NONE;
+                        return;
                     }
                     findTarget(ent, pos, input, playerIds);
-                    
-
-                    // random (stupid) actions
-                    // switch (rand() % 6) {
-                    //     case 0:
-                    //         input->pressedKey = UP;
-                    //         break;
-                    //     case 1:
-                    //         input->pressedKey = DOWN;
-                    //         break;
-                    //     case 2:
-                    //         input->pressedKey = LEFT;
-                    //         break;
-                    //     case 3:
-                    //         input->pressedKey = RIGHT;
-                    //         break;
-                    //     case 4:
-                    //         input->pressedKey = NONE;
-                    //         aiBombLaying.push_back(ent);
-                    //         break;
-                    //     default:
-                    //         input->pressedKey = NONE;
-                    // }
                 }
             }
         };
@@ -152,48 +134,73 @@ class AISystem : public ISystem {
                 scanForItem(pos);
             if (!_foundTarget)
                 scanForBreakableBlock(pos);
-            if (!_foundTarget)
+            if (!_foundTarget && !_detectedBomb)
                 setRandomTarget(pos);
+        }
+
+        bool isOutOfBombReach(Pos pos) {
+            int neededDistance = _bombScanRadius - 2;
+            for (Pos bomb : _bombPos) {
+                if (((pos.x != bomb.x && pos.y != bomb.y)
+                    || abs(pos.x - bomb.x) > neededDistance || abs(pos.y - bomb.y) > neededDistance))
+                    continue;
+                else
+                    return false;
+            }
+            return true;
         }
 
         void checkForPath(Pos *pos) {
             coordinates_t AIPos = roundPos(pos->x, pos->y);
             coordinates_t targetPosition = {_target.x, _target.y};
-            std::cout << "MY Pos is : " << AIPos.first << " " << AIPos.second << std::endl;
-            std::cout << "Target is: " <<_target.x << " " << _target.y << " " <<_target.z << std::endl;
 
             if (AIPos == targetPosition)
                 return;
             _path = calculateAStar(AIPos, targetPosition, _map->getParsedMap());
 
             for (int i = 0; i < _path.size(); i++) {
-                std::cout << "found   " ;
-                std::cout << _path[i].first << " " << _path[i].second << "/";
+                // check that all paths are out of bomb radius
+                if (!isOutOfBombReach({(float)_path[i].second, (float)_path[i].first, 1})) {
+                    _path.clear();
+                    _foundTarget = false;
+                    return;
+                }
             }
             if (_path.empty()) {
                 _foundTarget = false;
-                std::cout << "cant go there, path is blocked";
             } else
                 _foundTarget = true;
-            std::cout << std::endl << std::endl;
         }
 
         void escapeBombRadius(Pos *pos) {
             coordinates_t AIPos = roundPos(pos->x, pos->y);
             coordinates_t bombPosition = {_target.x, _target.y};
 
-            _path = avoidBomb(AIPos, bombPosition, _map->getParsedMap());
+            _path = avoidBomb(AIPos, bombPosition, _bombScanRadius - 2, _map->getParsedMap());
 
-            for (int i = 0; i < _path.size(); i++) {
-                std::cout << "found bomb, will go to  " ;
-                std::cout << _path[i].first << " " << _path[i].second << "/";
-            }
             if (_path.empty()) {
                 _foundTarget = false;
-                std::cout << "cant go there, path is blocked";
             } else
                 _foundTarget = true;
-            std::cout << std::endl << std::endl;
+        }
+
+        bool canEscapeBomb(Pos *pos) {
+            coordinates_t AIPos = roundPos(pos->x, pos->y);
+            coordinates_t bombPosition = roundPos(pos->x, pos->y);
+            std::deque<coordinates_t> path = avoidBomb(AIPos, bombPosition, _bombScanRadius - 2, _map->getParsedMap());
+
+            for (int i = 0; i < path.size(); i++) {
+                if (!isOutOfBombReach({(float)path[i].second, (float)path[i].first, 1}))
+                    return false;
+            }
+            if (path.empty()) {
+                _foundTarget = false;
+                return false;
+            } else {
+                _path = path;
+                _target = {(float)bombPosition.second, (float)bombPosition.first, 1};
+                return true;
+            }
         }
 
         void scanForBombs(Pos* pos) {
@@ -204,7 +211,7 @@ class AISystem : public ISystem {
                     bombPos.push_back(*_em->Get<Pos>(ent));
             }
 
-            for (int radius = 0; radius < _scanRadius; radius++) {
+            for (int radius = 0; radius < _bombScanRadius; radius++) {
                 int startX = (pos->x - radius) <= 0 ? 1 : (pos->x - radius);
                 int startY = (pos->y - radius) <= 0 ? 1 : (pos->y - radius);
                 int endX = (pos->x + radius) >= _map->getMapWidth() ? (_map->getMapWidth() - 1) : (pos->x + radius);
@@ -212,12 +219,14 @@ class AISystem : public ISystem {
                 for (int y = startY; y <= endY; y++) {
                     for (int x = startX; x <= endX; x++) {
                         for (Pos curPos : bombPos) {
-                            if (round(curPos.x) == x && round(curPos.y) == y) {
+                            if (!_detectedBomb && round(curPos.x) == x && round(curPos.y) == y) {
                                 // std::cout << "found BOMB" << std::endl;
                                 _target = {(float)x, (float)y, 1};
+                                _bombPos.push_back(_target);
                                 _detectedBomb = true;
                                 _targetType = BOMB;
-                                return;
+                            } else if (round(curPos.x) == x && round(curPos.y) == y) {
+                                _bombPos.push_back({(float)x, (float)y, 1});
                             }
                         }
                         
@@ -304,7 +313,8 @@ class AISystem : public ISystem {
         };
 
         void setRandomTarget(Pos *pos) {
-            while (!_foundTarget) {
+            int iterations = 0;
+            while (!_foundTarget && iterations < 10) {
                 int randX = rand() % (_map->getMapWidth() - 1);
                 int randY = rand() % (_map->getMapDepth() - 1);
                 std::cout << "RANDOM VALS: " << randX << ", " << randY << std::endl;
@@ -312,6 +322,10 @@ class AISystem : public ISystem {
                 float y = randY + 1;
                 _target = {x, y, 1};
                 checkForPath(pos);
+                iterations++;
+            }
+            if (!_foundTarget) {
+                _path.clear();
             }
             _targetType = RANDOM;
         }
@@ -323,11 +337,12 @@ class AISystem : public ISystem {
         bool _foundTarget;
         Pos _target;
         int _scanRadius;
+        int _bombScanRadius;
         TargetType _targetType;
 
         //AStar implementation test
         std::deque<coordinates_t> _path;
-
+        std::vector<Pos> _bombPos;
 };
 
 #endif /* !AISYSTEM_HPP_ */
