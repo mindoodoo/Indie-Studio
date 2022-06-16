@@ -20,7 +20,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     
     //this is respndible for the music being played then shuffle enabled, comment out to cancel
     //_soundManager->playSpecificMusic("MiraiKaraKitaShonen");
-    _soundManager->playRandomMusic();
+    //_soundManager->playRandomMusic();
     //_soundManager->enableDisableShuffle();
     
     // if only one player, fill _player[1] with INVALID_ENTITY
@@ -255,6 +255,7 @@ void Bomberman::getSecondPlayerInput()
                 playerInput->pressedKey = (UserInput)input;
                 break;
             case LAY_BOMB2:
+                //playerSprite->model->setCurrentAnim(2);
                layBomb(_player[Two]);
                break;
             default:

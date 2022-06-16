@@ -86,6 +86,7 @@ void RL::Drawable3D::load3DModel(std::string texturePath, std::string modelPath,
         SetMaterialTexture(&this->_model.materials[0], MATERIAL_MAP_DIFFUSE, this->_texture);
         //HERE ADD LOAD ANIMATION, 
         loadAnimation(animationPath);
+        setCurrentAnim(1);
     }
     this->_assetLoaded = true;
     setBoundingBox();
@@ -126,20 +127,32 @@ void RL::Drawable3D::updateModelsAnimation()
         return;
 
     this->_currentFrame++;
+    
+    //mcguyver fix for bomb laying? if this->_currentFrame > 24 setCurrentAnim(0); and set
+    //_bombAnimState to -1
+    //it means that when the animation loop is over we go above the 24 frames, and
+    // and automatically it reverts the animation to IDLE (0);
+
+    if (this->_currentFrame > 24 && this->_currentAnim == 2) {
+        setCurrentAnim(0);
+    }
+    
     UpdateModelAnimation
     (this->_model, this->_animations[this->_currentAnim], this->_currentFrame);
 }
 
 void RL::Drawable3D::setCurrentAnim(int anim)
 {
-    this->_currentAnim;
+
+    if (this->_currentAnim != anim)
+        this->resetAnimSequence();
 
     if (anim >= this->_animCount) {
         std::cerr << "Animation index invalid" << std::endl;
         return;
     }
+    this->_currentAnim = anim;
 
-    this->resetAnimSequence();
 }
 
 void RL::Drawable3D::resetAnimSequence()

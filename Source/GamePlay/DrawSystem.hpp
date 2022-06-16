@@ -32,6 +32,7 @@ class DrawSystem : public ISystem {
                         0.5f + (z * 0.01f),
                         z
                     });
+                    objectSprite->model->updateModelsAnimation();
                 }                
                 // objectSprite->model.draw();
             }
