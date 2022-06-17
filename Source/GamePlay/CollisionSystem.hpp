@@ -19,16 +19,16 @@
 
 class CollisionSystem : public ISystem {
     public:
-        CollisionSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Window> window, std::shared_ptr<RL::SoundManager> sM) : _window(window), _soundManager(sM)
+        CollisionSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Window> window, std::shared_ptr<RL::SoundManager> sM, std::shared_ptr<RL::Map> map) : _window(window), _soundManager(sM), _map(map)
         {
             _em = em;
         };
         ~CollisionSystem() {};
 
-        void update(float deltaTime, std::vector<EntityID> &playerIds) override {
+        void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying) override {
             _destroyQueue.clear();
             for (EntityID ent : EntityViewer<Pos, Sprite, CollisionObjectType>(*_em.get())) {
-                for (EntityID other : EntityViewer<Pos, Sprite>(*_em.get())) {
+                for (EntityID other : EntityViewer<Pos, Sprite, CollisionObjectType>(*_em.get())) {
                     Pos *entPos = _em->Get<Pos>(ent);
                     Sprite *entModel = _em->Get<Sprite>(ent);
                     Sprite *otherModel = _em->Get<Sprite>(other);
@@ -83,6 +83,7 @@ class CollisionSystem : public ISystem {
                     return handleItemCollision(lowEnt, low, highEnt, high);
                 case BREAKABLE_BLOCK:
                 case PLAYER:
+                case AI:
                 case MONSTER:
                     return handleBombCollision(lowEnt, low, highEnt, high);
             }
@@ -90,9 +91,13 @@ class CollisionSystem : public ISystem {
         };
 
         EntityID handleItemCollision(EntityID itemEnt, CollisionObjectType* item, EntityID highEnt, CollisionObjectType* high) {
-            if (*high == PLAYER && !checkIfVectorContains(_destroyQueue, itemEnt)) {
+            if ((*high == PLAYER || *high == AI) && !checkIfVectorContains(_destroyQueue, itemEnt)) {
+                Sprite* itemSprite = _em->Get<Sprite>(itemEnt);
+                if (itemSprite->model->isHidden())
+                    return INVALID_ENTITY;
                 Skillset* playerSkills = _em->Get<Skillset>(highEnt);
                 Skillset* skillIncrease = _em->Get<Skillset>(itemEnt);
+                Pos* itemPos = _em->Get<Pos>(itemEnt);
                 *playerSkills += *skillIncrease;
                 if (skillIncrease->bombUp) {
                     BombCapacity* playerBombCapacity = _em->Get<BombCapacity>(highEnt);
@@ -107,6 +112,7 @@ class CollisionSystem : public ISystem {
                 if (skillIncrease->wallPass)
                     std::cout << "updated wallPass" << std::endl;
                 _soundManager->playSpecificSoundFx("Item1");
+                _map->removeItem({(int)itemPos->x, (int)itemPos->y});
                 return itemEnt;
             }
             return INVALID_ENTITY;
@@ -128,6 +134,7 @@ class CollisionSystem : public ISystem {
 
     private:
         std::shared_ptr<RL::Window> _window;
+        std::shared_ptr<RL::Map> _map;
         RL::CollisionManager _colManager;
         std::vector<EntityID> _destroyQueue;
         std::shared_ptr<RL::SoundManager> _soundManager;

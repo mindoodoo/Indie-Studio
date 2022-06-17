@@ -19,6 +19,7 @@ class MovementSystem : public ISystem {
         enum PlayerType {
             Player_One,
             Player_Two,
+            Player_AI,
             Other
         };
         MovementSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Map> map, std::shared_ptr<RL::InputManager> iM) : _map(map), _inputManager(iM)
@@ -27,7 +28,7 @@ class MovementSystem : public ISystem {
         };
         ~MovementSystem() {};
 
-        void update(float deltaTime, std::vector<EntityID> &playerIds) override {
+        void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying) override {
             for (EntityID ent : EntityViewer<Pos, Velocity, Input, Sprite, CollisionObjectType>(*_em.get())) {
                 Pos* playerPos = _em->Get<Pos>(ent);
                 Velocity* playerVel = _em->Get<Velocity>(ent);
@@ -36,17 +37,24 @@ class MovementSystem : public ISystem {
                 CollisionObjectType* playerType = _em->Get<CollisionObjectType>(ent);
                 Skillset skills({0, 0, 0, false});
                 bool wallPass = false;
-                if (*playerType == PLAYER) {
+                if (*playerType == PLAYER || *playerType == AI) {
                     if (ent == playerIds[0])
-                        type = Player_One;
+                        _type = Player_One;
                     else if (ent == playerIds[1])
-                        type = Player_Two;
+                        _type = Player_Two;
                     else
-                        type = Other;
+                        _type = Player_AI;
                     skills = *_em->Get<Skillset>(ent);
                     wallPass = skills.wallPass;
                 }
-                Velocity vel = (*playerVel) * (deltaTime * 1000) + (skills.speedUp * 0.04);
+                float speedUp = skills.speedUp * 0.04;
+                if (*playerType == AI && speedUp > (0.1 - playerVel->x))
+                    speedUp = 0.1 - playerVel->x;
+                else if (*playerType == AI)
+                    speedUp /= 2;
+                if (*playerType == PLAYER && speedUp > (0.15 - playerVel->x))
+                    speedUp = 0.15 - playerVel->x;
+                Velocity vel = *playerVel + speedUp;
 
                 switch (playerMovement->pressedKey) {
                     case UP:
@@ -94,13 +102,49 @@ class MovementSystem : public ISystem {
             return true;
         }
 
+        bool checkPressedUp() {
+            if (_type == Player_One)
+                return _inputManager->playerHasPressedKeyAsChar(UP);
+            else if (_type == Player_Two)
+                return _inputManager->playerHasPressedKeyAsChar(UP2);
+            else
+                return false;
+        }
+
+        bool checkPressedDown() {
+            if (_type == Player_One)
+                return _inputManager->playerHasPressedKeyAsChar(DOWN);
+            else if (_type == Player_Two)
+                return _inputManager->playerHasPressedKeyAsChar(DOWN2);
+            else
+                return false;
+        }
+
+        bool checkPressedLeft() {
+            if (_type == Player_One)
+                return _inputManager->playerHasPressedKeyAsChar(LEFT);
+            else if (_type == Player_Two)
+                return _inputManager->playerHasPressedKeyAsChar(LEFT2);
+            else
+                return false;
+        }
+
+        bool checkPressedRight() {
+            if (_type == Player_One)
+                return _inputManager->playerHasPressedKeyAsChar(RIGHT);
+            else if (_type == Player_Two)
+                return _inputManager->playerHasPressedKeyAsChar(RIGHT2);
+            else
+                return false;
+        }
+
         void moveLeft(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
         {
-            if (_inputManager->playerHasPressedKeyAsChar(type != Player_Two ? UP : UP2)) {
+            if (checkPressedUp()) {
                 moveUpLeft(pos, vel, playerSprite, wallPass);
                 return;
             }
-            if (_inputManager->playerHasPressedKeyAsChar(type != Player_Two ? DOWN : DOWN2)) {
+            if (checkPressedDown()) {
                 moveDownLeft(pos, vel, playerSprite, wallPass);
                 return;
             }
@@ -118,11 +162,11 @@ class MovementSystem : public ISystem {
 
         void moveRight(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
         {
-            if (_inputManager->playerHasPressedKeyAsChar(type != Player_Two ? UP : UP2)) {
+            if (checkPressedUp()) {
                 moveUpRight(pos, vel, playerSprite, wallPass);
                 return;
             }
-            if (_inputManager->playerHasPressedKeyAsChar(type != Player_Two ? DOWN : DOWN2)) {
+            if (checkPressedDown()) {
                 moveDownRight(pos, vel, playerSprite, wallPass);
                 return;
             }
@@ -140,11 +184,11 @@ class MovementSystem : public ISystem {
 
         void moveUp(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
         {
-            if (_inputManager->playerHasPressedKeyAsChar(type != Player_Two ? LEFT : LEFT2)) {
+            if (checkPressedLeft()) {
                 moveUpLeft(pos, vel, playerSprite, wallPass);
                 return;
             }
-            if (_inputManager->playerHasPressedKeyAsChar(type != Player_Two ? RIGHT : RIGHT2)) {
+            if (checkPressedRight()) {
                 moveUpRight(pos, vel, playerSprite, wallPass);
                 return;
             }
@@ -162,13 +206,13 @@ class MovementSystem : public ISystem {
 
         void moveDown(Pos *pos, Velocity vel, Sprite *playerSprite, bool wallPass)
         {
-            if (_inputManager->playerHasPressedKeyAsChar(type != Player_Two ? LEFT : LEFT2)) {
+            if (checkPressedLeft()) {
                 moveDownLeft(pos, vel, playerSprite, wallPass);
                 // playerSprite->model->setCurrentAnim(1);
                 // playerSprite->model->updateModelsAnimation();
                 return;
             }
-            if (_inputManager->playerHasPressedKeyAsChar(type != Player_Two ? RIGHT : RIGHT2)) {
+            if (checkPressedRight()) {
                 moveDownRight(pos, vel, playerSprite, wallPass);
                 return;
             }
@@ -248,7 +292,7 @@ class MovementSystem : public ISystem {
         std::shared_ptr<RL::Map> _map;
         std::shared_ptr<RL::InputManager> _inputManager;
         RL::CollisionManager _colManager;
-        PlayerType type = Other;
+        PlayerType _type = Other;
 };
 
 #endif /* !MOVEMENTSYSTEM_HPP_ */

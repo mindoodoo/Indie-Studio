@@ -12,6 +12,10 @@ RL::Drawable3D::Drawable3D(RL::ModelType type, float scale)
     this->_scale = scale;
     this->up = 0;
     this->_assetLoaded = true;
+    this->_currentAnim = 0;
+    this->_currentFrame = 0;
+    this->_animationLoaded = false;
+    this->_rotationAngle = 0.0f;
 
 }
 
@@ -287,4 +291,19 @@ void RL::Drawable3D::setHidden(bool hidden)
 bool RL::Drawable3D::isHidden() const
 {
     return _hidden;
+}
+
+void RL::Drawable3D::setModelAnimation(ModelAnimation* anim)
+{
+    this->_animations = anim;
+}
+
+ModelAnimation *RL::Drawable3D::getModelAnimation()
+{
+    return this->_animations;
+}
+
+void RL::Drawable3D::setLoadedAnimationTrue()
+{
+    this->_animationLoaded = true;
 }

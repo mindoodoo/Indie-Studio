@@ -13,6 +13,7 @@ RL::Drawable3D* Bomberman::makeDrawable3DPointer(RL::Drawable3D Model)
     RL::Drawable3D *ModelPointer = new RL::Drawable3D(RL::MODEL, 2.0f);
 
     ModelPointer->setModel(Model.getModel());
+    ModelPointer->setModelAnimation(Model.getModelAnimation());
     return ModelPointer;
 }
 
@@ -58,12 +59,12 @@ void Bomberman::layBomb(EntityID playerid)
     std::cout << "LAYING bomb from player ID : " << playerid << std::endl;
     _em->Get<Sprite>(playerid)->model->setCurrentAnim(2);
     if (_em->Get<BombCapacity>(playerid)->curCapacity >= 1) {
-        if (createBomb(*_em->Get<Pos>(playerid), _player[One],*_em->Get<Skillset>(playerid)))
+        if (createBomb(*_em->Get<Pos>(playerid), playerid,*_em->Get<Skillset>(playerid)))
             _em->Get<BombCapacity>(playerid)->curCapacity -= 1;
     }
 }
 
-float Bomberman::smoothBombResize(RL::Drawable3D *BombModel)
+void Bomberman::smoothBombResize(RL::Drawable3D *BombModel)
 {
     if (BombModel->getScale() <= 3.01f && BombModel->getUpvalue() == 1) {
         BombModel->resize(BombModel->getScale() + 0.05f);
@@ -118,9 +119,8 @@ void Bomberman::checkBombalive() {
                 std::cout << "BOOOM" << std::endl;
                 //I DONT KNOW IF WE WANT TO LEAVE THIS LIKE THIS
                 _soundManager->playSpecificSoundFx("ExplosionTest");
-                for (EntityID enty: EntityViewer<BombCapacity>(*_em.get())) {
-                    _em->Get<BombCapacity>(enty)->curCapacity += 1;
-                }
+                if (checkIfVectorContain(_player, _em->Get<BombOwner>(ent)->id))
+                    _em->Get<BombCapacity>(_em->Get<BombOwner>(ent)->id)->curCapacity += 1;
                 //create explosion
                 createBombExplosions(ent);
                     

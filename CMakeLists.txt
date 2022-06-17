@@ -27,6 +27,7 @@ FILE(GLOB CFILES
         Source/GamePlay/Bomb.cpp
         Source/GamePlay/Explosion.cpp
         Source/Core.cpp
+        Source/AI/AStar.cpp
         menu_source/Button.cpp
         menu_source/CharacterSelect.cpp
         menu_source/EndMenu.cpp
@@ -62,6 +63,7 @@ FILE(GLOB HEADERFILES
         Source/Raylib/Window.hpp
         Source/GamePlay/Timer.hpp
         Source/Core.hpp
+        Source/AI/AStar.hpp
         menu_source/Button.hpp
         menu_source/CharacterSelect.hpp
         menu_source/EndMenu.hpp

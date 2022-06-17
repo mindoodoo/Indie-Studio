@@ -13,6 +13,7 @@
 #include "../Raylib/Drawables/Drawable3D.hpp"
 #include "../Raylib/RaylibTypeEncaps.hpp"
 #include "../ECS/ECS.hpp"
+#include "../AI/AStar.hpp"
 
 enum UserInput {
     LAY_BOMB = -6,
@@ -26,7 +27,7 @@ enum UserInput {
     LEFT2 = 97,
     DOWN2 = 115,
     RIGHT2 = 100,
-    NONE
+    NONE = -7
 };
 
 enum MapTranslation {
@@ -41,9 +42,17 @@ enum CollisionObjectType {
     ITEM,
     BREAKABLE_BLOCK,
     PLAYER,
+    AI,
     MONSTER,
     BOMB,
     EXPLOSION
+};
+
+enum ItemType {
+    SPEED_UP = 's',
+    BOMB_UP = 'b',
+    FIRE_UP = 'f',
+    WALLPASS = 'w'
 };
 
 enum PlayerNumber {
@@ -124,6 +133,22 @@ struct Velocity {
     };
 };
 
+enum TargetType {
+    CRATE_TARGET,
+    ITEM_TARGET,
+    PLAYER_TARGET,
+    BOMB_TARGET,
+    RANDOM
+};
+
+struct AIData {
+    bool detectedBomb;
+    Pos target;
+    TargetType targetType;
+    int scanRadius;
+    std::deque<coordinates_t> path;
+    std::vector<int> blockingTiles;
+};
 
 struct Input {
     UserInput pressedKey; // walk in direction, lay bombs
