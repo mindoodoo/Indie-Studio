@@ -18,6 +18,11 @@
 
 class AISystem : public ISystem {
     public:
+        struct Target {
+            Pos pos;
+            TargetType type;
+            std::deque<coordinates_t> path;
+        };
         AISystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Map> map) : _map(map) {
             _em = em;
             _target = {0, 0, 0};
@@ -35,6 +40,7 @@ class AISystem : public ISystem {
             for (EntityID ent : EntityViewer<Pos, Sprite, CollisionObjectType, AIData>(*_em.get())) {
                 _foundTarget = false;
                 _bombPos.clear();
+                _possibleTargets.clear();
                 Pos* pos = _em->Get<Pos>(ent);
                 Skillset* skills = _em->Get<Skillset>(ent);
                 Input* input = _em->Get<Input>(ent);
@@ -156,13 +162,15 @@ class AISystem : public ISystem {
         }
 
         void scanForNewTarget(Pos *pos, EntityID ent, std::vector<EntityID> playerIds) {
-            scanForPlayers(pos, ent, playerIds);
-            if (!_foundTarget)
-                scanForItem(pos);
-            if (!_foundTarget)
-                scanForBreakableBlock(pos);
-            if (!_foundTarget && !_detectedBomb)
+            scanForObjects(pos, ent, playerIds);
+            if (_possibleTargets.empty() && !_detectedBomb)
                 setRandomTarget(pos);
+            if (!_possibleTargets.empty()) {
+                int chosenIndex = rand() % _possibleTargets.size();
+                _target = _possibleTargets[chosenIndex].pos;
+                _targetType = _possibleTargets[chosenIndex].type;
+                _path = _possibleTargets[chosenIndex].path;
+            }
         }
 
         bool isOutOfBombReach(Pos pos) {
@@ -262,7 +270,7 @@ class AISystem : public ISystem {
             }
         };
 
-        void scanForPlayers(Pos* pos, EntityID ent, std::vector<EntityID> playerIds) {
+        void scanForObjects(Pos* pos, EntityID ent, std::vector<EntityID> playerIds) {
             std::vector<Pos> playerPos;
             for (EntityID id : playerIds) {
                 if (id != INVALID_ENTITY && ent != id)
@@ -276,66 +284,50 @@ class AISystem : public ISystem {
                 int endY = (pos->y + radius) >= _map->getMapDepth() ? (_map->getMapDepth() - 1) : (pos->y + radius);
                 for (int y = startY; y <= endY; y++) {
                     for (int x = startX; x <= endX; x++) {
-                        for (Pos curPos : playerPos) {
-                            if (round(curPos.x) == x && round(curPos.y) == y) {
-                                _target = {(float)x, (float)y, 1};
-                                checkForPath(pos);
-                                if (!_foundTarget)
-                                    continue;
-                                _targetType = PLAYER_TARGET;
-                                std::cout << "found PLAYER" << std::endl;
-                                return;
-                            }
-                        }
+                        scanForPlayers(pos, x, y, playerPos);
+                        scanForItem(pos, x, y);
+                        scanForBreakableBlock(pos, x, y);
                     }
                 }
             }
         };
 
-        void scanForItem(Pos* pos) {
-            for (int radius = 0; radius < _scanRadius; radius++) {
-                int startX = (pos->x - radius) <= 0 ? 1 : (pos->x - radius);
-                int startY = (pos->y - radius) <= 0 ? 1 : (pos->y - radius);
-                int endX = (pos->x + radius) >= _map->getMapWidth() ? (_map->getMapWidth() - 1) : (pos->x + radius);
-                int endY = (pos->y + radius) >= _map->getMapDepth() ? (_map->getMapDepth() - 1) : (pos->y + radius);
-                for (int y = startY; y <= endY; y++) {
-                    for (int x = startX; x <= endX; x++) {
-                        if (_map->getParsedMap()[y][x].tile == SPEED_UP ||
-                            _map->getParsedMap()[y][x].tile == BOMB_UP ||
-                            _map->getParsedMap()[y][x].tile == FIRE_UP ||
-                            _map->getParsedMap()[y][x].tile == WALLPASS) {
-                            _target = {(float)x, (float)y, 1};
-                            checkForPath(pos);
-                            if (!_foundTarget)
-                                continue;
-                            _targetType = ITEM_TARGET;
-                            std::cout << "found ITEM" << std::endl;
-                            return;
-                        }
-                    }
+        void scanForPlayers(Pos* pos, int x, int y, std::vector<Pos> playerPos) {
+            for (Pos curPos : playerPos) {
+                if (round(curPos.x) == x && round(curPos.y) == y) {
+                    _target = {(float)x, (float)y, 1};
+                    checkForPath(pos);
+                    if (!_foundTarget)
+                        continue;
+                    _possibleTargets.push_back({_target, PLAYER_TARGET, _path});
+                    std::cout << "found PLAYER at " << x << " " << y << std::endl;
                 }
+            }
+        }
+
+        void scanForItem(Pos* pos, int x, int y) {
+            if (_map->getParsedMap()[y][x].tile == SPEED_UP ||
+                _map->getParsedMap()[y][x].tile == BOMB_UP ||
+                _map->getParsedMap()[y][x].tile == FIRE_UP ||
+                _map->getParsedMap()[y][x].tile == WALLPASS) {
+                _target = {(float)x, (float)y, 1};
+                checkForPath(pos);
+                if (!_foundTarget)
+                    return;
+                _possibleTargets.push_back({_target, ITEM_TARGET, _path});
+                std::cout << "found ITEM at " << x << " " << y << std::endl;
             }
         };
 
-        void scanForBreakableBlock(Pos* pos) {
-            for (int radius = 0; radius < _scanRadius; radius++) {
-                int startX = (pos->x - radius) <= 0 ? 1 : (pos->x - radius);
-                int startY = (pos->y - radius) <= 0 ? 1 : (pos->y - radius);
-                int endX = (pos->x + radius) >= _map->getMapWidth() ? (_map->getMapWidth() - 1) : (pos->x + radius);
-                int endY = (pos->y + radius) >= _map->getMapDepth() ? (_map->getMapDepth() - 1) : (pos->y + radius);
-                for (int y = startY; y <= endY; y++) {
-                    for (int x = startX; x <= endX; x++) {
-                        if (_map->getParsedMap()[y][x].tile == BREAKABLE_OBJECT) {
-                            _target = {(float)x, (float)y, 1};
-                            checkForPath(pos);
-                            if (!_foundTarget)
-                                continue;
-                            _targetType = CRATE_TARGET;
-                            std::cout << "found CRATE" << std::endl;
-                            return;
-                        }
-                    }
-                }
+        void scanForBreakableBlock(Pos* pos, int x, int y) {
+            
+            if (_map->getParsedMap()[y][x].tile == BREAKABLE_OBJECT) {
+                _target = {(float)x, (float)y, 1};
+                checkForPath(pos);
+                if (!_foundTarget)
+                    return;
+                _possibleTargets.push_back({_target, CRATE_TARGET, _path});
+                std::cout << "found CRATE at " << x << " " << y << std::endl;
             }
         };
 
@@ -354,7 +346,7 @@ class AISystem : public ISystem {
             if (!_foundTarget) {
                 _path.clear();
             }
-            _targetType = RANDOM;
+            _possibleTargets.push_back({_target, RANDOM, _path});
         }
 
     private:
@@ -366,6 +358,7 @@ class AISystem : public ISystem {
         TargetType _targetType; // as AI component
         int _scanRadius; // as AI component
         int _bombScanRadius;
+        std::vector<Target> _possibleTargets;
 
         //AStar implementation test
         std::deque<coordinates_t> _path; // as AI component
