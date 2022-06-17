@@ -76,7 +76,7 @@ int Win::PauseMenu::openPauseMenu()
 
     if (_btn[1].getBtnAction() == true) {
         _btn[1].setBtnAction(false);
-        return 6;
+        return 0;
     }
     if (_btn[2].getBtnAction() == true) {
         _btn[2].setBtnAction(false);
