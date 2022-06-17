@@ -160,7 +160,7 @@ std::deque<coordinates_t> avoidBomb(coordinates_t start, coordinates_t bombPos, 
     bombPos = {bombPos.second, bombPos.first};
 
     if ((start.first != bombPos.first && start.second != bombPos.second)
-        || abs(start.first - bombPos.first) > bombRadius || abs(start.second - bombPos.second) > bombRadius)
+        || std::abs(int(start.first - bombPos.first)) > bombRadius || std::abs(int(start.second - bombPos.second)) > bombRadius)
         return {};
 
     // Start
@@ -204,7 +204,7 @@ std::deque<coordinates_t> avoidBomb(coordinates_t start, coordinates_t bombPos, 
 
         // Check if at target
         if ((currNode.position.first != bombPos.first && currNode.position.second != bombPos.second)
-            || abs(currNode.position.first - bombPos.first) > 3 || abs(currNode.position.second - bombPos.second) > 3) // if behind corner/ 3-6 pos away from start pos
+            || std::abs(int(currNode.position.first - bombPos.first)) > 3 || std::abs(int(currNode.position.second - bombPos.second)) > 3) // if behind corner/ 3-6 pos away from start pos
             return returnPath(currNode, map, _blockingTiles);
 
         // Instantiate neighbour nodes
