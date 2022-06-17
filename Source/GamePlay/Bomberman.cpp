@@ -249,12 +249,15 @@ void Bomberman::createMonster(Pos pos)
 
 void Bomberman::getFirstPlayerInput()
 {
-    if (_player[0] == INVALID_ENTITY)
-        return;
-    Input* playerInput = _em->Get<Input>(_player[0]);
+    // if (_player[0] == INVALID_ENTITY)
+    //     return;
+    Input* playerInput1 = _em->Get<Input>(_player[0]);
+    Input* playerInput2 = _em->Get<Input>(_player[1]);
 
-    if (!_event.size())
-        playerInput->pressedKey = NONE;
+    if (!_event.size()) {
+        playerInput1->pressedKey = NONE;
+        playerInput2->pressedKey = NONE;
+    }
 
     for (int input : _event) {
         switch ((UserInput)input) {
@@ -262,14 +265,25 @@ void Bomberman::getFirstPlayerInput()
             case DOWN:
             case LEFT:
             case RIGHT:
-                playerInput->pressedKey = (UserInput)input;
+                playerInput1->pressedKey = (UserInput)input;
                 break;
-           case LAY_BOMB:
-                playerInput->pressedKey = NONE;
+            case UP2:
+            case DOWN2:
+            case LEFT2:
+            case RIGHT2:
+                playerInput2->pressedKey = (UserInput)input;
+                break;
+            case LAY_BOMB:
+                playerInput1->pressedKey = NONE;
                 layBomb(_player[One]);
                 break;
+            case LAY_BOMB2:
+                playerInput2->pressedKey = NONE;
+                layBomb(_player[Two]);
+                break;
             default:
-                playerInput->pressedKey = NONE;
+                playerInput1->pressedKey = NONE;
+                playerInput2->pressedKey = NONE;
         }
     }
 }
@@ -303,8 +317,8 @@ void Bomberman::getSecondPlayerInput()
 
 void Bomberman::checkInput()
 {
-    getFirstPlayerInput();
-    getSecondPlayerInput();
+    getFirstPlayerInput(); //rename to get both player inputs tommorow !
+    //getSecondPlayerInput();
 }
 
 void Bomberman::startGameTimers()
