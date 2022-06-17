@@ -12,6 +12,7 @@
 
 #include "../Raylib/Drawables/Drawable3D.hpp"
 #include "../Raylib/RaylibTypeEncaps.hpp"
+#include "../AI/AStar.hpp"
 
 enum UserInput {
     LAY_BOMB = -6,
@@ -131,6 +132,22 @@ struct Velocity {
     };
 };
 
+enum TargetType {
+    CRATE_TARGET,
+    ITEM_TARGET,
+    PLAYER_TARGET,
+    BOMB_TARGET,
+    RANDOM
+};
+
+struct AIData {
+    bool detectedBomb;
+    Pos target;
+    TargetType targetType;
+    int scanRadius;
+    std::deque<coordinates_t> path;
+    std::vector<int> blockingTiles;
+};
 
 struct Input {
     UserInput pressedKey; // walk in direction, lay bombs

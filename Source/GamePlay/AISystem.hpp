@@ -18,13 +18,6 @@
 
 class AISystem : public ISystem {
     public:
-        enum TargetType {
-            CRATE,
-            ITEM,
-            PLAYER,
-            BOMB,
-            RANDOM
-        };
         AISystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Map> map) : _map(map) {
             _em = em;
             _target = {0, 0, 0};
@@ -39,42 +32,62 @@ class AISystem : public ISystem {
         ~AISystem() {};
 
         void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying) {
-            for (EntityID ent : EntityViewer<Pos, Sprite, CollisionObjectType>(*_em.get())) {
+            for (EntityID ent : EntityViewer<Pos, Sprite, CollisionObjectType, AIData>(*_em.get())) {
                 _foundTarget = false;
                 _bombPos.clear();
-                CollisionObjectType* type = _em->Get<CollisionObjectType>(ent);
-                if (*type == AI) {
-                    Pos* pos = _em->Get<Pos>(ent);
-                    Skillset* skills = _em->Get<Skillset>(ent);
-                    if (_blockingTiles.size() == 2 && skills->wallPass)
-                        _blockingTiles.pop_back();
-                    _bombScanRadius = 5 + skills->fireUp;
-                    Input* input = _em->Get<Input>(ent);
-                    bool saveDetectedBomb = _detectedBomb;
-                    _detectedBomb = false;
-                    scanForBombs(pos);
-                    if (_detectedBomb && !saveDetectedBomb)
-                        escapeBombRadius(pos);
-                    if (_path.empty()) {
-                        if (_targetType != ITEM && _target.x != 0 && _target.y != 0 && _target.z != 0 && 
-                            (_detectedBomb == saveDetectedBomb || (!_detectedBomb && saveDetectedBomb))
-                            && hasBombEffect(pos)) {
-                            // lay bomb at target position
-                            if (canEscapeBomb(pos)) {
-                                aiBombLaying.push_back(ent);
-                                return;
-                            }
+                Pos* pos = _em->Get<Pos>(ent);
+                Skillset* skills = _em->Get<Skillset>(ent);
+                Input* input = _em->Get<Input>(ent);
+                AIData* data = _em->Get<AIData>(ent);
+                initValues(data, *skills);
+                if (_blockingTiles.size() == 2 && skills->wallPass)
+                    _blockingTiles.pop_back();
+                bool saveDetectedBomb = _detectedBomb;
+                _detectedBomb = false;
+                scanForBombs(pos);
+                if (_detectedBomb && !saveDetectedBomb)
+                    escapeBombRadius(pos);
+                if (_path.empty()) {
+                    if (_targetType != ITEM_TARGET && _target.x != 0 && _target.y != 0 && _target.z != 0 && 
+                        (_detectedBomb == saveDetectedBomb || (!_detectedBomb && saveDetectedBomb))
+                        && hasBombEffect(pos)) {
+                        // lay bomb at target position
+                        if (canEscapeBomb(pos)) {
+                            aiBombLaying.push_back(ent);
+                            updateAIData(data);
+                            return;
                         }
-                        scanForNewTarget(pos, ent, playerIds);
                     }
-                    if (_path.empty()) {
-                        input->pressedKey = NONE;
-                        return;
-                    }
-                    findTarget(ent, pos, input, playerIds);
+                    scanForNewTarget(pos, ent, playerIds);
                 }
+                if (_path.empty()) {
+                    input->pressedKey = NONE;
+                    updateAIData(data);
+                    return;
+                }
+                findTarget(ent, pos, input, playerIds);
+                updateAIData(data);
             }
         };
+
+        void initValues(AIData *data, Skillset skills) {
+            _target = data->target;
+            _path = data->path;
+            _scanRadius = data->scanRadius;
+            _bombScanRadius = 5 + skills.fireUp;
+            _detectedBomb = data->detectedBomb;
+            _targetType = data->targetType;
+            _blockingTiles = data->blockingTiles;
+        };
+
+        void updateAIData(AIData *data) {
+            data->target = _target;
+            data->path = _path;
+            data->scanRadius = _scanRadius;
+            data->detectedBomb = _detectedBomb;
+            data->targetType = _targetType;
+            data->blockingTiles = _blockingTiles;
+        }
 
         bool hasBombEffect(Pos *pos) {
             std::vector<Pos> opponents;
@@ -238,7 +251,7 @@ class AISystem : public ISystem {
                                 _target = {(float)x, (float)y, 1};
                                 _bombPos.push_back(_target);
                                 _detectedBomb = true;
-                                _targetType = BOMB;
+                                _targetType = BOMB_TARGET;
                             } else if (round(curPos.x) == x && round(curPos.y) == y) {
                                 _bombPos.push_back({(float)x, (float)y, 1});
                             }
@@ -269,7 +282,7 @@ class AISystem : public ISystem {
                                 checkForPath(pos);
                                 if (!_foundTarget)
                                     continue;
-                                _targetType = PLAYER;
+                                _targetType = PLAYER_TARGET;
                                 std::cout << "found PLAYER" << std::endl;
                                 return;
                             }
@@ -295,7 +308,7 @@ class AISystem : public ISystem {
                             checkForPath(pos);
                             if (!_foundTarget)
                                 continue;
-                            _targetType = ITEM;
+                            _targetType = ITEM_TARGET;
                             std::cout << "found ITEM" << std::endl;
                             return;
                         }
@@ -317,7 +330,7 @@ class AISystem : public ISystem {
                             checkForPath(pos);
                             if (!_foundTarget)
                                 continue;
-                            _targetType = CRATE;
+                            _targetType = CRATE_TARGET;
                             std::cout << "found CRATE" << std::endl;
                             return;
                         }
@@ -347,17 +360,17 @@ class AISystem : public ISystem {
     private:
         std::shared_ptr<RL::Map> _map;
         RL::CollisionManager _colManager;
-        bool _detectedBomb;
+        bool _detectedBomb; // as AI component
         bool _foundTarget;
-        Pos _target;
-        int _scanRadius;
+        Pos _target; // as AI component
+        TargetType _targetType; // as AI component
+        int _scanRadius; // as AI component
         int _bombScanRadius;
-        TargetType _targetType;
 
         //AStar implementation test
-        std::deque<coordinates_t> _path;
+        std::deque<coordinates_t> _path; // as AI component
         std::vector<Pos> _bombPos;
-        std::vector<int> _blockingTiles;
+        std::vector<int> _blockingTiles; // as AI component
 };
 
 #endif /* !AISYSTEM_HPP_ */

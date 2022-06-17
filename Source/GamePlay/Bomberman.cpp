@@ -28,7 +28,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     // TODO: make pos dependant from map size
     createPlayer({13, 11, 1});
     createPlayer({1, 1, 1});
-    //createAI({13, 1, 1});
+    createAI({13, 1, 1});
     createAI({1, 11, 1});
     generateItems();
     // createSpeedUpItem({10, 10, 1});
@@ -135,6 +135,9 @@ void Bomberman::createAI(Pos pos)
     _em->Assign<Skillset>(id, Skillset{0, 0, 1, false});
     _em->Assign<BombCapacity>(id, BombCapacity{3, 3});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{AI});
+
+    AIData data = {false, {0, 0, 0}, RANDOM, 5, {}, {1, 2}};
+    _em->Assign<AIData>(id, data);
 
     RL::Drawable3D *AI = new RL::Drawable3D(aitex, aimod, "", RL::MODEL, 0.25);
     AI->setPosition((RL::Vector3f){
