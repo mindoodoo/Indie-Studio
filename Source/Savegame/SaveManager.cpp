@@ -112,12 +112,23 @@ std::vector <std::string> RL::SaveManager::getMenu()
     return _menu;
 }
 
+
+
 std::string RL::SaveManager::getMappath()
 {
-    if (_running )
-        return _mapPath;
-    else
-        return "./RaylibTesting/Assets/Maps/TestMap/test.csv";
+    return _mapPath;
+}
+
+void RL::SaveManager::updateMap(int map)
+{
+    switch (map) {
+        case 1:
+            _mapPath = "RaylibTesting/Assets/Maps/TestMap/test.csv";
+            break;
+        case 2:
+            _mapPath = "RaylibTesting/Assets/Maps/TestMap1/test.csv";
+            break;
+    }
 }
 
 BombCapacity readBomb(std::string line)

@@ -11,24 +11,23 @@ Core::Core()
 {
     _window = std::make_shared<RL::Window>("INDIE_STUDIO");
     _inputManager = std::make_shared<RL::InputManager>();
-    _map = std::make_shared<RL::Map>("./RaylibTesting/Assets/Maps/TestMap/test.csv", "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png");
+     _saveManager = std::make_shared<RL::SaveManager>();
      _soundManager = std::make_shared<RL::SoundManager>();
+
 
     RL::Vector3f cameraPos(0, 15, 8);
     _window->_camera.setPosition(cameraPos);
     _window->_camera.setRotation({0.0f, 1.0f, 0.0f });
 
-    _startMenu = new Win::StartMenu(_window, _inputManager, _soundManager);
-    _endMenu = new Win::EndMenu(_window, _inputManager, _soundManager);
-    _pauseMenu = new Win::PauseMenu(_window, _inputManager, _soundManager);
-    _settings = new Win::Settings(_window, _inputManager, _soundManager);
-    _charSelec = new Win::CharacterSelect(_window, _inputManager, _soundManager);
-    _mapSelect = new Win::MapSelect(_window, _inputManager, _soundManager);
+    _startMenu = new Win::StartMenu(_window, _inputManager, _soundManager, _saveManager);
+    _endMenu = new Win::EndMenu(_window, _inputManager, _soundManager, _saveManager);
+    _pauseMenu = new Win::PauseMenu(_window, _inputManager, _soundManager, _saveManager);
+    _settings = new Win::Settings(_window, _inputManager, _soundManager, _saveManager);
+    _charSelec = new Win::CharacterSelect(_window, _inputManager, _soundManager, _saveManager);
+    _mapSelect = new Win::MapSelect(_window, _inputManager, _soundManager, _saveManager);
     _prevS = 0;
     _prevM = 0;
     _screen = 0;
-
-    _game = new Bomberman(_window, _inputManager, _map, _soundManager);
 }
 
 Core::~Core()
@@ -78,12 +77,15 @@ void Core::startLoop()
                 break;
             case 6:
                 _screen = 6;
-                if (!_game->runFrame())
-                    _screen = 4;
+                startGame();
                 break;
             case 7:
                 _screen = _pauseMenu->openPauseMenu();
                 _prevS = 7;
+                break;
+            case 8:
+                //TODO INSERT LOAD here!
+                //_screen = _
                 break;
             default:
                 _screen = 0;
@@ -92,4 +94,11 @@ void Core::startLoop()
         // if (!_game->runFrame())
         //     break;
     }
+}
+
+
+void Core::startGame()
+{
+    _map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png");
+    _game = new Bomberman(_window, _inputManager, _map, _soundManager);
 }

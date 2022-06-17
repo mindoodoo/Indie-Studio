@@ -7,7 +7,7 @@
 
 #include "StartMenu.hpp"
 
-Win::StartMenu::StartMenu(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::SoundManager> SoundManager) : _window(Window), _inputManager(InputManager), _soundManager(SoundManager)
+Win::StartMenu::StartMenu(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager) : _window(Window), _inputManager(InputManager), _soundManager(SoundManager), _saveManager(SaveManager)
 {
     _mousePt = {0,0};
     _bg = new RL::Drawable2D("./menu_source/assets/bg_bomberman.png");
@@ -81,6 +81,7 @@ int Win::StartMenu::openStartMenu()
     }
     if (_btn[2].getBtnAction() == true) {
         _btn[2].setBtnAction(false);
+        //return 8;
         // load game
     }
     if (_btn[3].getBtnAction() == true) {

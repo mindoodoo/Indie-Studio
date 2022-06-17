@@ -44,7 +44,7 @@ namespace RL {
         void checkRunning(std::vector<std::string> line, int index);
         void checkEntitys(std::string filename);
         void loadEntity(std::string line);
-        std::vector<std::vector<gfx_tile_t>> loadMapfromCSV(const std::string &path);
+        void updateMap(int map);
 
         void writeMenu();
         void writeMap();
