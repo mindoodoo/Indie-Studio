@@ -122,10 +122,10 @@ std::string RL::SaveManager::getMappath()
 void RL::SaveManager::updateMap(int map)
 {
     switch (map) {
-        case 1:
+        case 0:
             _mapPath = "RaylibTesting/Assets/Maps/TestMap/test.csv";
             break;
-        case 2:
+        case 1:
             _mapPath = "RaylibTesting/Assets/Maps/TestMap1/test.csv";
             break;
     }

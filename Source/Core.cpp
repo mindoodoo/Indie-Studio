@@ -18,7 +18,7 @@ Core::Core()
     RL::Vector3f cameraPos(0, 15, 8);
     _window->_camera.setPosition(cameraPos);
     _window->_camera.setRotation({0.0f, 1.0f, 0.0f });
-
+    _game = NULL;
     _startMenu = new Win::StartMenu(_window, _inputManager, _soundManager, _saveManager);
     _endMenu = new Win::EndMenu(_window, _inputManager, _soundManager, _saveManager);
     _pauseMenu = new Win::PauseMenu(_window, _inputManager, _soundManager, _saveManager);
@@ -76,8 +76,10 @@ void Core::startLoop()
                 _prevS = 5;
                 break;
             case 6:
-                _screen = 6;
-                startGame();
+                if (!_game)
+                    startGame();
+                if (!_game->runFrame())
+                    _screen = 4;
                 break;
             case 7:
                 _screen = _pauseMenu->openPauseMenu();
