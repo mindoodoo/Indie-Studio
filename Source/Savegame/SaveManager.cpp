@@ -128,6 +128,9 @@ void RL::SaveManager::updateMap(int map)
         case 1:
             _mapPath = "RaylibTesting/Assets/Maps/TestMap1/test.csv";
             break;
+        case -1:
+            _mapPath = _directory + ".saveMAP.csv";
+            break;
     }
 }
 

@@ -87,7 +87,8 @@ void Core::startLoop()
                 break;
             case 8:
                 //TODO INSERT LOAD here!
-                //_screen = _
+                _saveManager->updateMap(-1);
+                _screen = 6;
                 break;
             default:
                 _screen = 0;
@@ -102,5 +103,6 @@ void Core::startLoop()
 void Core::startGame()
 {
     _map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png");
+    _saveManager_map->getParsedMap()
     _game = new Bomberman(_window, _inputManager, _map, _soundManager);
 }

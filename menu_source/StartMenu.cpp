@@ -81,7 +81,7 @@ int Win::StartMenu::openStartMenu()
     }
     if (_btn[2].getBtnAction() == true) {
         _btn[2].setBtnAction(false);
-        //return 8;
+        return 8;
         // load game
     }
     if (_btn[3].getBtnAction() == true) {
