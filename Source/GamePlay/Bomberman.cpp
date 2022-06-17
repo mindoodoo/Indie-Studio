@@ -124,8 +124,8 @@ void Bomberman::createPlayer(Pos pos)
 void Bomberman::createAI(Pos pos)
 {
     EntityID id = _em->CreateNewEntity();
-    std::string aitex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
-    std::string aimod = "./RaylibTesting/Assets/3d_models/Skull/mainplayerAnimated.glb";
+    std::string aitex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
+    std::string aimod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
 
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
@@ -140,7 +140,7 @@ void Bomberman::createAI(Pos pos)
     AIData data = {false, {0, 0, 0}, RANDOM, 5, {}, {1, 2}};
     _em->Assign<AIData>(id, data);
 
-    RL::Drawable3D *AI = new RL::Drawable3D(aitex, aimod, "", RL::MODEL, 0.25);
+    RL::Drawable3D *AI = new RL::Drawable3D(aitex, aimod, aimod, RL::MODEL, 0.25);
     AI->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
         pos.y,

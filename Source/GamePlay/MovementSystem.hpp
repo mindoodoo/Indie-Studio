@@ -47,7 +47,14 @@ class MovementSystem : public ISystem {
                     skills = *_em->Get<Skillset>(ent);
                     wallPass = skills.wallPass;
                 }
-                Velocity vel = (*playerVel) + (skills.speedUp * 0.04);
+                float speedUp = skills.speedUp * 0.04;
+                if (*playerType == AI && speedUp > (0.1 - playerVel->x))
+                    speedUp = 0.1 - playerVel->x;
+                else if (*playerType == AI)
+                    speedUp /= 2;
+                if (*playerType == PLAYER && speedUp > (0.15 - playerVel->x))
+                    speedUp = 0.15 - playerVel->x;
+                Velocity vel = *playerVel + speedUp;
 
                 switch (playerMovement->pressedKey) {
                     case UP:
