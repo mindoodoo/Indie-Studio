@@ -210,58 +210,64 @@ void Bomberman::createMonster(Pos pos)
     _window->queueDrawable(Skull);
 }
 
+void savePlayerInput(Input* playerInput, UserInput input, bool &newInput)
+{
+    playerInput->pressedKey = (UserInput)input;
+    newInput = true;
+}
 
 void Bomberman::getFirstPlayerInput()
 {
-    if (_player[0] == INVALID_ENTITY)
+    if (_player[One] == INVALID_ENTITY)
         return;
-    Input* playerInput = _em->Get<Input>(_player[0]);
+    Input* playerInput = _em->Get<Input>(_player[One]);
 
     if (!_event.size())
         playerInput->pressedKey = NONE;
 
-    for (int input : _event) {
-        switch ((UserInput)input) {
-            case UP:
-            case DOWN:
-            case LEFT:
-            case RIGHT:
-                playerInput->pressedKey = (UserInput)input;
-                break;
-           case LAY_BOMB:
-               layBomb(_player[One]);
-               break;
-            default:
-                playerInput->pressedKey = NONE;
-        }
+    bool newInput = false;
+
+    if (_inputManager->playerHasPressedKeyAsChar(UP))
+        savePlayerInput(playerInput, UP, newInput);
+    if (_inputManager->playerHasPressedKeyAsChar(DOWN))
+        savePlayerInput(playerInput, DOWN, newInput);
+    if (_inputManager->playerHasPressedKeyAsChar(LEFT))
+        savePlayerInput(playerInput, LEFT, newInput);
+    if (_inputManager->playerHasPressedKeyAsChar(RIGHT))
+        savePlayerInput(playerInput, RIGHT, newInput);
+    if (_inputManager->playerHasPressedKeyAsChar(LAY_BOMB)) {
+        savePlayerInput(playerInput, LAY_BOMB, newInput);
+        layBomb(_player[One]);
     }
+    if (!newInput)
+        playerInput->pressedKey = NONE;
 }
 
 void Bomberman::getSecondPlayerInput()
 {
-    if (_player[1] == INVALID_ENTITY)
+    if (_player[Two] == INVALID_ENTITY)
         return;
-    Input* playerInput = _em->Get<Input>(_player[1]);
+    Input* playerInput = _em->Get<Input>(_player[Two]);
 
     if (!_event.size())
         playerInput->pressedKey = NONE;
 
-    for (int input : _event) {
-        switch ((UserInput)input) {
-            case UP2:
-            case DOWN2:
-            case LEFT2:
-            case RIGHT2:
-                playerInput->pressedKey = (UserInput)input;
-                break;
-            case LAY_BOMB2:
-                //playerSprite->model->setCurrentAnim(2);
-               layBomb(_player[Two]);
-               break;
-            default:
-                playerInput->pressedKey = NONE;
-        }
+    bool newInput = false;
+
+    if (_inputManager->playerHasPressedKeyAsChar(UP2))
+        savePlayerInput(playerInput, UP2, newInput);
+    if (_inputManager->playerHasPressedKeyAsChar(DOWN2))
+        savePlayerInput(playerInput, DOWN2, newInput);
+    if (_inputManager->playerHasPressedKeyAsChar(LEFT2))
+        savePlayerInput(playerInput, LEFT2, newInput);
+    if (_inputManager->playerHasPressedKeyAsChar(RIGHT2))
+        savePlayerInput(playerInput, RIGHT2, newInput);
+    if (_inputManager->playerHasPressedKeyAsChar(LAY_BOMB2)) {
+        savePlayerInput(playerInput, LAY_BOMB2, newInput);
+        layBomb(_player[Two]);
     }
+    if (!newInput)
+        playerInput->pressedKey = NONE;
 }
 
 void Bomberman::checkInput()

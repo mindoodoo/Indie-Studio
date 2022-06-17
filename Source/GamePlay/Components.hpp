@@ -25,7 +25,7 @@ enum UserInput {
     LEFT2 = 97,
     DOWN2 = 115,
     RIGHT2 = 100,
-    NONE
+    NONE = -7
 };
 
 enum MapTranslation {
