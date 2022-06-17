@@ -74,15 +74,9 @@ int Win::CharacterSelect::openCharSelect(int mode)
                         _btn[i].setBtnSelected(false);
                     }
                 } else {
-                    if (_btn[i].getBtnSelected() == false) {
-                        _btn[i].setBtnState(2);
-                        _btn[i].setBtnAction(true);
-                        _btn[i].setBtnSelected(true);
-                    } else {
-                        _btn[i].setBtnState(0);
-                        _btn[i].setBtnAction(true);
-                        _btn[i].setBtnSelected(false);
-                    }
+                    _btn[i].setBtnState(0);
+                    _btn[i].setBtnAction(true);
+                    _btn[i].setBtnSelected(false);
                 }
             }
         }

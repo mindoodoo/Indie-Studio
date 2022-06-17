@@ -42,6 +42,8 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _gamePaused = false;
     _gameTimer.startTimer();
     _deltaTimer.startTimer();
+
+    this->_pauseGame = false;
 }
 
 Bomberman::~Bomberman()
@@ -350,8 +352,10 @@ int Bomberman::runFrame()
     _aiBombLaying.clear();
   
     checkInput();
-    if (this->_gamePaused)
+    if (this->_gamePaused && !this->_pauseGame) {
+        this->_pauseGame = true;
         return 7;
+    }
     checkBombalive();
     checkExplosionalive();
     for (std::shared_ptr<ISystem> system : _systems)

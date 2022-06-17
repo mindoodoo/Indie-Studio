@@ -71,6 +71,7 @@ class Bomberman {
         Timer _gameTimer;
         Timer _deltaTimer;
         bool _gamePaused;
+        bool _pauseGame;
 };
 
 float translateFigureCoordinates(float pos, int borderSize);
