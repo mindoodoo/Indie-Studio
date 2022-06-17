@@ -87,9 +87,9 @@ bool RL::CollisionManager::collisionsWithModels(RL::Drawable3D Model1, RL::Drawa
     float model2radius = 0.30f;
     float model1radius = 0.30f;
     if (Model2.getModelType() == RL::POWER)
-        model2radius = 0.28f;
+        model2radius = 0.42f;
     if (Model1.getModelType() == RL::POWER)
-        model1radius = 0.28f;
+        model1radius = 0.42f;
     bool collision = CheckCollisionSpheres(Model1.getPosition(), model1radius, Model2.getPosition(), model2radius);
 
     //if model.IS_TRAVERSIBLE == TRUE then
