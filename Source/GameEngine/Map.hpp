@@ -14,12 +14,9 @@
 #include <iterator>
 #include <cstring>
 #include "Drawable3D.hpp"
+#include "../GamePlay/Components.hpp"
 
-typedef struct
-    {
-        int tile;
-        int orientation;
-    } gfx_tile_t;
+
 
 namespace RL {
     

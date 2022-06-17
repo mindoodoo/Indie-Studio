@@ -12,6 +12,7 @@
 
 #include "../Raylib/Drawables/Drawable3D.hpp"
 #include "../Raylib/RaylibTypeEncaps.hpp"
+#include "../ECS/ECS.hpp"
 
 enum UserInput {
     LAY_BOMB = -6,
@@ -142,10 +143,12 @@ struct Sprite {
     RL::Drawable3D *model;
 };
 
-// replace by marc map
-struct Map {
-    std::vector<std::vector<int>> map;
-};
+typedef struct
+{
+    int tile;
+    int orientation;
+} gfx_tile_t;
+
 
 
 #endif /* !COMPONENTS_HPP_ */
