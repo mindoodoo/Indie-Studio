@@ -83,6 +83,8 @@ void Core::startLoop()
                 break;
             case 7:
                 _screen = _pauseMenu->openPauseMenu();
+                if (_screen == 6)
+                    this->_game->startGameTimers();
                 _prevS = 7;
                 break;
             default:
