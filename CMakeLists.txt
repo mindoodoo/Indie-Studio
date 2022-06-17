@@ -34,7 +34,8 @@ FILE(GLOB CFILES
         menu_source/PauseMenu.cpp
         menu_source/Settings.cpp
         menu_source/StartMenu.cpp
-        menu_source/MapSelect.cpp)
+        menu_source/MapSelect.cpp
+        Source/Savegame/SaveManager.cpp)
 
 #add Header files
 FILE(GLOB HEADERFILES
@@ -69,11 +70,12 @@ FILE(GLOB HEADERFILES
         menu_source/PauseMenu.hpp
         menu_source/Settings.hpp
         menu_source/StartMenu.hpp
-        menu_source/MapSelect.hpp)
+        menu_source/MapSelect.hpp
+        Source/Savegame/SaveManager.hpp)
 
 
 #add to project
-add_executable(bomberman ${HEADERFILES} ${CFILES})
+add_executable(bomberman ${HEADERFILES} ${CFILES} )
 
 #add raylib
 
