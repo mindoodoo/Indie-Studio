@@ -44,7 +44,7 @@ class Bomberman {
         void getSecondPlayerInput();
         void startGameTimers();
         void stopGameTimers();
-        bool runFrame();
+        int runFrame();
         bool checkIfVectorContain(std::vector<EntityID> vector, EntityID id);
         void startDrawScene();
         void stopDrawScene();

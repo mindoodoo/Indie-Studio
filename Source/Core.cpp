@@ -78,7 +78,7 @@ void Core::startLoop()
                 break;
             case 6:
                 _screen = 6;
-                if (!_game->runFrame())
+                if (!(_screen = _game->runFrame()))
                     _screen = 4;
                 break;
             case 7:

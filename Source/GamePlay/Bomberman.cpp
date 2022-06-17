@@ -309,6 +309,10 @@ void Bomberman::getSecondPlayerInput()
 
 void Bomberman::checkInput()
 {
+    if (this->_inputManager->playerHasPressedKeyAsChar(ESCAPE) && !this->_gamePaused) {
+        this->stopGameTimers();
+        return;
+    }
     getFirstPlayerInput();
     getSecondPlayerInput();
 }
@@ -337,7 +341,7 @@ bool Bomberman::checkIfVectorContain(std::vector<EntityID> vector, EntityID id) 
 }
 
 // event as argument?
-bool Bomberman::runFrame()
+int Bomberman::runFrame()
 {
     _soundManager->updateMusicStream();
     _inputManager->popInputs();
@@ -346,6 +350,8 @@ bool Bomberman::runFrame()
     _aiBombLaying.clear();
   
     checkInput();
+    if (this->_gamePaused)
+        return 7;
     checkBombalive();
     checkExplosionalive();
     for (std::shared_ptr<ISystem> system : _systems)
@@ -355,10 +361,10 @@ bool Bomberman::runFrame()
             layBomb(id);
     }
     if (isGameEnd())
-        return false;
+        return 0;
     startDrawScene();
     _deltaTimer.restartTimer();
-    return true;
+    return 6;
 }
 
 void Bomberman::startDrawScene()
