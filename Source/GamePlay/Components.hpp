@@ -9,11 +9,13 @@
 #define COMPONENTS_HPP_
 #include <memory>
 #include <vector>
+#include "deque"
 
 #include "../Raylib/Drawables/Drawable3D.hpp"
 #include "../Raylib/RaylibTypeEncaps.hpp"
 #include "../ECS/ECS.hpp"
-#include "../AI/AStar.hpp"
+
+typedef std::pair<size_t, size_t> coordinates_t;
 
 enum UserInput {
     LAY_BOMB = -6,
