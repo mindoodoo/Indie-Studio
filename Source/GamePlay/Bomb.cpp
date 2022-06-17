@@ -13,6 +13,7 @@ RL::Drawable3D* Bomberman::makeDrawable3DPointer(RL::Drawable3D Model)
     RL::Drawable3D *ModelPointer = new RL::Drawable3D(RL::MODEL, 2.0f);
 
     ModelPointer->setModel(Model.getModel());
+    ModelPointer->setModelAnimation(Model.getModelAnimation());
     return ModelPointer;
 }
 

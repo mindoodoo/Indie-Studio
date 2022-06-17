@@ -91,8 +91,13 @@ namespace RL {
             Model getModel();
             void setModel(Model model);
 
+            ModelAnimation *getModelAnimation();
+            void setModelAnimation(ModelAnimation *anim);
+
             void setHidden(bool hidden);
             bool isHidden() const override;
+
+            void setLoadedAnimationTrue();
 
         protected:
             Vector3f _position = {0, 0, 0};
