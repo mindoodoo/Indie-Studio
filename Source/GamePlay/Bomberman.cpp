@@ -21,7 +21,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     
     //this is respndible for the music being played then shuffle enabled, comment out to cancel
     //_soundManager->playSpecificMusic("MiraiKaraKitaShonen");
-    _soundManager->playRandomMusic();
+    //_soundManager->playRandomMusic();
     //_soundManager->enableDisableShuffle();
     
     // if only one player, fill _player[1] with INVALID_ENTITY
@@ -92,8 +92,9 @@ float translateFigureCoordinates(float pos, int borderSize)
 void Bomberman::createPlayer(Pos pos)
 {
     EntityID id = _em->CreateNewEntity();
-    std::string playtex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
-    std::string playermod = "./RaylibTesting/Assets/3d_models/Skull/mainplayerAnimated.glb";
+    std::string playtex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
+    std::string playermod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
+    std::string playeranim = playermod;
 
     // std::string skullmod = "RaylibTesting/Assets/3d_models/Guy/guy.iqm";
     // std::string modelAnimPath = "RaylibTesting/Assets/3d_models/Guy/guyanim.iqm";
@@ -110,7 +111,7 @@ void Bomberman::createPlayer(Pos pos)
     _em->Assign<BombCapacity>(id, BombCapacity{3, 3});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{PLAYER});
 
-    RL::Drawable3D *Player = new RL::Drawable3D(playtex, playermod, "", RL::MODEL, 0.25);
+    RL::Drawable3D *Player = new RL::Drawable3D(playtex, playermod, playeranim, RL::MODEL, 0.25);
     Player->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
         pos.y,
@@ -246,59 +247,64 @@ void Bomberman::createMonster(Pos pos)
     _window->queueDrawable(Skull);
 }
 
+void savePlayerInput(Input* playerInput, UserInput input, bool &newInput)
+{
+    playerInput->pressedKey = (UserInput)input;
+    newInput = true;
+}
 
 void Bomberman::getFirstPlayerInput()
 {
-    if (_player[0] == INVALID_ENTITY)
+    if (_player[One] == INVALID_ENTITY)
         return;
-    Input* playerInput = _em->Get<Input>(_player[0]);
+    Input* playerInput = _em->Get<Input>(_player[One]);
 
     if (!_event.size())
         playerInput->pressedKey = NONE;
 
-    for (int input : _event) {
-        switch ((UserInput)input) {
-            case UP:
-            case DOWN:
-            case LEFT:
-            case RIGHT:
-                playerInput->pressedKey = (UserInput)input;
-                break;
-           case LAY_BOMB:
-                playerInput->pressedKey = NONE;
-                layBomb(_player[One]);
-                break;
-            default:
-                playerInput->pressedKey = NONE;
-        }
+    bool newInput = false;
+
+    if (_inputManager->playerHasPressedKeyAsChar(UP))
+        savePlayerInput(playerInput, UP, newInput);
+    if (_inputManager->playerHasPressedKeyAsChar(DOWN))
+        savePlayerInput(playerInput, DOWN, newInput);
+    if (_inputManager->playerHasPressedKeyAsChar(LEFT))
+        savePlayerInput(playerInput, LEFT, newInput);
+    if (_inputManager->playerHasPressedKeyAsChar(RIGHT))
+        savePlayerInput(playerInput, RIGHT, newInput);
+    if (_inputManager->playerHasPressedKeyAsChar(LAY_BOMB)) {
+        savePlayerInput(playerInput, LAY_BOMB, newInput);
+        layBomb(_player[One]);
     }
+    if (!newInput)
+        playerInput->pressedKey = NONE;
 }
 
 void Bomberman::getSecondPlayerInput()
 {
-    if (_player[1] == INVALID_ENTITY)
+    if (_player[Two] == INVALID_ENTITY)
         return;
-    Input* playerInput = _em->Get<Input>(_player[1]);
+    Input* playerInput = _em->Get<Input>(_player[Two]);
 
     if (!_event.size())
         playerInput->pressedKey = NONE;
 
-    for (int input : _event) {
-        switch ((UserInput)input) {
-            case UP2:
-            case DOWN2:
-            case LEFT2:
-            case RIGHT2:
-                playerInput->pressedKey = (UserInput)input;
-                break;
-            case LAY_BOMB2:
-                playerInput->pressedKey = NONE;
-                layBomb(_player[Two]);
-                break;
-            default:
-                playerInput->pressedKey = NONE;
-        }
+    bool newInput = false;
+
+    if (_inputManager->playerHasPressedKeyAsChar(UP2))
+        savePlayerInput(playerInput, UP2, newInput);
+    if (_inputManager->playerHasPressedKeyAsChar(DOWN2))
+        savePlayerInput(playerInput, DOWN2, newInput);
+    if (_inputManager->playerHasPressedKeyAsChar(LEFT2))
+        savePlayerInput(playerInput, LEFT2, newInput);
+    if (_inputManager->playerHasPressedKeyAsChar(RIGHT2))
+        savePlayerInput(playerInput, RIGHT2, newInput);
+    if (_inputManager->playerHasPressedKeyAsChar(LAY_BOMB2)) {
+        savePlayerInput(playerInput, LAY_BOMB2, newInput);
+        layBomb(_player[Two]);
     }
+    if (!newInput)
+        playerInput->pressedKey = NONE;
 }
 
 void Bomberman::checkInput()

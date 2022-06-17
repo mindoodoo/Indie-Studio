@@ -64,6 +64,8 @@ namespace RL {
         const std::vector<RL::IDrawable*> get3Dqueue() const;
 
         Font getFont();
+        Font getHeadFont();
+        Font getTxtFont();
 
         // Check if window is initiated and checks if window should close
         bool isWindowOpen();
@@ -85,6 +87,8 @@ namespace RL {
         bool _windowOpen;
         
         Font _windowFont;
+        Font _headFont;
+        Font _txtFont;
     };
 }
 

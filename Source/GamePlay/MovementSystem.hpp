@@ -52,19 +52,28 @@ class MovementSystem : public ISystem {
                 switch (playerMovement->pressedKey) {
                     case UP:
                     case UP2:
+                        playerSprite->model->setCurrentAnim(1);
                         moveUp(playerPos, vel, playerSprite, wallPass);
                         break;
                     case DOWN:
                     case DOWN2:
+                        playerSprite->model->setCurrentAnim(1);
                         moveDown(playerPos, vel, playerSprite, wallPass);
                         break;
                     case LEFT:
                     case LEFT2:
+                        playerSprite->model->setCurrentAnim(1);
                         moveLeft(playerPos, vel, playerSprite,wallPass);
                         break;
                     case RIGHT:
                     case RIGHT2:
+                        playerSprite->model->setCurrentAnim(1);
+                        playerSprite->model->updateModelsAnimation();
                         moveRight(playerPos, vel, playerSprite, wallPass);
+                        break;
+                    case NONE:
+                        if (playerSprite->model->getCurrentAnim() != 2)
+                            playerSprite->model->setCurrentAnim(0);
                         break;
                 }
             }
@@ -192,6 +201,8 @@ class MovementSystem : public ISystem {
         {
             if (checkPressedLeft()) {
                 moveDownLeft(pos, vel, playerSprite, wallPass);
+                // playerSprite->model->setCurrentAnim(1);
+                // playerSprite->model->updateModelsAnimation();
                 return;
             }
             if (checkPressedRight()) {

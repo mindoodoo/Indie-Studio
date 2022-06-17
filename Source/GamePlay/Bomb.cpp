@@ -55,7 +55,8 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset)
 
 void Bomberman::layBomb(EntityID playerid)
 {
-    std::cout << "LAYING bomb" << std::endl;
+    std::cout << "LAYING bomb from player ID : " << playerid << std::endl;
+    _em->Get<Sprite>(playerid)->model->setCurrentAnim(2);
     if (_em->Get<BombCapacity>(playerid)->curCapacity >= 1) {
         if (createBomb(*_em->Get<Pos>(playerid), playerid,*_em->Get<Skillset>(playerid)))
             _em->Get<BombCapacity>(playerid)->curCapacity -= 1;
