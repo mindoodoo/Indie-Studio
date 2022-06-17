@@ -103,6 +103,6 @@ void Core::startLoop()
 void Core::startGame()
 {
     _map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png");
-    _saveManager_map->getParsedMap()
+    //_saveManager->saveMap(_map->getParsedMap()); testing
     _game = new Bomberman(_window, _inputManager, _map, _soundManager);
 }
