@@ -17,6 +17,7 @@
 #include "AudioSystem.hpp"
 #include "Timer.hpp"
 #include "../Raylib/Drawables/Drawable3D.hpp"
+#include "../Raylib/Drawables/Drawable2D.hpp"
 #include "../Raylib/InputManager.hpp"
 #include "../GameEngine/Map.hpp"
 #include "../Raylib/Window.hpp"
@@ -68,6 +69,8 @@ class Bomberman {
         std::vector<EntityID> _aiBombLaying;
         std::shared_ptr<EntityManager> _em;
         std::vector<RL::Drawable3D> _allModels;
+        std::vector<RL::Drawable2D *> _allIcons;
+
         Timer _gameTimer;
         Timer _deltaTimer;
         bool _gamePaused;

@@ -18,6 +18,24 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/3d_models/Skull/Skull.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Explosion/textures/fire.png", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", RL::MODEL, 3));
+
+    _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconOne.png"));
+    _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconTwo.png"));
+    _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconThree.png"));
+    _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconFour.png"));
+
+    //assume we receve our vector of player orders typedef INFO { int (1 or 2 or 3 or 4), bool player}
+    // for (i  in ....) {
+    //_allIcons[vector[i].int].setPosition( SET THE PoSiTION)
+    //_window queueDrawable(_allicons[vector[i].int])
+    //
+    //}
+
+    _window->queueDrawable(_allIcons[0]);
+    _window->queueDrawable(_allIcons[1]);
+    _window->queueDrawable(_allIcons[2]);
+    _window->queueDrawable(_allIcons[3]);
+
     
     //this is respndible for the music being played then shuffle enabled, comment out to cancel
     //_soundManager->playSpecificMusic("MiraiKaraKitaShonen");
@@ -39,6 +57,10 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     // createWallPassItem({2, 3, 1});
     // createBomb({5, 5, 1}, _player.back());
     // createMonster({5, 5, 1});
+
+
+    // HERE ADD CORRESPONDING 2DMODELS TO THE ENTITIES IN GAME
+    // 1 2 3 4 == 1 2 3 4
     _gamePaused = false;
     _gameTimer.startTimer();
     _deltaTimer.startTimer();

@@ -21,7 +21,7 @@ Win::CharacterSelect::CharacterSelect(std::shared_ptr<RL::Window> Window, std::s
     _text.push_back("CHAR 3");
     _text.push_back("CHAR 4");
     _text.push_back("BACK");
-    _text.push_back("QUIT");
+    _text.push_back("CONFIRM");
     _selected = 0;
     float x = _win_x / 2 - 350;
     float y = _win_y / 4;
@@ -94,10 +94,6 @@ int Win::CharacterSelect::openCharSelect(int mode)
             _selected++;
         } else if (_selected > 0)
             _selected--;
-        if (mode == 1)
-            return 5;
-        if (_selected == 2)
-            return 5;
     }
     if (_btn[1].getBtnAction() == true) {
         _btn[1].setBtnAction(false);
@@ -106,10 +102,6 @@ int Win::CharacterSelect::openCharSelect(int mode)
             _selected++;
         } else if (_selected > 0)
             _selected--;
-        if (mode == 1)
-            return 5;
-        if (_selected == 2)
-            return 5;
     }
     if (_btn[2].getBtnAction() == true) {
         _btn[2].setBtnAction(false);
@@ -118,10 +110,6 @@ int Win::CharacterSelect::openCharSelect(int mode)
             _selected++;
         } else if (_selected > 0)
             _selected--;
-        if (mode == 1)
-            return 5;
-        if (_selected == 2)
-            return 5;
     }
     if (_btn[3].getBtnAction() == true) {
         _btn[3].setBtnAction(false);
@@ -130,10 +118,6 @@ int Win::CharacterSelect::openCharSelect(int mode)
             _selected++;
         } else if (_selected > 0)
             _selected--;
-        if (mode == 1)
-            return 5;
-        if (_selected == 2)
-            return 5;
     }
     if (_btn[4].getBtnAction() == true) {
         _btn[4].setBtnAction(false);
@@ -148,7 +132,8 @@ int Win::CharacterSelect::openCharSelect(int mode)
     if (_btn[5].getBtnAction() == true) {
         _btn[5].setBtnAction(false);
         _btn[5].setBtnSelected(false);
-        return 4;
+        if ((_selected == 2 && mode == 2) || mode == 1)
+            return 5;
     }
     return mode;
 }

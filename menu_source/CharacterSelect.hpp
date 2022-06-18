@@ -40,6 +40,7 @@ namespace Win {
             std::vector<std::string> _text;
             RL::Drawable2D *_bg = nullptr;
             std::vector<RL::Button> _btn;
+            std::vector<std::size_t> _playerChoice;
             int _selected;
     };
 }
