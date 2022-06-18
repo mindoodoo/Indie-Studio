@@ -100,5 +100,6 @@ void Core::restartGame()
 {
     if (_game)
         delete _game;
+    _window->clearDrawables();
     _game = new Bomberman(_window, _inputManager, _map, _soundManager);
 }
