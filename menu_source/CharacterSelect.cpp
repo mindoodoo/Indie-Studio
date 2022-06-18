@@ -142,6 +142,7 @@ int Win::CharacterSelect::openCharSelect(int mode)
         _btn[2].setBtnSelected(false);
         _btn[3].setBtnSelected(false);
         _btn[4].setBtnSelected(false);
+        _selected = 0;
         return 0;
     }
     if (_btn[5].getBtnAction() == true) {
