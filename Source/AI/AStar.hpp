@@ -17,7 +17,6 @@
 #include <string>
 #include <queue>
 
-typedef std::pair<size_t, size_t> coordinates_t;
 
 class Node
 {

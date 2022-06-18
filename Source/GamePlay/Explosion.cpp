@@ -6,7 +6,7 @@
 */
 #include "Bomberman.hpp"
 
-bool Bomberman::createExplosion(Pos pos, EntityID bombOwner)
+bool Bomberman::createExplosion(Pos pos, EntityID bombOwner, float time)
 {
     if (pos.x <= 0 || pos.y <= 0) 
         return false;
@@ -19,9 +19,16 @@ bool Bomberman::createExplosion(Pos pos, EntityID bombOwner)
     //BOMBOWNER == EXPLOSIONOWNER
     _em->Assign<BombOwner>(id, {bombOwner});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{EXPLOSION});
-    Timer timer = Timer();
-    timer.startTimer();
-    _em->Assign<Timer>(id, timer);
+    if (time != 0) {
+        Timer timer = Timer();
+        timer.startTimer();
+        timer.setBombtime(time);
+        _em->Assign<Timer>(id, timer);
+    } else {
+        Timer timer = Timer();
+        timer.startTimer();
+        _em->Assign<Timer>(id, timer);
+    }
     float scale = 3;
     // std::string explotex = "./RaylibTesting/Assets/Explosion/textures/fire3lambert1_baseColor.png";
     // std::string explomod = "./RaylibTesting/Assets/Explosion/textures/fire.obj";

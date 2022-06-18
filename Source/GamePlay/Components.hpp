@@ -9,10 +9,13 @@
 #define COMPONENTS_HPP_
 #include <memory>
 #include <vector>
+#include "deque"
 
 #include "../Raylib/Drawables/Drawable3D.hpp"
 #include "../Raylib/RaylibTypeEncaps.hpp"
-#include "../AI/AStar.hpp"
+#include "../ECS/ECS.hpp"
+
+typedef std::pair<size_t, size_t> coordinates_t;
 
 enum UserInput {
     LAY_BOMB = -6,
@@ -168,10 +171,12 @@ struct Sprite {
     RL::Drawable3D *model;
 };
 
-// replace by marc map
-struct Map {
-    std::vector<std::vector<int>> map;
-};
+typedef struct
+{
+    int tile;
+    int orientation;
+} gfx_tile_t;
+
 
 
 #endif /* !COMPONENTS_HPP_ */

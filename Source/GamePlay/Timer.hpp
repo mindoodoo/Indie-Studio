@@ -17,6 +17,7 @@ class Timer {
         ~Timer() {};
         void startTimer() {
             _pauseTime = 0;
+            _bombTime = 0;
             _start = std::chrono::system_clock::now();
         };
 
@@ -29,9 +30,21 @@ class Timer {
 
             return elapsedTime;
         };
+        float returnBombTime() {
+            _currentTime = std::chrono::system_clock::now();
+            std::chrono::duration<float> diff = _currentTime - _start;
+            // std::chrono::duration<float> diff = std::chrono::duration_cast<std::chrono::seconds>(_currentTime - _start);
+            float elapsedTime = diff.count() - _pauseTime - _bombTime;
+            return elapsedTime;
+        };
+
+        void setBombtime(float time) {
+            _bombTime = time;
+        };
 
         void restartTimer() {
             _pauseTime = 0;
+            _bombTime = 0;
             _start = std::chrono::system_clock::now();
         };
 
@@ -50,6 +63,7 @@ class Timer {
         std::chrono::system_clock::time_point _pauseStart;
         std::chrono::system_clock::time_point _pauseEnd;
         float _pauseTime;
+        float _bombTime;
 };
 
 #endif /* !TIMER_HPP_ */

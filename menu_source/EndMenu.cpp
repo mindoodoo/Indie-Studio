@@ -7,7 +7,7 @@
 
 #include "EndMenu.hpp"
 
-Win::EndMenu::EndMenu(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::SoundManager> SoundManager) : _window(Window), _inputManager(InputManager), _soundManager(SoundManager)
+Win::EndMenu::EndMenu(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager) : _window(Window), _inputManager(InputManager), _soundManager(SoundManager), _saveManager(SaveManager)
 {
     _name = "START";
     _mousePt = {0,0};

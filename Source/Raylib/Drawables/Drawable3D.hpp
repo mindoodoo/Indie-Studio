@@ -96,6 +96,7 @@ namespace RL {
 
             void setHidden(bool hidden);
             bool isHidden() const override;
+            bool checkIfHidden();
 
             void setLoadedAnimationTrue();
 

@@ -14,18 +14,15 @@
 #include <iterator>
 #include <cstring>
 #include "Drawable3D.hpp"
+#include "../GamePlay/Components.hpp"
 
-typedef struct
-    {
-        int tile;
-        int orientation;
-    } gfx_tile_t;
+
 
 namespace RL {
     
     class Map {
     public:
-        Map(std::string mapCSVPath, std::string wallTexturePath, std::string floorTexturePath, std::string crateTexturePath);
+        Map(std::string mapCSVPath, std::string wallTexturePath, std::string floorTexturePath, std::string crateTexturePath, bool newGame);
         ~Map();
         std::vector<std::vector<gfx_tile_t>> parseMap(const std::string &path);
 

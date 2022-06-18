@@ -17,11 +17,12 @@
 #include "Window.hpp"
 #include "Button.hpp"
 #include "SoundManager.hpp"
+#include "../Source/Savegame/SaveManager.hpp"
 
 namespace Win {
     class PauseMenu {
         public:
-            PauseMenu(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::SoundManager> SoundManager);
+            PauseMenu(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager);
             ~PauseMenu();
 
             int openPauseMenu();
@@ -29,6 +30,7 @@ namespace Win {
         private:
             std::shared_ptr<RL::InputManager> _inputManager;
             std::shared_ptr<RL::SoundManager> _soundManager;
+            std::shared_ptr<RL::SaveManager> _saveManager;
             std::shared_ptr<RL::Window> _window;
             RL::Vector2f _mousePt;
             std::string _name;

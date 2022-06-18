@@ -17,11 +17,12 @@
 #include "Window.hpp"
 #include "Button.hpp"
 #include "SoundManager.hpp"
+#include "../Source/Savegame/SaveManager.hpp"
 
 namespace Win {
     class CharacterSelect {
         public:
-            CharacterSelect(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::SoundManager> SoundManager);
+            CharacterSelect(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager);
             ~CharacterSelect();
 
             int openCharSelect(int mode);
@@ -31,6 +32,7 @@ namespace Win {
             std::shared_ptr<RL::Window> _window;
             std::shared_ptr<RL::InputManager> _inputManager;
             std::shared_ptr<RL::SoundManager> _soundManager;
+            std::shared_ptr<RL::SaveManager> _saveManager;
             RL::Vector2f _mousePt;
             std::string _name;
             int _win_x;

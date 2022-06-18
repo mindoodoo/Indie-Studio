@@ -7,7 +7,7 @@
 
 #include "CharacterSelect.hpp"
 
-Win::CharacterSelect::CharacterSelect(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::SoundManager> SoundManager) : _window(Window), _inputManager(InputManager), _soundManager(SoundManager)
+Win::CharacterSelect::CharacterSelect(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager) : _window(Window), _inputManager(InputManager), _soundManager(SoundManager), _saveManager(SaveManager)
 {
     _name = "CharSelect";
     _mousePt = {0,0};
@@ -136,6 +136,7 @@ int Win::CharacterSelect::openCharSelect(int mode)
         _btn[2].setBtnSelected(false);
         _btn[3].setBtnSelected(false);
         _btn[4].setBtnSelected(false);
+        _selected = 0;
         return 0;
     }
     if (_btn[5].getBtnAction() == true) {
