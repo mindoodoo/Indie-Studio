@@ -43,6 +43,17 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
             generateItemsLoadGame(_saveManager->getItemPos(x), _saveManager->getSkillsetItem(x));
         }
         generateItems();
+
+        for (int x = 0; x < _saveManager->getBombs().size(); x++) {
+            createBomb(_saveManager->getBombPos(x), {EntityID(x)},_saveManager->getSkillsetBomb(x), _saveManager->getBombTime(x));
+        }
+
+        for (int x = 0; x < _saveManager->getExplosions().size(); x++)
+            createExplosion(_saveManager->getExploPos(x), {EntityID(x)}, _saveManager->getExploTime(x));
+        _gamePaused = false;
+        _gameTimer.startTimer();
+        _deltaTimer.startTimer();
+
     } else {
         std::cout << "NEW GAME" << std::endl << std::endl;
         createPlayer({13, 11, 1});
@@ -50,19 +61,12 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
         createAI({13, 1, 1});
         createAI({1, 11, 1});
         generateItems();
-        // createSpeedUpItem({10, 10, 1});
-        // createSpeedUpItem({4, 3, 1});
-        // createBombUpItem({8, 5, 1});
-        // createBombUpItem({9, 5, 1});
-        // createFireUpItem({10, 5, 1});
-        // createWallPassItem({2, 3, 1});
-        // createBomb({5, 5, 1}, _player.back());
-        // createMonster({5, 5, 1});
+        _gamePaused = false;
+        _gameTimer.startTimer();
+        _deltaTimer.startTimer();
     }
     std::cout << "Start game" << std::endl;
-    _gamePaused = false;
-    _gameTimer.startTimer();
-    _deltaTimer.startTimer();
+
 }
 
 Bomberman::~Bomberman()

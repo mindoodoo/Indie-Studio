@@ -40,13 +40,17 @@ namespace RL {
         Pos getAIPos(int index);
         Pos getItemPos(int index);
         Pos getBombPos(int index);
+        Pos getExploPos(int index);
         BombCapacity getBombcapPlayer(int index);
         BombCapacity getBombcapAI(int index);
         Skillset getSkillsetPlayer(int index);
         Skillset getSkillsetItem(int index);
         Skillset getSkillsetAI(int index);
+        Skillset getSkillsetBomb(int index);
         int getScorePlayer(int index);
         int getScoreAI(int index);
+        float getBombTime(int index);
+        float getExploTime(int index);
         std::vector<std::string> getPlayers();
         std::vector<std::string> getAIs();
         std::vector<std::string> getItems();
@@ -67,10 +71,10 @@ namespace RL {
         //Save --> write in file
         void saveMap(std::vector<std::vector<gfx_tile_t>> map);
         void savePlayer(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score);
-        void saveBomb(EntityID id, Pos position, Skillset skill, BombOwner owner);
+        void saveBomb(EntityID id, Pos position, Skillset skill, BombOwner owner, float time);
         void saveItem(EntityID id, Pos position, Skillset skill);
         void saveAis(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score);
-        void saveExplosion(EntityID id, Pos position, BombOwner owner);
+        void saveExplosion(EntityID id, Pos position, BombOwner owner, float time);
     };
 }
 

@@ -44,7 +44,7 @@ class Bomberman {
         void createMonster(Pos pos);
         void layBomb(EntityID playerid);
         void checkBombalive();
-        bool createBomb(Pos pos, EntityID bombOwner, Skillset skillset);
+        bool createBomb(Pos pos, EntityID bombOwner, Skillset skillset, float time);
         void checkInput();
         void getFirstPlayerInput();
         void getSecondPlayerInput();
@@ -56,7 +56,7 @@ class Bomberman {
         void stopDrawScene();
         void checkGameEnd();
         void createBombExplosions(EntityID ent);
-        bool createExplosion(Pos pos, EntityID bombOwner);
+        bool createExplosion(Pos pos, EntityID bombOwner, float time);
         void checkExplosionalive();
         void smoothBombResize(RL::Drawable3D *BombModel);
         RL::Drawable3D* makeDrawable3DPointer(RL::Drawable3D Model);

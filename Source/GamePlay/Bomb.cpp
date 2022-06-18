@@ -17,11 +17,12 @@ RL::Drawable3D* Bomberman::makeDrawable3DPointer(RL::Drawable3D Model)
     return ModelPointer;
 }
 
-bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset)
+bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset, float time)
 {
     pos = {round(pos.x),
            round(pos.y),
            round(pos.z)};
+
     for (EntityID id : EntityViewer<BombOwner, Pos>(*_em.get())) {
         if (pos == *_em->Get<Pos>(id))
             return false;
@@ -31,9 +32,17 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset)
     _em->Assign<BombOwner>(id, BombOwner{bombOwner});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{BOMB});
     _em->Assign<Skillset>(id, {skillset});
-    Timer timer = Timer();
-    timer.startTimer();
-    _em->Assign<Timer>(id, timer);
+    if (time != 0) {
+        Timer timer = Timer();
+        timer.startTimer();
+        timer.setBombtime(time);
+        _em->Assign<Timer>(id, timer);
+    }
+    else {
+        Timer timer = Timer();
+        timer.startTimer();
+        _em->Assign<Timer>(id, timer);
+    }
     float scale = 2;
     // std::string bombtex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
     // std::string bombmod = "./RaylibTesting/Assets/3d_models/Skull/Bomb.obj";
@@ -59,7 +68,7 @@ void Bomberman::layBomb(EntityID playerid)
     std::cout << "LAYING bomb from player ID : " << playerid << std::endl;
     _em->Get<Sprite>(playerid)->model->setCurrentAnim(2);
     if (_em->Get<BombCapacity>(playerid)->curCapacity >= 1) {
-        if (createBomb(*_em->Get<Pos>(playerid), playerid,*_em->Get<Skillset>(playerid)))
+        if (createBomb(*_em->Get<Pos>(playerid), playerid,*_em->Get<Skillset>(playerid),0))
             _em->Get<BombCapacity>(playerid)->curCapacity -= 1;
     }
 }
@@ -89,25 +98,26 @@ void Bomberman::createBombExplosions(EntityID ent)
     bool fifth = true;
     for (int x = 1; x <=  fireup; x++) {
         if (first)
-            first = createExplosion(mypos , _em->Get<BombOwner>(ent)->id);
+            first = createExplosion(mypos , _em->Get<BombOwner>(ent)->id, 0);
         if (second)
             second = createExplosion({mypos.x+x,
                             mypos.y,
-                            1}, _em->Get<BombOwner>(ent)->id);
+                            1}, _em->Get<BombOwner>(ent)->id, 0);
         if (third)
             third = createExplosion({mypos.x-x,
                             mypos.y,
-                            1}, _em->Get<BombOwner>(ent)->id);
+                            1}, _em->Get<BombOwner>(ent)->id, 0);
         if (fourth)
             fourth = createExplosion({mypos.x,
                             mypos.y+x,
-                            1}, _em->Get<BombOwner>(ent)->id);
+                            1}, _em->Get<BombOwner>(ent)->id, 0);
         if (fifth)
             fifth = createExplosion({mypos.x,
                             mypos.y-x,
-                            1}, _em->Get<BombOwner>(ent)->id);
+                            1}, _em->Get<BombOwner>(ent)->id, 0);
     }
 }
+
 
 void Bomberman::checkBombalive() {
     for (EntityID ent: EntityViewer<CollisionObjectType, Timer, Sprite, Skillset, BombOwner>(*_em.get())) {

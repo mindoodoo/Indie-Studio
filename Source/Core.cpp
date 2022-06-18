@@ -107,16 +107,16 @@ void Core::startLoop()
             }
 
         //save bomb
-        for (EntityID ent: EntityViewer<CollisionObjectType, Skillset, BombOwner, Pos>(*_game->getEm().get())) {
+        for (EntityID ent: EntityViewer<CollisionObjectType, Skillset, BombOwner, Pos, Timer>(*_game->getEm().get())) {
             if (*_game->getEm()->Get<CollisionObjectType>(ent) == BOMB) {
                 _saveManager->saveBomb(ent, *_game->getEm()->Get<Pos>(ent), *_game->getEm()->Get<Skillset>(ent),
-                                       *_game->getEm()->Get<BombOwner>(ent));
+                                       *_game->getEm()->Get<BombOwner>(ent), _game->getEm()->Get<Timer>(ent)->returnBombTime());
             }
         }
         //save explosion
-        for (EntityID ent: EntityViewer<CollisionObjectType, BombOwner, Pos>(*_game->getEm().get())) {
+        for (EntityID ent: EntityViewer<CollisionObjectType, BombOwner, Pos, Timer>(*_game->getEm().get())) {
             if (*_game->getEm()->Get<CollisionObjectType>(ent) == EXPLOSION) {
-                _saveManager->saveExplosion(ent, *_game->getEm()->Get<Pos>(ent), *_game->getEm()->Get<BombOwner>(ent));
+                _saveManager->saveExplosion(ent, *_game->getEm()->Get<Pos>(ent), *_game->getEm()->Get<BombOwner>(ent), _game->getEm()->Get<Timer>(ent)->returnBombTime());
             }
         }
 

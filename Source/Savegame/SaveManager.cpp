@@ -23,6 +23,29 @@ std::vector<std::string> seperateLine(std::string line, char sep)
     return result;
 }
 
+Skillset readSkillset(std::string line)
+{
+    Skillset result;
+    std::vector<std::string> tmp;
+    for (int x = 0; x < line.size(); x++) {
+        if (line[x] == '[') {
+            tmp = seperateLine(line, '[');
+            tmp = seperateLine(tmp[1], ']');
+            break;
+        }
+    }
+    tmp = seperateLine(tmp[0], ',');
+    result.bombUp = stoi(tmp[0]);
+    result.speedUp = stoi(tmp[1]);
+    result.fireUp = stoi(tmp[2]);
+    if (stoi(tmp[3]) == 1)
+        result.wallPass = true;
+    else
+        result.wallPass = false;
+    return result;
+}
+
+
 std::vector<std::string> loadFile(std::string path)
 {
     std::fstream file;
@@ -228,6 +251,39 @@ Pos RL::SaveManager::getItemPos(int index)
     return Pos{-1, -1, -99};
 }
 
+float RL::SaveManager::getBombTime(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_bombssave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "BOMB")
+            return std::stof(seperateLine(tmp[5], '=')[1]);
+    }
+    std::cerr << "Unable to load Bomb time" << std::endl;
+    return -99;
+}
+
+float RL::SaveManager::getExploTime(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_explosionssave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "EXPLOSION")
+            return std::stof(seperateLine(tmp[5], '=')[1]);
+    }
+    std::cerr << "Unable to load Bomb time" << std::endl;
+    return -99;
+}
+
+Skillset RL::SaveManager::getSkillsetBomb(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_bombssave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "BOMB")
+            return readSkillset(tmp[3]);
+    }
+    std::cerr << "Unable to load skillset" << std::endl;
+    return Skillset{99,99,99, false};
+}
+
 BombCapacity RL::SaveManager::getBombcapPlayer(int index)
 {
     std::vector<std::string> tmp = seperateLine(_playerssave[index],';');
@@ -251,28 +307,6 @@ BombCapacity RL::SaveManager::getBombcapAI(int index)
     }
     std::cerr << "Unable to load bombcapacizy" << std::endl;
     return BombCapacity{111,111};
-}
-
-Skillset readSkillset(std::string line)
-{
-    Skillset result;
-    std::vector<std::string> tmp;
-    for (int x = 0; x < line.size(); x++) {
-        if (line[x] == '[') {
-            tmp = seperateLine(line, '[');
-            tmp = seperateLine(tmp[1], ']');
-            break;
-        }
-    }
-    tmp = seperateLine(tmp[0], ',');
-    result.bombUp = stoi(tmp[0]);
-    result.speedUp = stoi(tmp[1]);
-    result.fireUp = stoi(tmp[2]);
-    if (stoi(tmp[3]) == 1)
-        result.wallPass = true;
-    else
-        result.wallPass = false;
-    return result;
 }
 
 //from player
@@ -324,6 +358,17 @@ int RL::SaveManager::getScorePlayer(int index)
     }
     std::cerr << "Unable to load player score" << std::endl;
     return -1;
+}
+
+Pos RL::SaveManager::getExploPos(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_explosionssave[index],';');
+    for (int x = 0; x < tmp.size(); x++)
+        if (tmp[x] == "EXPLOSION")
+            return readPos(tmp[2]);
+    std::cerr << "Unable to load EXPLO position" << std::endl;
+    return Pos{-1, -1, -99};
+
 }
 
 int RL::SaveManager::getScoreAI(int index)
@@ -383,11 +428,11 @@ void RL::SaveManager::saveAis(EntityID id, Pos position, Skillset skill, BombCap
     _aissave.push_back(newai);
 }
 
-void RL::SaveManager::saveBomb(EntityID id, Pos position, Skillset skill, BombOwner owner)
+void RL::SaveManager::saveBomb(EntityID id, Pos position, Skillset skill, BombOwner owner, float time)
 {
     std::string newbomb= "BOMB;ID="+ std::to_string(id) +";"+ "POS[" + std::to_string(position.x) + "," + std::to_string(position.y) + "," + std::to_string(position.z) +\
     "];SKILL["+ std::to_string(skill.bombUp) + "," + std::to_string(skill.speedUp) +\
-    "," + std::to_string(skill.fireUp) + "," + std::to_string(skill.wallPass) + "];OWNER="+ std::to_string(owner.id);
+    "," + std::to_string(skill.fireUp) + "," + std::to_string(skill.wallPass) + "];OWNER="+ std::to_string(owner.id)+";TIME="+std::to_string(time);
     _bombssave.push_back(newbomb);
 }
 
@@ -399,10 +444,10 @@ void RL::SaveManager::saveItem(EntityID id, Pos position, Skillset skill)
     _itemssave.push_back(newitem);
 }
 
-void RL::SaveManager::saveExplosion(EntityID id, Pos position, BombOwner owner)
+void RL::SaveManager::saveExplosion(EntityID id, Pos position, BombOwner owner, float time)
 {
     std::string newitem= "EXPLOSION;ID="+ std::to_string(id) +";"+ "POS[" + std::to_string(position.x) + "," + std::to_string(position.y) + "," + std::to_string(position.z) +\
-    "];OWNER=" + std::to_string(owner.id);
+    "];OWNER=" + std::to_string(owner.id)+";TIME="+std::to_string(time);
             _explosionssave.push_back(newitem);
 
 }
