@@ -351,7 +351,7 @@ int Bomberman::runFrame()
             layBomb(id);
     }
     if (isGameEnd())
-        return 0;
+        return 8;
     startDrawScene();
     _deltaTimer.restartTimer();
     return 6;
@@ -369,9 +369,14 @@ void Bomberman::stopDrawScene()
 
 bool Bomberman::isGameEnd()
 {
-    for (EntityID id : _player) {
+    int count = 0;
+    
+    for (EntityID id : _player)
         if (id != INVALID_ENTITY)
-            return false;
-    }
-    return true;
+            count++;
+
+    if (count <= 1)
+        return true;
+
+    return false;
 }

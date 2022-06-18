@@ -74,8 +74,9 @@ void Core::startLoop()
                 break;
             case GAME_SCREEN:
                 _screen = GAME_SCREEN;
-                if (!(_screen = _game->runFrame()))
-                    _screen = CLOSE;
+                _screen = _game->runFrame();
+                if (_screen == 8)
+                    this->restartGame();
                 break;
             case PAUSE_SCREEN:
                 _screen = _pauseMenu->openPauseMenu();
@@ -85,6 +86,10 @@ void Core::startLoop()
                     this->restartGame();
                 _prevS = PAUSE_SCREEN;
                 break;
+            case END_SCREEN:
+                _screen = this->_endMenu->openEndMenu();
+                break;
+
             default:
                 _screen = START_SCREEN;
                 break;

@@ -31,6 +31,7 @@
 #define MAP_SCREEN 5
 #define GAME_SCREEN 6
 #define PAUSE_SCREEN 7
+#define END_SCREEN 8
 
 class Core {
     public:

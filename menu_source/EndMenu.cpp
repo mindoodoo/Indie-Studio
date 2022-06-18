@@ -83,5 +83,5 @@ int Win::EndMenu::openEndMenu()
         _btn[1].setBtnAction(false);
         return 4;
     }
-    return 7;
+    return 8;
 }
