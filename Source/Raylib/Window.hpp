@@ -19,6 +19,12 @@
 #include "Drawables/Drawable3D.hpp"
 #include "RaylibTypeEncaps.hpp"
 
+typedef struct PlayerChoice {
+    std::size_t Character;
+    bool CPU;
+    std::size_t playerOrder;
+
+} PlayerChoice;
 
 namespace RL {
     class Window {

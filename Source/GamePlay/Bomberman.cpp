@@ -36,6 +36,9 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _window->queueDrawable(_allIcons[2]);
     _window->queueDrawable(_allIcons[3]);
 
+    //erase the begigining
+    //_allIcons.erase(_allIcons.begin());
+
     
     //this is respndible for the music being played then shuffle enabled, comment out to cancel
     //_soundManager->playSpecificMusic("MiraiKaraKitaShonen");
