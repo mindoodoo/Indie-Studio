@@ -138,7 +138,7 @@ void RL::SaveManager::updateMap(int map)
             _mapPath = _directory + ".saveMAP.csv";
             _running = true;
             checkEntitys(_filepath);
-            clearEntityFile();
+            //clearEntityFile();
             break;
     }
 }
@@ -186,23 +186,66 @@ Pos RL::SaveManager::getPlayerPos(int index)
     for (int x = 0; x < tmp.size(); x++) {
         if (tmp[x] == "PLAYER") {
             return readPos(tmp[2]);
-        } else if (tmp[x] == "AI") {
-            tmp = seperateLine(tmp[5], '=');
-            return readPos(tmp[2]);
         }
     }
     std::cerr << "Unable to load Player position" << std::endl;
     return Pos{-1,-1,-99};
 }
 
-BombCapacity RL::SaveManager::getBombcap(int index)
+Pos RL::SaveManager::getAIPos(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_aissave[index],';');
+    std::cout <<"Test Pos:" << std::endl;
+    for (int x = 0; x < tmp.size(); x++) {
+       if (tmp[x] == "AI") {
+           return readPos(tmp[2]);
+        }
+    }
+    std::cerr << "Unable to load AI position" << std::endl;
+    return Pos{-1,-1,-99};
+}
+
+
+Pos RL::SaveManager::getBombPos(int index)
 {
     std::vector<std::string> tmp = seperateLine(_bombssave[index],';');
     for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "BOMB") {
+            return readPos(tmp[2]);
+        }
+    }
+    std::cerr << "Unable to load Bomb position" << std::endl;
+    return Pos{-1,-1,-99};
+}
+
+Pos RL::SaveManager::getItemPos(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_playerssave[index],';');
+    for (int x = 0; x < tmp.size(); x++)
+        if (tmp[x] == "ITEM")
+            return readPos(tmp[2]);
+    std::cerr << "Unable to load Item position" << std::endl;
+    return Pos{-1, -1, -99};
+}
+
+BombCapacity RL::SaveManager::getBombcapPlayer(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_playerssave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
         if (tmp[x] == "PLAYER") {
             return readBomb(tmp[4]);
-        } else if (tmp[x] == "AI") {
-            tmp = seperateLine(tmp[5], '=');
+        }
+    }
+    std::cerr << "Unable to load bombcapacizy" << std::endl;
+    return BombCapacity{111,111};
+}
+
+BombCapacity RL::SaveManager::getBombcapAI(int index)
+{
+    std::cout << "TEst CAPA" << std::endl;
+    std::vector<std::string> tmp = seperateLine(_aissave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "AI") {
             return readBomb(tmp[4]);
         }
     }
@@ -238,10 +281,19 @@ Skillset RL::SaveManager::getSkillsetPlayer(int index)
 
     std::vector<std::string> tmp = seperateLine(_playerssave[index],';');
     for (int x = 0; x < tmp.size(); x++) {
-        if (tmp[x] == "PLAYER") {
+        if (tmp[x] == "PLAYER")
             return readSkillset(tmp[3]);
-        }else if (tmp[x] == "AI") {
-            tmp = seperateLine(tmp[5], '=');
+    }
+    std::cerr << "Unable to load skillset" << std::endl;
+    return Skillset{99,99,99, false};
+}
+
+Skillset RL::SaveManager::getSkillsetAI(int index)
+{
+    std::cout << "Test SKill" << std::endl;
+    std::vector<std::string> tmp = seperateLine(_aissave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "AI") {
             return readSkillset(tmp[3]);
         }
     }
@@ -256,12 +308,23 @@ int RL::SaveManager::getScorePlayer(int index)
         if (tmp[x] == "PLAYER") {
             tmp = seperateLine(tmp[5], '=');
             return stoi(tmp[1]);
-        } else if (tmp[x] == "AI") {
+        }
+    }
+    std::cerr << "Unable to load player score" << std::endl;
+    return -1;
+}
+
+int RL::SaveManager::getScoreAI(int index)
+{
+    std::cout << "Test Score" << std::endl;
+    std::vector<std::string> tmp = seperateLine(_aissave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "AI") {
             tmp = seperateLine(tmp[5], '=');
             return stoi(tmp[1]);
         }
     }
-    std::cerr << "Unable to load playerscore" << std::endl;
+    std::cerr << "Unable to load AI Score" << std::endl;
     return -1;
 }
 

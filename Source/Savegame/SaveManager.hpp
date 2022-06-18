@@ -37,9 +37,15 @@ namespace RL {
         std::string getMappath();
         bool getLoading();
         Pos getPlayerPos(int index);
-        BombCapacity getBombcap(int index);
+        Pos getAIPos(int index);
+        Pos getItemPos(int index);
+        Pos getBombPos(int index);
+        BombCapacity getBombcapPlayer(int index);
+        BombCapacity getBombcapAI(int index);
         Skillset getSkillsetPlayer(int index);
+        Skillset getSkillsetAI(int index);
         int getScorePlayer(int index);
+        int getScoreAI(int index);
         std::vector<std::string> getPlayers();
         std::vector<std::string> getAIs();
         std::vector<std::string> getItems();

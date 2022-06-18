@@ -33,11 +33,13 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
         std::cout <<"MOIN test BOMB:" <<  _saveManager->getBombs().size()  <<std::endl;
         std::cout <<"MOIN test Explosion:" <<  _saveManager->getExplosions().size()  <<std::endl;
         for (int x = 0; x < _saveManager->getPlayers().size(); x++) {
-            createPlayerTEST(_saveManager->getPlayerPos(x), _saveManager->getSkillsetPlayer(x), _saveManager->getScorePlayer(x), _saveManager->getBombcap(x));
+            createPlayerLoadGame(_saveManager->getPlayerPos(x), _saveManager->getSkillsetPlayer(x), _saveManager->getScorePlayer(x), _saveManager->getBombcapPlayer(x));
         }
-        std::cout << "test end loop" << std::endl << std::endl;
-        createAI({13, 1, 1});
-        createAI({1, 11, 1});
+        std::cout << "Start AI LOOP" <<_saveManager->getAIs().size() <<  std::endl << std::endl;
+        for (int x = 0; x < _saveManager->getAIs().size(); x++)
+            createAILoadGame(_saveManager->getAIPos(x), _saveManager->getSkillsetAI(x),_saveManager->getScoreAI(x) ,_saveManager->getBombcapAI(x));
+        std::cout << "Start AI LOOP" << std::endl << std::endl;
+
         generateItems();
     } else {
         std::cout << "NEW GAME" << std::endl << std::endl;
@@ -137,7 +139,7 @@ void Bomberman::createPlayer(Pos pos)
     _em->Assign<Sprite>(id, Sprite{Player});
     _window->queueDrawable(Player);
 }
-void Bomberman::createPlayerTEST(Pos pos, Skillset skill, int score, BombCapacity capa)
+void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCapacity capa)
 {
     std::cout <<"start create loadplayer" <<std::endl;
     EntityID id = _em->CreateNewEntity();
@@ -164,6 +166,36 @@ void Bomberman::createPlayerTEST(Pos pos, Skillset skill, int score, BombCapacit
     });
     _em->Assign<Sprite>(id, Sprite{Player});
     _window->queueDrawable(Player);
+}
+
+void Bomberman::createAILoadGame(Pos pos, Skillset skill, int score, BombCapacity capa)
+{
+    EntityID id = _em->CreateNewEntity();
+    std::string aitex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
+    std::string aimod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
+    std::cout << "AI START TO LOAD" << std::endl;
+    _player.push_back(id);
+    _em->Assign<Pos>(id, pos);
+    _em->Assign<Velocity>(id, {0.04,0.04});
+    _em->Assign<Input>(id, Input{NONE});
+    _em->Assign<Score>(id, {std::size_t(score)});
+    _em->Assign<Health>(id, Health{100});
+    _em->Assign<Skillset>(id, skill);
+    _em->Assign<BombCapacity>(id, capa);
+    _em->Assign<CollisionObjectType>(id, CollisionObjectType{AI});
+
+    AIData data = {false, {0, 0, 0}, RANDOM, 5, {}, {1, 2}};
+    _em->Assign<AIData>(id, data);
+
+    RL::Drawable3D *AI = new RL::Drawable3D(aitex, aimod, aimod, RL::MODEL, 0.25);
+    AI->setPosition((RL::Vector3f){
+            translateFigureCoordinates(pos.x, _map->getMapWidth()),
+            pos.y,
+            translateFigureCoordinates(pos.y, _map->getMapDepth())
+    });
+    _em->Assign<Sprite>(id, Sprite{AI});
+    _window->queueDrawable(AI);
+
 }
 
 void Bomberman::createAI(Pos pos)
