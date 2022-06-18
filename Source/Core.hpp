@@ -23,6 +23,15 @@
 #include "../menu_source/CharacterSelect.hpp"
 #include "../menu_source/MapSelect.hpp"
 
+// // Macros for screen switch
+#define START_SCREEN 0
+#define CHAR_SCREEN 1
+#define SETTINGS_SCREEN 3
+#define CLOSE 4
+#define MAP_SCREEN 5
+#define GAME_SCREEN 6
+#define PAUSE_SCREEN 7
+
 class Core {
     public:
         Core();

@@ -54,43 +54,39 @@ void Core::startLoop()
 {
    while (_window->isWindowOpen()) {
         switch (_screen) {
-            case 0:
+            case START_SCREEN:
                 _screen = _startMenu->openStartMenu();
-                _prevS = 0;
+                _prevS = START_SCREEN;
                 break;
-            case 1:
+            case CHAR_SCREEN:
                 _screen = _charSelec->openCharSelect(_screen);
-                _prevM = 1;
+                _prevM = CHAR_SCREEN;
                 break;
-            case 2:
-                _screen = _charSelec->openCharSelect(_screen);
-                _prevM = 2;
-                break;
-            case 3:
+            case SETTINGS_SCREEN:
                 _screen = _settings->openSettings(_prevS);
                 break;
-            case 4:
+            case CLOSE:
                 _window->close();
                 break;
-            case 5:
+            case MAP_SCREEN:
                 _screen = _mapSelect->openMapMenu(_prevM);
-                _prevS = 5;
+                _prevS = MAP_SCREEN;
                 break;
-            case 6:
-                _screen = 6;
+            case GAME_SCREEN:
+                _screen = GAME_SCREEN;
                 if (!(_screen = _game->runFrame()))
-                    _screen = 4;
+                    _screen = CLOSE;
                 break;
-            case 7:
+            case PAUSE_SCREEN:
                 _screen = _pauseMenu->openPauseMenu();
-                if (_screen == 6)
+                if (_screen == GAME_SCREEN)
                     this->_game->startGameTimers();
-                if (_screen == 0)
+                if (_screen == START_SCREEN)
                     this->restartGame();
-                _prevS = 7;
+                _prevS = PAUSE_SCREEN;
                 break;
             default:
-                _screen = 0;
+                _screen = START_SCREEN;
                 break;
         }
     }
