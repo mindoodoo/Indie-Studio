@@ -22,16 +22,18 @@
 #include "../Raylib/Window.hpp"
 #include "SoundManager.hpp"
 #include "Timer.hpp"
+#include "../Savegame/SaveManager.hpp"
 
 class Bomberman {
     public:
-        Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager);
+        Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager);
         ~Bomberman();
         std::shared_ptr<EntityManager> getEm();
 
 
         void generateItems();
         void createPlayer(Pos pos);
+        void createPlayer(Pos pos, Skillset skill, Score score, BombCapacity capa);
         void createAI(Pos pos);
         void createSpeedUpItem(Pos pos);
         void createBombUpItem(Pos pos);
@@ -64,6 +66,7 @@ class Bomberman {
         std::shared_ptr<RL::InputManager> _inputManager;
         std::shared_ptr<RL::SoundManager> _soundManager;
         std::shared_ptr<RL::Map> _map;
+        std::shared_ptr<RL::SaveManager> _saveManager;
         std::vector<int> _event;
         std::vector<std::shared_ptr<ISystem>> _systems;
         std::vector<EntityID> _player;

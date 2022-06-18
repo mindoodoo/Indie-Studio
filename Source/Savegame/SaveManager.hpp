@@ -38,8 +38,13 @@ namespace RL {
         bool getLoading();
         Pos getPlayerPos(int index);
         BombCapacity getBombcap(int index);
-        Skillset getSkillset(int index);
-        int getScore(int index);
+        Skillset getSkillsetPlayer(int index);
+        int getScorePlayer(int index);
+        std::vector<std::string> getPlayers();
+        std::vector<std::string> getAIs();
+        std::vector<std::string> getItems();
+        std::vector<std::string> getBombs();
+        std::vector<std::string> getExplosions();
 
         void loadMenu();
         void checkRunning(std::vector<std::string> line, int index);

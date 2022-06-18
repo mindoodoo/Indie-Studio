@@ -7,8 +7,8 @@
 
 #include "Bomberman.hpp"
 
-Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager)
-    : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager)
+Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager)
+    : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager), _saveManager(SaveManager)
 {
     _em = std::make_shared<EntityManager>();
     // take care with system order when adding to vector
@@ -24,8 +24,15 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     //_soundManager->playRandomMusic();
     //_soundManager->enableDisableShuffle();
     
-    // if only one player, fill _player[1] with INVALID_ENTITY
-
+    //Check if loading game or not
+    if (!_saveManager->getLoading()) {
+        //loaded game
+        std::cout <<"MOIN test MOIN" << std::endl;
+        for (int x = 0; x < _saveManager->getPlayers().size(); x++) {
+            createPlayer(_saveManager->getPlayerPos(x));
+        }
+        return;
+    }
     createPlayer({13, 11, 1});
     createPlayer({1, 1, 1});
     createAI({13, 1, 1});
@@ -116,6 +123,33 @@ void Bomberman::createPlayer(Pos pos)
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
         pos.y,
         translateFigureCoordinates(pos.y, _map->getMapDepth())
+    });
+    _em->Assign<Sprite>(id, Sprite{Player});
+    _window->queueDrawable(Player);
+}
+void Bomberman::createPlayer(Pos pos, Skillset skill, Score score, BombCapacity capa)
+{
+    EntityID id = _em->CreateNewEntity();
+    std::string playtex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
+    std::string playermod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
+    std::string playeranim = playermod;
+
+
+    _player.push_back(id);
+    _em->Assign<Pos>(id, pos);
+    _em->Assign<Velocity>(id, {0.08,0.08});
+    _em->Assign<Input>(id, Input{NONE});
+    _em->Assign<Score>(id, score);
+    _em->Assign<Health>(id, Health{100});
+    _em->Assign<Skillset>(id, skill);
+    _em->Assign<BombCapacity>(id, capa);
+    _em->Assign<CollisionObjectType>(id, CollisionObjectType{PLAYER});
+
+    RL::Drawable3D *Player = new RL::Drawable3D(playtex, playermod, playeranim, RL::MODEL, 0.25);
+    Player->setPosition((RL::Vector3f){
+            translateFigureCoordinates(pos.x, _map->getMapWidth()),
+            pos.y,
+            translateFigureCoordinates(pos.y, _map->getMapDepth())
     });
     _em->Assign<Sprite>(id, Sprite{Player});
     _window->queueDrawable(Player);
