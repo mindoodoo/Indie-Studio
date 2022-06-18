@@ -101,6 +101,9 @@ void Core::restartGame()
 {
     if (_game)
         delete _game;
+    if (_map)
+        _map.reset();
     _window->clearDrawables();
+    _map = std::make_shared<RL::Map>("./RaylibTesting/Assets/Maps/TestMap/test.csv", "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png");
     _game = new Bomberman(_window, _inputManager, _map, _soundManager);
 }
