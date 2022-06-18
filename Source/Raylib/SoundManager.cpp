@@ -16,8 +16,8 @@ RL::SoundManager::SoundManager()
     this->_musicPaused = false;
     this->_songTimePlayed = 0.0f;
     this->_shuffleEnabled = false;
-    this->_musicVolume = 0.4f;
-    this->_soundEffectVolume = 0.3f;
+    this->_musicVolume = 0.1f;
+    this->_soundEffectVolume = 0.1f;
 }
 
 RL::SoundManager::~SoundManager()

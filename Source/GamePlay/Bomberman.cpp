@@ -385,3 +385,9 @@ bool Bomberman::isGameEnd()
     }
     return true;
 }
+
+
+std::shared_ptr <EntityManager> Bomberman::getEm()
+{
+    return _em;
+}

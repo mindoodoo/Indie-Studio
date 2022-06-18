@@ -116,7 +116,15 @@ std::vector <std::string> RL::SaveManager::getMenu()
 
 std::string RL::SaveManager::getMappath()
 {
+    std::cout << "You get the following mapPath: " << _mapPath << std::endl;
     return _mapPath;
+}
+
+bool RL::SaveManager::getLoading()
+{
+    if (_mapPath == _directory+".saveMAP.csv")
+        return false;
+    return true;
 }
 
 void RL::SaveManager::updateMap(int map)
@@ -291,6 +299,7 @@ void RL::SaveManager::saveItem(EntityID id, Pos position, Skillset skill)
 void RL::SaveManager::saveMap(std::vector<std::vector<gfx_tile_t>> map)
 {
     _parsedMap = map;
+    _mapPath = _directory + ".saveMAP.csv";
     writeMap();
 }
 
@@ -298,6 +307,7 @@ void RL::SaveManager::saveMap(std::vector<std::vector<gfx_tile_t>> map)
 void RL::SaveManager::writeMap()
 {
     std::ofstream file(_mapPath);
+    std::cout << "write into " << _mapPath << std::endl;
     for (int x = 0; x < _parsedMap.size(); x++) {
         for (int y = 0; y < _parsedMap[x].size(); y++) {
             file << _parsedMap[x][y].tile;

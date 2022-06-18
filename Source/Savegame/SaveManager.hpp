@@ -35,6 +35,7 @@ namespace RL {
         //Getter
         std::vector<std::string> getMenu();
         std::string getMappath();
+        bool getLoading();
         Pos getPlayerPos(int index);
         BombCapacity getBombcap(int index);
         Skillset getSkillset(int index);

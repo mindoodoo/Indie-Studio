@@ -27,6 +27,8 @@ class Bomberman {
     public:
         Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager);
         ~Bomberman();
+        std::shared_ptr<EntityManager> getEm();
+
 
         void generateItems();
         void createPlayer(Pos pos);

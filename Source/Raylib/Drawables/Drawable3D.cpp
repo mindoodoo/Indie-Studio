@@ -307,3 +307,8 @@ void RL::Drawable3D::setLoadedAnimationTrue()
 {
     this->_animationLoaded = true;
 }
+
+bool RL::Drawable3D::checkIfHidden()
+{
+    return _hidden;
+}
