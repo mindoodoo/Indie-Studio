@@ -338,6 +338,8 @@ int Bomberman::runFrame()
         this->_pauseGame = true;
         return 7;
     }
+    if (!this->_gamePaused && this->_pauseGame)
+        this->_pauseGame = false;
     checkBombalive();
     checkExplosionalive();
     for (std::shared_ptr<ISystem> system : _systems)
