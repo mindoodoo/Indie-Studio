@@ -160,7 +160,7 @@ std::deque<coordinates_t> avoidBomb(coordinates_t start, coordinates_t bombPos, 
     bombPos = {bombPos.second, bombPos.first};
 
     if ((start.first != bombPos.first && start.second != bombPos.second)
-        || abs(start.first - bombPos.first) > bombRadius || abs(start.second - bombPos.second) > bombRadius)
+        || abs(start.first - bombPos.first) >= bombRadius || abs(start.second - bombPos.second) >= bombRadius)
         return {};
 
     // Start
