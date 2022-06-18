@@ -6,7 +6,7 @@
 */
 #include "Bomberman.hpp"
 
-bool Bomberman::createExplosion(Pos pos, EntityID bombOwner)
+bool Bomberman::createExplosion(Pos pos, EntityID bombOwner, float time)
 {
     if (pos.x <= 0 || pos.y <= 0) 
         return false;
@@ -19,14 +19,26 @@ bool Bomberman::createExplosion(Pos pos, EntityID bombOwner)
     //BOMBOWNER == EXPLOSIONOWNER
     _em->Assign<BombOwner>(id, {bombOwner});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{EXPLOSION});
-    Timer timer = Timer();
-    timer.startTimer();
-    _em->Assign<Timer>(id, timer);
+    if (time != 0) {
+        Timer timer = Timer();
+        timer.startTimer();
+        timer.setBombtime(time);
+        _em->Assign<Timer>(id, timer);
+    } else {
+        Timer timer = Timer();
+        timer.startTimer();
+        _em->Assign<Timer>(id, timer);
+    }
     float scale = 3;
     // std::string explotex = "./RaylibTesting/Assets/Explosion/textures/fire3lambert1_baseColor.png";
     // std::string explomod = "./RaylibTesting/Assets/Explosion/textures/fire.obj";
     // RL::Drawable3D *Explosion = new RL::Drawable3D(explotex, explomod, "", RL::MODEL, scale);
     RL::Drawable3D *Explosion = makeDrawable3DPointer(_allModels[1]);
+    Explosion->setLoadedAnimationTrue();
+    Explosion->resize(0.5f);
+    //Explosion->loadAnimation("./RaylibTesting/Assets/Explosion/textures/fire.iqm"); // NO GOOD
+
+    Explosion->setCurrentAnim(0);
     Explosion->setPosition((RL::Vector3f){
             translateFigureCoordinates(pos.x, _map->getMapWidth()),
             0.5f,
@@ -61,10 +73,9 @@ void Bomberman::checkExplosionalive() {
     for (EntityID ent: EntityViewer<CollisionObjectType, Timer, Sprite>(*_em.get())) {
         if (*_em->Get<CollisionObjectType>(ent) == EXPLOSION) {
             if (_em->Get<Timer>(ent)->returnTime() >= 1) {
-                _em->Get<Sprite>(ent)->model->resize(2);
+                _em->Get<Sprite>(ent)->model->resize(0.5f);
             }
             if (_em->Get<Timer>(ent)->returnTime() >= 1.5) {
-                // std::cout << "EXPLOSION OVER" << std::endl;
                 //delete explosion
                 for (int i = 0; i < _window->get3Dqueue().size(); i++) {
                     if (_window->get3Dqueue()[i]->id == ent) {

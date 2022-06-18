@@ -22,6 +22,17 @@
 #include "../menu_source/Settings.hpp"
 #include "../menu_source/CharacterSelect.hpp"
 #include "../menu_source/MapSelect.hpp"
+#include "../Source/Savegame/SaveManager.hpp"
+
+// // Macros for screen switch
+#define START_SCREEN 0
+#define CHAR_SCREEN 1
+#define SETTINGS_SCREEN 3
+#define CLOSE 4
+#define MAP_SCREEN 5
+#define GAME_SCREEN 6
+#define PAUSE_SCREEN 7
+#define END_SCREEN 8
 
 class Core {
     public:
@@ -29,10 +40,14 @@ class Core {
         ~Core();
 
         void startLoop();
+        void restartGame();
+        void saveGame();
 
+        void startGame();
     private:
         std::shared_ptr<RL::Window> _window;
         std::shared_ptr<RL::InputManager> _inputManager;
+        std::shared_ptr<RL::SaveManager> _saveManager;
         std::shared_ptr<RL::Map> _map;
         std::shared_ptr<RL::SoundManager> _soundManager;
         Win::StartMenu *_startMenu = nullptr;

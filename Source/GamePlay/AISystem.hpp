@@ -338,7 +338,6 @@ class AISystem : public ISystem {
                     if (!_foundTarget)
                         continue;
                     _possibleTargets.push_back({_target, PLAYER_TARGET, _path});
-                    // std::cout << "found PLAYER at " << x << " " << y << std::endl;
                 }
             }
         }
@@ -353,7 +352,6 @@ class AISystem : public ISystem {
                 if (!_foundTarget)
                     return;
                 _possibleTargets.push_back({_target, ITEM_TARGET, _path});
-                // std::cout << "found ITEM at " << x << " " << y << std::endl;
             }
         };
 
@@ -365,7 +363,6 @@ class AISystem : public ISystem {
                 if (!_foundTarget)
                     return;
                 _possibleTargets.push_back({_target, CRATE_TARGET, _path});
-                // std::cout << "found CRATE at " << x << " " << y << std::endl;
             }
         };
 
@@ -374,7 +371,6 @@ class AISystem : public ISystem {
             while (!_foundTarget && iterations < 10) {
                 int randX = rand() % (_map->getMapWidth() - 1);
                 int randY = rand() % (_map->getMapDepth() - 1);
-                // std::cout << "RANDOM VALS: " << randX << ", " << randY << std::endl;
                 float x = randX + 1;
                 float y = randY + 1;
                 _target = {x, y, 1};

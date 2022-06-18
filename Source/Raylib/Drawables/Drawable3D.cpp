@@ -12,6 +12,10 @@ RL::Drawable3D::Drawable3D(RL::ModelType type, float scale)
     this->_scale = scale;
     this->up = 0;
     this->_assetLoaded = true;
+    this->_currentAnim = 0;
+    this->_currentFrame = 0;
+    this->_animationLoaded = false;
+    this->_rotationAngle = 0.0f;
 
 }
 
@@ -57,11 +61,12 @@ void RL::Drawable3D::drawPower()
         if (this->_position.y <= 0.6f)
             this->up = 1;
         }
-    if (this->_position.y <= 1.41f && this->up == 1) {
+    if (this->_position.y <= 1.11f && this->up == 1) {
         this->_position.y += 0.01f;
         DrawCubeTexture(this->_texture, this->_position, 0.6f, 0.6f, 0.6f, WHITE);
+        std::cout << "Pos y:"<<_position.y << " Pos" << _position.z << std::endl;
         //DrawSphere(this->_position, 0.05f, WHITE);
-        if (this->_position.y >= 1.4f)
+        if (this->_position.y >= 1.1f)
             this->up = 0;
         }
 
@@ -285,6 +290,26 @@ void RL::Drawable3D::setHidden(bool hidden)
 }
 
 bool RL::Drawable3D::isHidden() const
+{
+    return _hidden;
+}
+
+void RL::Drawable3D::setModelAnimation(ModelAnimation* anim)
+{
+    this->_animations = anim;
+}
+
+ModelAnimation *RL::Drawable3D::getModelAnimation()
+{
+    return this->_animations;
+}
+
+void RL::Drawable3D::setLoadedAnimationTrue()
+{
+    this->_animationLoaded = true;
+}
+
+bool RL::Drawable3D::checkIfHidden()
 {
     return _hidden;
 }

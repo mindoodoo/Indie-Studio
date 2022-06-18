@@ -9,6 +9,7 @@
 
 RL::InputManager::InputManager()
 {
+    SetExitKey(KEY_CAPS_LOCK);
 }
 
 RL::InputManager::~InputManager()
@@ -40,6 +41,8 @@ void RL::InputManager::recordInputs()
         this->_inputQueue.emplace_back(-1);
     if (IsKeyPressed(KEY_SPACE))
         this->_inputQueue.emplace_back(-6);
+    if (IsKeyPressed(KEY_ESCAPE))
+        this->_inputQueue.emplace_back(-8);
     //std::this_thread::sleep_for(std::chrono::milliseconds(100)); // This should change
 }
 

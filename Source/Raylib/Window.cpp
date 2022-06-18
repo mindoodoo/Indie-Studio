@@ -93,6 +93,12 @@ void RL::Window::removeDrawable(IDrawable *drawable)
         this->_displayQueue2D.erase(std::remove(this->_displayQueue2D.begin(), this->_displayQueue2D.end(), drawable), this->_displayQueue2D.end());
 }
 
+void RL::Window::clearDrawables()
+{
+    this->_displayQueue2D.clear();
+    this->_displayQueue3D.clear();
+}
+
 void RL::Window::displayDrawables(Map map)
 {
     BeginDrawing();
