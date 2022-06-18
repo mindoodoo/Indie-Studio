@@ -220,7 +220,7 @@ Pos RL::SaveManager::getBombPos(int index)
 
 Pos RL::SaveManager::getItemPos(int index)
 {
-    std::vector<std::string> tmp = seperateLine(_playerssave[index],';');
+    std::vector<std::string> tmp = seperateLine(_itemssave[index],';');
     for (int x = 0; x < tmp.size(); x++)
         if (tmp[x] == "ITEM")
             return readPos(tmp[2]);
@@ -294,6 +294,18 @@ Skillset RL::SaveManager::getSkillsetAI(int index)
     std::vector<std::string> tmp = seperateLine(_aissave[index],';');
     for (int x = 0; x < tmp.size(); x++) {
         if (tmp[x] == "AI") {
+            return readSkillset(tmp[3]);
+        }
+    }
+    std::cerr << "Unable to load skillset" << std::endl;
+    return Skillset{99,99,99, false};
+}
+
+Skillset RL::SaveManager::getSkillsetItem(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_itemssave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "ITEM") {
             return readSkillset(tmp[3]);
         }
     }

@@ -32,14 +32,15 @@ class Bomberman {
 
 
         void generateItems();
+        void generateItemsLoadGame(Pos pos, Skillset skill);
         void createPlayer(Pos pos);
         void createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCapacity capa);
         void createAI(Pos pos);
         void createAILoadGame(Pos pos, Skillset skill, int score, BombCapacity capa);
-        void createSpeedUpItem(Pos pos);
-        void createBombUpItem(Pos pos);
-        void createFireUpItem(Pos pos);
-        void createWallPassItem(Pos pos);
+        void createSpeedUpItem(Pos pos, bool hidden);
+        void createBombUpItem(Pos pos, bool hidden);
+        void createFireUpItem(Pos pos, bool hidden);
+        void createWallPassItem(Pos pos, bool hidden);
         void createMonster(Pos pos);
         void layBomb(EntityID playerid);
         void checkBombalive();

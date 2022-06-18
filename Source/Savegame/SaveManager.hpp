@@ -43,6 +43,7 @@ namespace RL {
         BombCapacity getBombcapPlayer(int index);
         BombCapacity getBombcapAI(int index);
         Skillset getSkillsetPlayer(int index);
+        Skillset getSkillsetItem(int index);
         Skillset getSkillsetAI(int index);
         int getScorePlayer(int index);
         int getScoreAI(int index);

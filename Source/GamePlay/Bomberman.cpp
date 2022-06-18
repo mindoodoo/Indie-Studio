@@ -38,8 +38,10 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
         std::cout << "Start AI LOOP" <<_saveManager->getAIs().size() <<  std::endl << std::endl;
         for (int x = 0; x < _saveManager->getAIs().size(); x++)
             createAILoadGame(_saveManager->getAIPos(x), _saveManager->getSkillsetAI(x),_saveManager->getScoreAI(x) ,_saveManager->getBombcapAI(x));
-        std::cout << "Start AI LOOP" << std::endl << std::endl;
-
+        std::cout << "Start ITEM LOOP" <<_saveManager->getItems().size() <<std::endl << std::endl;
+        for (int x = 0; x < _saveManager->getItems().size(); x++) {
+            generateItemsLoadGame(_saveManager->getItemPos(x), _saveManager->getSkillsetItem(x));
+        }
         generateItems();
     } else {
         std::cout << "NEW GAME" << std::endl << std::endl;
@@ -67,6 +69,19 @@ Bomberman::~Bomberman()
 {
 }
 
+void Bomberman::generateItemsLoadGame(Pos pos, Skillset skill)
+{
+    if (skill.wallPass)
+        createWallPassItem(pos, false);
+    if (skill.bombUp >= 1)
+        createBombUpItem(pos, false);
+    if (skill.speedUp >= 1)
+        createSpeedUpItem(pos, false);
+    if (skill.fireUp >= 1)
+        createFireUpItem(pos, false);
+
+}
+
 void Bomberman::generateItems()
 {
     int wallPassAmount = 1;
@@ -79,18 +94,18 @@ void Bomberman::generateItems()
                 if (placeItem > 77) {
                     switch (rand() % 4) {
                         case 0:
-                            createSpeedUpItem({(float)j, (float)i, 1});
+                            createSpeedUpItem({(float)j, (float)i, 1}, true);
                             break;
                         case 1:
-                            createBombUpItem({(float)j, (float)i, 1});
+                            createBombUpItem({(float)j, (float)i, 1}, true);
                             break;
                         case 2:
-                            createFireUpItem({(float)j, (float)i, 1});
+                            createFireUpItem({(float)j, (float)i, 1}, true);
                             break;
                         case 3:
                             if (wallPassAmount) {
                                 wallPassAmount--;
-                                createWallPassItem({(float)j, (float)i, 1});
+                                createWallPassItem({(float)j, (float)i, 1}, true);
                             }
                             break;
                     }
@@ -227,7 +242,7 @@ void Bomberman::createAI(Pos pos)
     _window->queueDrawable(AI);
 }
 
-void Bomberman::createSpeedUpItem(Pos pos)
+void Bomberman::createSpeedUpItem(Pos pos, bool hidden)
 {
     EntityID id = _em->CreateNewEntity();
     _em->Assign<Pos>(id, pos);
@@ -241,12 +256,12 @@ void Bomberman::createSpeedUpItem(Pos pos)
         1.0f,
         translateFigureCoordinates(pos.y, _map->getMapDepth())
     });
-    speedUp->setHidden(true);
+    speedUp->setHidden(hidden);
     _em->Assign<Sprite>(id, Sprite{speedUp});
     _window->queueDrawable(speedUp);
 }
 
-void Bomberman::createBombUpItem(Pos pos)
+void Bomberman::createBombUpItem(Pos pos, bool hidden)
 {
     EntityID id = _em->CreateNewEntity();
     _em->Assign<Pos>(id, pos);
@@ -260,12 +275,12 @@ void Bomberman::createBombUpItem(Pos pos)
         1.0f,
         translateFigureCoordinates(pos.y, _map->getMapDepth())
     });
-    bombUp->setHidden(true);
+    bombUp->setHidden(hidden);
     _em->Assign<Sprite>(id, Sprite{bombUp});
     _window->queueDrawable(bombUp);
 }
 
-void Bomberman::createFireUpItem(Pos pos)
+void Bomberman::createFireUpItem(Pos pos, bool hidden)
 {
     EntityID id = _em->CreateNewEntity();
     _em->Assign<Pos>(id, pos);
@@ -279,12 +294,12 @@ void Bomberman::createFireUpItem(Pos pos)
         1.0f,
         translateFigureCoordinates(pos.y, _map->getMapDepth())
     });
-    fireUp->setHidden(true);
+    fireUp->setHidden(hidden);
     _em->Assign<Sprite>(id, Sprite{fireUp});
     _window->queueDrawable(fireUp);
 }
 
-void Bomberman::createWallPassItem(Pos pos)
+void Bomberman::createWallPassItem(Pos pos, bool hidden)
 {
     EntityID id = _em->CreateNewEntity();
     _em->Assign<Pos>(id, pos);
@@ -298,7 +313,7 @@ void Bomberman::createWallPassItem(Pos pos)
         1.0f,
         translateFigureCoordinates(pos.y, _map->getMapDepth())
     });
-    wallPass->setHidden(true);
+    wallPass->setHidden(hidden);
     _em->Assign<Sprite>(id, Sprite{wallPass});
     _window->queueDrawable(wallPass);
 }
