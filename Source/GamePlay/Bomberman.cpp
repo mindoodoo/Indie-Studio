@@ -11,11 +11,13 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager), _saveManager(SaveManager)
 {
     _em = std::make_shared<EntityManager>();
-    // take care with system order when adding to vector
+
+    // Take care with system order when adding to vector
     _systems.push_back(std::make_shared<CollisionSystem>(_em, _window, _soundManager, _map));
     _systems.push_back(std::make_shared<MovementSystem>(_em, _map, _inputManager));
     _systems.push_back(std::make_shared<AISystem>(_em, _map));
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
+    
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/3d_models/Skull/Skull.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Explosion/textures/fire.png", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", RL::MODEL, 3));
     
@@ -62,7 +64,8 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
         _deltaTimer.startTimer();
     }
     std::cout << "Start game" << std::endl;
-
+    _gamePaused = false;
+    this->_pauseGame = false;
 }
 
 Bomberman::~Bomberman()
@@ -131,11 +134,6 @@ void Bomberman::createPlayer(Pos pos)
     std::string playermod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
     std::string playeranim = playermod;
 
-    // std::string skullmod = "RaylibTesting/Assets/3d_models/Guy/guy.iqm";
-    // std::string modelAnimPath = "RaylibTesting/Assets/3d_models/Guy/guyanim.iqm";
-    // std::string skulltex = "RaylibTesting/Assets/3d_models/Guy/guytex.png";
-
-    
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
     _em->Assign<Velocity>(id, {0.08,0.08});
@@ -399,6 +397,10 @@ void Bomberman::getSecondPlayerInput()
 
 void Bomberman::checkInput()
 {
+    if (this->_inputManager->playerHasPressedKeyAsChar(ESCAPE) && !this->_gamePaused) {
+        this->stopGameTimers();
+        return;
+    }
     getFirstPlayerInput();
     getSecondPlayerInput();
 }
@@ -412,12 +414,14 @@ void Bomberman::startGameTimers()
         _gamePaused = false;
     }
     _deltaTimer.restartTimer();
+    this->resumeBombCounters();
 }
 
 void Bomberman::stopGameTimers()
 {
     _gamePaused = true;
     _gameTimer.startPause();
+    this->pauseBombCounters();
 }
 
 bool Bomberman::checkIfVectorContain(std::vector<EntityID> vector, EntityID id) {
@@ -427,7 +431,7 @@ bool Bomberman::checkIfVectorContain(std::vector<EntityID> vector, EntityID id) 
 }
 
 // event as argument?
-bool Bomberman::runFrame()
+int Bomberman::runFrame()
 {
     _soundManager->updateMusicStream();
     _inputManager->popInputs();
@@ -436,6 +440,12 @@ bool Bomberman::runFrame()
     _aiBombLaying.clear();
   
     checkInput();
+    if (this->_gamePaused && !this->_pauseGame) {
+        this->_pauseGame = true;
+        return 7;
+    }
+    if (!this->_gamePaused && this->_pauseGame)
+        this->_pauseGame = false;
     checkBombalive();
     checkExplosionalive();
     for (std::shared_ptr<ISystem> system : _systems)
@@ -445,35 +455,34 @@ bool Bomberman::runFrame()
             layBomb(id);
     }
     if (isGameEnd())
-        return false;
+        return 8;
     startDrawScene();
     _deltaTimer.restartTimer();
-    return true;
+    return 6;
 }
 
 void Bomberman::startDrawScene()
 {
     _window->displayDrawables(*_map.get());
     _window->clearWindow(BLACK);
-    // _drawer->beginDrawing();
-    // _drawer->clearBackground();
-    // _drawer->begin3DMode(_window->getCamera());
 }
 
 void Bomberman::stopDrawScene()
 {
-    // _drawer->end3DMode();
-    // // draw 2d elements (UI)
-    // _drawer->endDrawing();
 }
 
 bool Bomberman::isGameEnd()
 {
-    for (EntityID id : _player) {
+    int count = 0;
+    
+    for (EntityID id : _player)
         if (id != INVALID_ENTITY)
-            return false;
-    }
-    return true;
+            count++;
+
+    if (count <= 1)
+        return true;
+
+    return false;
 }
 
 

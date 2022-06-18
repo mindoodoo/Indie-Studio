@@ -10,9 +10,11 @@
 Core::Core()
 {
     _window = std::make_shared<RL::Window>("INDIE_STUDIO");
+    _saveManager = std::make_shared<RL::SaveManager>();
     _inputManager = std::make_shared<RL::InputManager>();
-     _saveManager = std::make_shared<RL::SaveManager>();
-     _soundManager = std::make_shared<RL::SoundManager>();
+    std::cout << "test: " << _saveManager->getMappath() << std::endl;
+    _map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png", _saveManager->getLoading());
+    _soundManager = std::make_shared<RL::SoundManager>();
 
 
     RL::Vector3f cameraPos(0, 15, 8);
@@ -53,45 +55,51 @@ void Core::startLoop()
 {
    while (_window->isWindowOpen()) {
         switch (_screen) {
-            case 0:
+            case START_SCREEN:
                 _screen = _startMenu->openStartMenu();
-                _prevS = 0;
+                _prevS = START_SCREEN;
                 break;
-            case 1:
+            case CHAR_SCREEN:
                 _screen = _charSelec->openCharSelect(_screen);
-                _prevM = 1;
+                _prevM = CHAR_SCREEN;
                 break;
-            case 2:
-                _screen = _charSelec->openCharSelect(_screen);
-                _prevM = 2;
-                break;
-            case 3:
+            case SETTINGS_SCREEN:
                 _screen = _settings->openSettings(_prevS);
                 break;
-            case 4:
+            case CLOSE:
                 _window->close();
                 break;
-            case 5:
+            case MAP_SCREEN:
                 _screen = _mapSelect->openMapMenu(_prevM);
-                _prevS = 5;
+                _prevS = MAP_SCREEN;
                 break;
             case 6:
                 if (!_game)
                     startGame();
                 if (!_game->runFrame())
                     _screen = 4;
+                if (_screen == 8)
+                    this->restartGame();
                 break;
-            case 7:
+            case PAUSE_SCREEN:
                 _screen = _pauseMenu->openPauseMenu();
-                _prevS = 7;
+                if (_screen == GAME_SCREEN)
+                    this->_game->startGameTimers();
+                if (_screen == START_SCREEN)
+                    this->restartGame();
+                _prevS = PAUSE_SCREEN;
                 break;
-            case 8:
-                //TODO INSERT LOAD here!
-                _saveManager->updateMap(-1);
-                _screen = 6;
+            case END_SCREEN:
+                _screen = this->_endMenu->openEndMenu();
                 break;
+
+            // case 8:
+            //     //TODO INSERT LOAD here!
+            //     _saveManager->updateMap(-1);
+            //     _screen = 6;
+            //     break;
             default:
-                _screen = 0;
+                _screen = START_SCREEN;
                 break;
         }
     }
@@ -137,6 +145,16 @@ void Core::startLoop()
     }
 }
 
+void Core::restartGame()
+{
+    if (_game)
+        delete _game;
+    if (_map)
+        _map.reset();
+    _window->clearDrawables();
+    _map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png", _saveManager->getLoading());
+    _game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager);
+}
 
 void Core::startGame()
 {

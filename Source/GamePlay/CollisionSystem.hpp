@@ -103,14 +103,14 @@ class CollisionSystem : public ISystem {
                     BombCapacity* playerBombCapacity = _em->Get<BombCapacity>(highEnt);
                     playerBombCapacity->curCapacity += skillIncrease->bombUp;
                     playerBombCapacity->totalAmount += skillIncrease->bombUp;
-                    std::cout << "updated bomb capacity to " << playerBombCapacity->totalAmount << std::endl;
+                    // std::cout << "updated bomb capacity to " << playerBombCapacity->totalAmount << std::endl;
                 }
-                if (skillIncrease->fireUp)
-                    std::cout << "updated fire up" << std::endl;
-                if (skillIncrease->speedUp)
-                    std::cout << "updated speed up" << std::endl;
-                if (skillIncrease->wallPass)
-                    std::cout << "updated wallPass" << std::endl;
+                // if (skillIncrease->fireUp)
+                //     std::cout << "updated fire up" << std::endl;
+                // if (skillIncrease->speedUp)
+                //     std::cout << "updated speed up" << std::endl;
+                // if (skillIncrease->wallPass)
+                //     std::cout << "updated wallPass" << std::endl;
                 _soundManager->playSpecificSoundFx("Item1");
                 _map->removeItem({(int)itemPos->x, (int)itemPos->y});
                 return itemEnt;
@@ -123,10 +123,8 @@ class CollisionSystem : public ISystem {
                 BombOwner* player = _em->Get<BombOwner>(highEnt);
                 Score* scoreIncrease = _em->Get<Score>(lowEnt);
                 _em->Get<Score>(player->id)->score += scoreIncrease->score;
-                std::cout << "bomb killed monster, score increase by " << scoreIncrease->score << std::endl;
                 return lowEnt;
             } else if (*high == EXPLOSION && !checkIfVectorContains(_destroyQueue, lowEnt)) {
-                std::cout << "bomb killed player or breakable block " << std::endl;
                 return lowEnt;
             }
             return INVALID_ENTITY;

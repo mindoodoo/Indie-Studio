@@ -50,7 +50,7 @@ class Bomberman {
         void getSecondPlayerInput();
         void startGameTimers();
         void stopGameTimers();
-        bool runFrame();
+        int runFrame();
         bool checkIfVectorContain(std::vector<EntityID> vector, EntityID id);
         void startDrawScene();
         void stopDrawScene();
@@ -61,6 +61,8 @@ class Bomberman {
         void smoothBombResize(RL::Drawable3D *BombModel);
         RL::Drawable3D* makeDrawable3DPointer(RL::Drawable3D Model);
         bool isGameEnd();
+        void pauseBombCounters();
+        void resumeBombCounters();
 
     protected:
     private:
@@ -78,6 +80,7 @@ class Bomberman {
         Timer _gameTimer;
         Timer _deltaTimer;
         bool _gamePaused;
+        bool _pauseGame;
 };
 
 float translateFigureCoordinates(float pos, int borderSize);
