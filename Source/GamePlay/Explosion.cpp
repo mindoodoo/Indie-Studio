@@ -27,6 +27,11 @@ bool Bomberman::createExplosion(Pos pos, EntityID bombOwner)
     // std::string explomod = "./RaylibTesting/Assets/Explosion/textures/fire.obj";
     // RL::Drawable3D *Explosion = new RL::Drawable3D(explotex, explomod, "", RL::MODEL, scale);
     RL::Drawable3D *Explosion = makeDrawable3DPointer(_allModels[1]);
+    Explosion->setLoadedAnimationTrue();
+    Explosion->resize(0.5f);
+    //Explosion->loadAnimation("./RaylibTesting/Assets/Explosion/textures/fire.iqm"); // NO GOOD
+
+    Explosion->setCurrentAnim(0);
     Explosion->setPosition((RL::Vector3f){
             translateFigureCoordinates(pos.x, _map->getMapWidth()),
             pos.y,
@@ -60,7 +65,7 @@ void Bomberman::checkExplosionalive() {
     for (EntityID ent: EntityViewer<CollisionObjectType, Timer, Sprite>(*_em.get())) {
         if (*_em->Get<CollisionObjectType>(ent) == EXPLOSION) {
             if (_em->Get<Timer>(ent)->returnTime() >= 1) {
-                _em->Get<Sprite>(ent)->model->resize(2);
+                _em->Get<Sprite>(ent)->model->resize(0.5f);
             }
             if (_em->Get<Timer>(ent)->returnTime() >= 1.5) {
                 //delete explosion
