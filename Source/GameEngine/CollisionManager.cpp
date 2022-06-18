@@ -87,13 +87,20 @@ bool RL::CollisionManager::collisionsWithModels(RL::Drawable3D Model1, RL::Drawa
     float model2radius = 0.30f;
     float model1radius = 0.30f;
     if (Model2.getModelType() == RL::POWER)
-        model2radius = 0.42f;
+        model2radius = 0.28f;
     if (Model1.getModelType() == RL::POWER)
-        model1radius = 0.42f;
+        model1radius = 0.28f;
     bool collision = CheckCollisionSpheres(Model1.getPosition(), model1radius, Model2.getPosition(), model2radius);
 
     //if model.IS_TRAVERSIBLE == TRUE then
     // collision == false;
     
+    return collision;
+}
+
+bool RL::CollisionManager::collisionsWithModels(RL::Vector3f ModelPos, RL::Drawable3D Model2)
+{
+    float model2radius = 0.30f;
+    bool collision = CheckCollisionSpheres(ModelPos, 0.3f, Model2.getPosition(), model2radius);    
     return collision;
 }

@@ -29,7 +29,7 @@ class DrawSystem : public ISystem {
                 if (*objectType != ITEM) {
                     objectSprite->model->setPosition((RL::Vector3f){
                         translateObjectCoordinates(objectPos->x, _map->getMapWidth()),
-                        0.5f + (z * 0.01f),
+                        0.5f,
                         z
                     });
                     objectSprite->model->updateModelsAnimation();

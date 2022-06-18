@@ -86,7 +86,7 @@ void RL::Drawable3D::load3DModel(std::string texturePath, std::string modelPath,
         SetMaterialTexture(&this->_model.materials[0], MATERIAL_MAP_DIFFUSE, this->_texture);
         //HERE ADD LOAD ANIMATION, 
         loadAnimation(animationPath);
-        setCurrentAnim(1);
+        // setCurrentAnim(1);
     }
     this->_assetLoaded = true;
     setBoundingBox();

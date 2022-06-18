@@ -93,6 +93,10 @@ struct BombOwner {
     EntityID id;
 };
 
+struct BombProperty {
+    bool isBlocking;
+};
+
 struct Pos {
     float x;
     float y;

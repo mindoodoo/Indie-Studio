@@ -29,7 +29,7 @@ bool Bomberman::createExplosion(Pos pos, EntityID bombOwner)
     RL::Drawable3D *Explosion = makeDrawable3DPointer(_allModels[1]);
     Explosion->setPosition((RL::Vector3f){
             translateFigureCoordinates(pos.x, _map->getMapWidth()),
-            pos.y,
+            0.5f,
             translateFigureCoordinates(pos.y, _map->getMapDepth())
     });
     Explosion->id = id;
@@ -46,6 +46,7 @@ bool Bomberman::createExplosion(Pos pos, EntityID bombOwner)
         Sprite *itemAsset = _em->Get<Sprite>(ent);
         if (*objectType == ITEM && itemPos->x == pos.x && itemPos->y == pos.y) {
             itemAsset->model->setHidden(false);
+            std::cout << "set item visual" << std::endl;
             _map->addItem({(int)itemPos->x, (int)itemPos->y}, *itemType);
         }
     }
@@ -63,7 +64,7 @@ void Bomberman::checkExplosionalive() {
                 _em->Get<Sprite>(ent)->model->resize(2);
             }
             if (_em->Get<Timer>(ent)->returnTime() >= 1.5) {
-                std::cout << "EXPLOSION OVER" << std::endl;
+                // std::cout << "EXPLOSION OVER" << std::endl;
                 //delete explosion
                 for (int i = 0; i < _window->get3Dqueue().size(); i++) {
                     if (_window->get3Dqueue()[i]->id == ent) {
