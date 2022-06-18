@@ -15,7 +15,7 @@ Core::Core()
      _soundManager = std::make_shared<RL::SoundManager>();
 
 
-    RL::Vector3f cameraPos(0, 15, 8);
+    RL::Vector3f cameraPos(0, 19, 7.5);
     _window->_camera.setPosition(cameraPos);
     _window->_camera.setRotation({0.0f, 1.0f, 0.0f });
     _game = NULL;

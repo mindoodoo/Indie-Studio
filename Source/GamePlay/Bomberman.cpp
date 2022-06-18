@@ -31,10 +31,18 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     //
     //}
 
-    _window->queueDrawable(_allIcons[0]);
-    _window->queueDrawable(_allIcons[1]);
-    _window->queueDrawable(_allIcons[2]);
-    _window->queueDrawable(_allIcons[3]);
+    for ( int i = 0; i < _allIcons.size(); i++ ){
+        _allIcons[playerChoices[i].Character]->resize({60,60});
+        _allIcons[playerChoices[i].Character]->setPosition((i * _window->getDimensions().x * 20 / 100) + (_window->getDimensions().x / 100 * 13), 0, 0);
+        _window->queueDrawable(_allIcons[i]);
+    }
+    // _window->queueDrawable(_allIcons[0]);
+    // _window->queueDrawable(_allIcons[1]);
+    // _window->queueDrawable(_allIcons[2]);
+    // _window->queueDrawable(_allIcons[3]);
+
+
+
 
     //erase the begigining
     //_allIcons.erase(_allIcons.begin());
@@ -54,12 +62,17 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     playerStartPositions.push_back({1, 11, 1});
 
 
-
+    
     for (int i = 0 ; i < playerChoices.size(); i++) {
+        std::cout << "choices: " << playerChoices[i].CPU << std::endl;
         if (playerChoices[i].CPU == false) 
             createPlayer(playerStartPositions[i], playerChoices[i].Character);
-        else 
+        else {
+            if (i == 1)
+                _player.push_back(INVALID_ENTITY);
             createAI(playerStartPositions[i], playerChoices[i].Character);
+
+        }
     }
 
 

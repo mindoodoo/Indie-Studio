@@ -106,6 +106,7 @@ class CollisionSystem : public ISystem {
                     std::cout << "updated bomb capacity to " << playerBombCapacity->totalAmount << std::endl;
                 }
                 if (skillIncrease->fireUp)
+                // add fire up icon to specific player UI location relative to window size
                     std::cout << "updated fire up" << std::endl;
                 if (skillIncrease->speedUp)
                     std::cout << "updated speed up" << std::endl;

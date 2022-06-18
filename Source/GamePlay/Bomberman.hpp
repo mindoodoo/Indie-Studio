@@ -23,6 +23,7 @@
 #include "../Raylib/Window.hpp"
 #include "SoundManager.hpp"
 #include "Timer.hpp"
+#include "RaylibTypeEncaps.hpp"
 
 class Bomberman {
     public:
