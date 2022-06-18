@@ -61,11 +61,12 @@ void RL::Drawable3D::drawPower()
         if (this->_position.y <= 0.6f)
             this->up = 1;
         }
-    if (this->_position.y <= 1.41f && this->up == 1) {
+    if (this->_position.y <= 1.11f && this->up == 1) {
         this->_position.y += 0.01f;
         DrawCubeTexture(this->_texture, this->_position, 0.6f, 0.6f, 0.6f, WHITE);
+        std::cout << "Pos y:"<<_position.y << " Pos" << _position.z << std::endl;
         //DrawSphere(this->_position, 0.05f, WHITE);
-        if (this->_position.y >= 1.4f)
+        if (this->_position.y >= 1.1f)
             this->up = 0;
         }
 
