@@ -98,7 +98,7 @@ void Core::startLoop()
     if (_screen == 6 || _screen == 4) {
         std::cout << "Will save the game:" << _screen << std::endl;
         _saveManager->saveMap(_map->getParsedMap());
-        //save Items 
+        //save Items
         for (EntityID ent: EntityViewer<CollisionObjectType, Skillset, Pos, Sprite>(*_game->getEm().get())) {
             if (*_game->getEm()->Get<CollisionObjectType>(ent) == ITEM)
            if (!_game->getEm()->Get<Sprite>(ent)->model->checkIfHidden())
@@ -112,7 +112,25 @@ void Core::startLoop()
                                        *_game->getEm()->Get<BombOwner>(ent));
             }
         }
-        //_saveManager->savePlayer();
+        //save explosion
+        for (EntityID ent: EntityViewer<CollisionObjectType, BombOwner, Pos>(*_game->getEm().get())) {
+            if (*_game->getEm()->Get<CollisionObjectType>(ent) == EXPLOSION) {
+                _saveManager->saveExplosion(ent, *_game->getEm()->Get<Pos>(ent), *_game->getEm()->Get<BombOwner>(ent));
+            }
+        }
+
+        //save Player
+        for (EntityID ent: EntityViewer<CollisionObjectType, BombCapacity, Skillset, Pos, Score>(*_game->getEm().get())) {
+            if (*_game->getEm()->Get<CollisionObjectType>(ent) == PLAYER) {
+                _saveManager->savePlayer(ent, *_game->getEm()->Get<Pos>(ent), *_game->getEm()->Get<Skillset>(ent), *_game->getEm()->Get<BombCapacity>(ent), *_game->getEm()->Get<Score>(ent));
+            }
+        }
+
+        for (EntityID ent: EntityViewer<CollisionObjectType, BombCapacity, Skillset, Pos, Score>(*_game->getEm().get())) {
+            if (*_game->getEm()->Get<CollisionObjectType>(ent) == AI) {
+                _saveManager->saveAis(ent, *_game->getEm()->Get<Pos>(ent), *_game->getEm()->Get<Skillset>(ent), *_game->getEm()->Get<BombCapacity>(ent), *_game->getEm()->Get<Score>(ent));
+            }
+        }
         _saveManager->writeEntitys();
         std::cout << "Finished saving" << _screen << std::endl;
     }

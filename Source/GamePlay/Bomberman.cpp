@@ -25,7 +25,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     //_soundManager->enableDisableShuffle();
     
     // if only one player, fill _player[1] with INVALID_ENTITY
-    // TODO: make pos dependant from map size
+
     createPlayer({13, 11, 1});
     createPlayer({1, 1, 1});
     createAI({13, 1, 1});

@@ -262,21 +262,21 @@ int RL::SaveManager::getScore(int index)
     return -1;
 }
 
-void RL::SaveManager::savePlayer(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, int score)
+void RL::SaveManager::savePlayer(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score)
 {
     std::string newplayer= "PLAYER;ID="+ std::to_string(id) +";"+ "POS[" + std::to_string(position.x) + "," + std::to_string(position.y) + "," + std::to_string(position.z) +\
     "];SKILL["+ std::to_string(skill.bombUp) + "," + std::to_string(skill.speedUp) +\
     "," + std::to_string(skill.fireUp) + "," + std::to_string(skill.wallPass) + "];BOMB[" + std::to_string(bombcapa.totalAmount) + "," +\
-    std::to_string(bombcapa.curCapacity) +"];SCORE="+ std::to_string(score);
+    std::to_string(bombcapa.curCapacity) +"];SCORE="+ std::to_string(int(score.score));
     _playerssave.push_back(newplayer);
 }
 
-void RL::SaveManager::saveAis(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, int score)
+void RL::SaveManager::saveAis(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score)
 {
     std::string newai= "AI;ID="+ std::to_string(id) +";"+ "POS[" + std::to_string(position.x) + "," + std::to_string(position.y) + "," + std::to_string(position.z) +\
     "];SKILL["+ std::to_string(skill.bombUp) + "," + std::to_string(skill.speedUp) +\
     "," + std::to_string(skill.fireUp) + "," + std::to_string(skill.wallPass) + "];BOMB[" + std::to_string(bombcapa.totalAmount) + "," +\
-    std::to_string(bombcapa.curCapacity) +"];SCORE="+ std::to_string(score);
+    std::to_string(bombcapa.curCapacity) +"];SCORE="+ std::to_string(int(score.score));
     _aissave.push_back(newai);
 }
 
@@ -294,6 +294,14 @@ void RL::SaveManager::saveItem(EntityID id, Pos position, Skillset skill)
     "];SKILL["+ std::to_string(skill.bombUp) + "," + std::to_string(skill.speedUp) +\
     "," + std::to_string(skill.fireUp) + "," + std::to_string(skill.wallPass) + "]";
     _itemssave.push_back(newitem);
+}
+
+void RL::SaveManager::saveExplosion(EntityID id, Pos position, BombOwner owner)
+{
+    std::string newitem= "EXPLOSION;ID="+ std::to_string(id) +";"+ "POS[" + std::to_string(position.x) + "," + std::to_string(position.y) + "," + std::to_string(position.z) +\
+    "];OWNER=" + std::to_string(owner.id);
+            _explosionssave.push_back(newitem);
+
 }
 
 void RL::SaveManager::saveMap(std::vector<std::vector<gfx_tile_t>> map)

@@ -52,10 +52,11 @@ namespace RL {
         void writeEntitys();
         //Save --> write in file
         void saveMap(std::vector<std::vector<gfx_tile_t>> map);
-        void savePlayer(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, int score);
+        void savePlayer(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score);
         void saveBomb(EntityID id, Pos position, Skillset skill, BombOwner owner);
         void saveItem(EntityID id, Pos position, Skillset skill);
-        void saveAis(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, int score);
+        void saveAis(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score);
+        void saveExplosion(EntityID id, Pos position, BombOwner owner);
     };
 }
 
