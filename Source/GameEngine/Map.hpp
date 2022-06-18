@@ -22,7 +22,7 @@ namespace RL {
     
     class Map {
     public:
-        Map(std::string mapCSVPath, std::string wallTexturePath, std::string floorTexturePath, std::string crateTexturePath);
+        Map(std::string mapCSVPath, std::string wallTexturePath, std::string floorTexturePath, std::string crateTexturePath, bool newGame);
         ~Map();
         std::vector<std::vector<gfx_tile_t>> parseMap(const std::string &path);
 
