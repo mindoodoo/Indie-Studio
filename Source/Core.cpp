@@ -10,10 +10,11 @@
 Core::Core()
 {
     _window = std::make_shared<RL::Window>("INDIE_STUDIO");
+    _saveManager = std::make_shared<RL::SaveManager>();
     _inputManager = std::make_shared<RL::InputManager>();
+    std::cout << "test: " << _saveManager->getMappath() << std::endl;
     _map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png", _saveManager->getLoading());
     _soundManager = std::make_shared<RL::SoundManager>();
-    _saveManager = std::make_shared<RL::SaveManager>();
 
 
     RL::Vector3f cameraPos(0, 15, 8);

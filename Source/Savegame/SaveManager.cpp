@@ -65,8 +65,8 @@ std::vector<std::string> loadFile(std::string path)
 
 RL::SaveManager::SaveManager()
 {
-    _running = false;
-    //_mapPath = _directory + ".saveMAP.csv";
+    //_running = false;
+     _mapPath = _directory + ".saveMAP.csv";
     _filepath = _directory +".saveEntitys";
 }
 
