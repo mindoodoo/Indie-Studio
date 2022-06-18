@@ -31,7 +31,7 @@ class Bomberman {
         std::shared_ptr<EntityManager> getEm();
 
 
-        void generateItems();
+        void generateItems(int wallPassAmount);
         void generateItemsLoadGame(Pos pos, Skillset skill);
         void createPlayer(Pos pos);
         void createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCapacity capa);

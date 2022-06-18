@@ -36,7 +36,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
         for (int x = 0; x < _saveManager->getItems().size(); x++)
             generateItemsLoadGame(_saveManager->getItemPos(x), _saveManager->getSkillsetItem(x));
 
-        generateItems();
+        generateItems(0);
 
         //TODO change id system
         for (int x = 0; x < _saveManager->getBombs().size(); x++)
@@ -56,7 +56,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
         createPlayer({1, 1, 1});
         createAI({13, 1, 1});
         createAI({1, 11, 1});
-        generateItems();
+        generateItems(1);
         _gamePaused = false;
         _gameTimer.startTimer();
         _deltaTimer.startTimer();
@@ -84,9 +84,8 @@ void Bomberman::generateItemsLoadGame(Pos pos, Skillset skill)
 
 }
 
-void Bomberman::generateItems()
+void Bomberman::generateItems(int wallPassAmount)
 {
-    int wallPassAmount = 1;
     int placeItem;
 
     for (int i = 0; i < _map->getMapDepth(); i++) {
