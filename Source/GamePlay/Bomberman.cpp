@@ -47,10 +47,26 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     
     // if only one player, fill _player[1] with INVALID_ENTITY
     // TODO: make pos dependant from map size
-    createPlayer({13, 11, 1});
-    createPlayer({1, 1, 1});
-    createAI({13, 1, 1});
-    createAI({1, 11, 1});
+    std::vector<Pos>playerStartPositions;
+    playerStartPositions.push_back({13, 11, 1});
+    playerStartPositions.push_back({1, 1, 1});
+    playerStartPositions.push_back({13, 1, 1});
+    playerStartPositions.push_back({1, 11, 1});
+
+
+
+    for (int i = 0 ; i < playerChoices.size(); i++) {
+        if (playerChoices[i].CPU == false) 
+            createPlayer(playerStartPositions[i], playerChoices[i].Character);
+        else 
+            createAI(playerStartPositions[i], playerChoices[i].Character);
+    }
+
+
+    // createPlayer({13, 11, 1});
+    // createPlayer({1, 1, 1});
+    // createAI({13, 1, 1});
+    // createAI({1, 11, 1});
     generateItems();
     // createSpeedUpItem({10, 10, 1});
     // createSpeedUpItem({4, 3, 1});
@@ -114,12 +130,40 @@ float translateFigureCoordinates(float pos, int borderSize)
     return newpos;
 }
 
-void Bomberman::createPlayer(Pos pos)
+
+//little function to fetch paths of characters
+std::vector<std::string> findCharPaths(int character)
+{
+    std::vector<std::string> charPaths;
+    if (character == 0) {
+        charPaths.push_back("./RaylibTesting/Assets/3d_models/Players/PlayerOne.png");
+        charPaths.push_back("./RaylibTesting/Assets/3d_models/Players/playerOne.iqm");
+    }
+    if (character == 1) {
+        charPaths.push_back("./RaylibTesting/Assets/3d_models/Players/PlayerTwo.png");
+        charPaths.push_back("./RaylibTesting/Assets/3d_models/Players/playerTwo.iqm");
+    }
+    if (character == 2) {
+        charPaths.push_back("./RaylibTesting/Assets/3d_models/Players/PlayerThree.png");
+        charPaths.push_back("./RaylibTesting/Assets/3d_models/Players/playerThree.iqm");
+    }
+    if (character == 3) {
+        charPaths.push_back("./RaylibTesting/Assets/3d_models/Players/PlayerFour.png");
+        charPaths.push_back("./RaylibTesting/Assets/3d_models/Players/playerFour.iqm");
+    }
+    return charPaths;
+}
+
+
+
+void Bomberman::createPlayer(Pos pos, int character) // extra argument
 {
     EntityID id = _em->CreateNewEntity();
-    std::string playtex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
-    std::string playermod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
-    std::string playeranim = playermod;
+    // std::string playtex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
+    // std::string playermod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
+    // std::string playeranim = playermod;
+
+    std::vector<std::string> paths = findCharPaths(character);
 
     // std::string skullmod = "RaylibTesting/Assets/3d_models/Guy/guy.iqm";
     // std::string modelAnimPath = "RaylibTesting/Assets/3d_models/Guy/guyanim.iqm";
@@ -136,7 +180,7 @@ void Bomberman::createPlayer(Pos pos)
     _em->Assign<BombCapacity>(id, BombCapacity{3, 3});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{PLAYER});
 
-    RL::Drawable3D *Player = new RL::Drawable3D(playtex, playermod, playeranim, RL::MODEL, 0.25);
+    RL::Drawable3D *Player = new RL::Drawable3D(paths[0], paths[1], paths[1], RL::MODEL, 0.25);
     Player->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
         pos.y,
@@ -146,11 +190,13 @@ void Bomberman::createPlayer(Pos pos)
     _window->queueDrawable(Player);
 }
 
-void Bomberman::createAI(Pos pos)
+void Bomberman::createAI(Pos pos, int character)
 {
     EntityID id = _em->CreateNewEntity();
-    std::string aitex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
-    std::string aimod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
+    // std::string aitex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
+    // std::string aimod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
+
+    std::vector<std::string> paths = findCharPaths(character);
 
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
@@ -165,7 +211,7 @@ void Bomberman::createAI(Pos pos)
     AIData data = {false, {0, 0, 0}, RANDOM, 5, {}, {1, 2}};
     _em->Assign<AIData>(id, data);
 
-    RL::Drawable3D *AI = new RL::Drawable3D(aitex, aimod, aimod, RL::MODEL, 0.25);
+    RL::Drawable3D *AI = new RL::Drawable3D(paths[0], paths[1], paths[1], RL::MODEL, 0.25);
     AI->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
         pos.y,

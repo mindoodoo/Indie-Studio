@@ -30,8 +30,8 @@ class Bomberman {
         ~Bomberman();
 
         void generateItems();
-        void createPlayer(Pos pos);
-        void createAI(Pos pos);
+        void createPlayer(Pos pos, int character);
+        void createAI(Pos pos, int character);
         void createSpeedUpItem(Pos pos);
         void createBombUpItem(Pos pos);
         void createFireUpItem(Pos pos);
