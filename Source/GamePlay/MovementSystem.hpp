@@ -107,8 +107,9 @@ class MovementSystem : public ISystem {
                 Pos *bombPos = _em->Get<Pos>(ent); //remove again
                 BombProperty *bombProperty = _em->Get<BombProperty>(ent);
                 if (_colManager.collisionsWithModels((RL::Vector3f){pos.x, pos.y, pos.z}, *bomb->model)) {
-                    if (bombProperty->isBlocking) {
-                        return false;
+                    for (Blocking blocking : bombProperty->blockingForPlayer) {
+                        if (blocking.id == _ent && blocking.isBlocking)
+                            return false;
                     }
                 }
             }

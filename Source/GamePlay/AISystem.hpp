@@ -94,17 +94,21 @@ class AISystem : public ISystem {
                 CollisionObjectType type = *_em->Get<CollisionObjectType>(ent);
                 BombProperty blockable = *_em->Get<BombProperty>(ent);
                 BombOwner bombOwner = *_em->Get<BombOwner>(ent);
-                if (type == BOMB && (blockable.isBlocking || (!blockable.isBlocking && bombOwner.id != _ent))) {
-                        Pos pos = *_em->Get<Pos>(ent);
-                        _bombMap[pos.y][pos.x].tile = 1;
-                        if (isInMap(pos.x + 1, pos.y))
-                            _bombMap[pos.y][pos.x + 1].tile = 1;
-                        if (isInMap(pos.x - 1, pos.y))
-                            _bombMap[pos.y][pos.x - 1].tile = 1;
-                        if (isInMap(pos.x, pos.y + 1))
-                            _bombMap[pos.y + 1][pos.x].tile = 1;
-                        if (isInMap(pos.x, pos.y - 1))
-                            _bombMap[pos.y - 1][pos.x].tile = 1;
+                if (type == BOMB) {
+                    for (Blocking blocking : blockable.blockingForPlayer) {
+                        if (blocking.id == _ent && blocking.isBlocking) {
+                            Pos pos = *_em->Get<Pos>(ent);
+                            _bombMap[pos.y][pos.x].tile = 1;
+                            if (isInMap(pos.x + 1, pos.y))
+                                _bombMap[pos.y][pos.x + 1].tile = 1;
+                            if (isInMap(pos.x - 1, pos.y))
+                                _bombMap[pos.y][pos.x - 1].tile = 1;
+                            if (isInMap(pos.x, pos.y + 1))
+                                _bombMap[pos.y + 1][pos.x].tile = 1;
+                            if (isInMap(pos.x, pos.y - 1))
+                                _bombMap[pos.y - 1][pos.x].tile = 1;
+                        }
+                    }
                 }
             }
         }

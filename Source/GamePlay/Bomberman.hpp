@@ -16,6 +16,7 @@
 #include "AISystem.hpp"
 #include "AudioSystem.hpp"
 #include "Timer.hpp"
+#include "../GameEngine/CollisionManager.hpp"
 #include "../Raylib/Drawables/Drawable3D.hpp"
 #include "../Raylib/InputManager.hpp"
 #include "../GameEngine/Map.hpp"
@@ -62,6 +63,7 @@ class Bomberman {
         std::shared_ptr<RL::InputManager> _inputManager;
         std::shared_ptr<RL::SoundManager> _soundManager;
         std::shared_ptr<RL::Map> _map;
+        RL::CollisionManager _colManager;
         std::vector<int> _event;
         std::vector<std::shared_ptr<ISystem>> _systems;
         std::vector<EntityID> _player;

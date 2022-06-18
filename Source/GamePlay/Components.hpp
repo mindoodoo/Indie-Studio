@@ -93,8 +93,13 @@ struct BombOwner {
     EntityID id;
 };
 
-struct BombProperty {
+struct Blocking {
+    EntityID id;
     bool isBlocking;
+};
+
+struct BombProperty {
+    std::vector<Blocking> blockingForPlayer;
 };
 
 struct Pos {

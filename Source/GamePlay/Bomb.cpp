@@ -28,7 +28,6 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset)
     EntityID id = _em->CreateNewEntity();
     _em->Assign<Pos>(id, pos);
     _em->Assign<BombOwner>(id, BombOwner{bombOwner});
-    _em->Assign<BombProperty>(id, BombProperty{false});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{BOMB});
     _em->Assign<Skillset>(id, {skillset});
     Timer timer = Timer();
@@ -48,6 +47,17 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset)
     });
     Bomb->id = id;
     _em->Assign<Sprite>(id, Sprite{Bomb});
+    BombProperty blocking;
+    blocking.blockingForPlayer.push_back({bombOwner, false});
+    for (EntityID ent : _player) {
+        if (ent == INVALID_ENTITY || ent == bombOwner)
+            continue;
+        if (_colManager.collisionsWithModels(*Bomb, *_em->Get<Sprite>(ent)->model))
+            blocking.blockingForPlayer.push_back({ent, false});
+        else
+            blocking.blockingForPlayer.push_back({ent, true});
+    }
+    _em->Assign<BombProperty>(id, blocking);
     _window->queueDrawable(Bomb);
     _soundManager->playSpecificSoundFx("layBomb");
     return true;

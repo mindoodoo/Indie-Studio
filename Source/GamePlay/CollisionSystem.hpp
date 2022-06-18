@@ -128,8 +128,12 @@ class CollisionSystem : public ISystem {
                 Pos* bombPos = _em->Get<Pos>(highEnt);
                 Sprite* player = _em->Get<Sprite>(lowEnt);
                 Pos* playerPos = _em->Get<Pos>(lowEnt);
-                if (!bombProperty->isBlocking && bombOwner->id == lowEnt && !collide)
-                    bombProperty->isBlocking = true;
+                for (int i = 0; i < bombProperty->blockingForPlayer.size(); i++) {
+                    if (bombProperty->blockingForPlayer[i].id == lowEnt) {
+                        if (!bombProperty->blockingForPlayer[i].isBlocking && !collide)
+                            bombProperty->blockingForPlayer[i].isBlocking = true;
+                    }
+                }
             }
             if (!collide)
                 return INVALID_ENTITY;
