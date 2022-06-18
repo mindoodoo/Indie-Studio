@@ -76,7 +76,7 @@ void Core::startLoop()
             case 6:
                 if (!_game)
                     startGame();
-                if (!_game->runFrame())
+                if (!(_screen = _game->runFrame()))
                     _screen = 4;
                 if (_screen == 8)
                     this->restartGame();
