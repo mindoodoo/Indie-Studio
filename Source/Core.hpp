@@ -29,6 +29,7 @@ class Core {
         ~Core();
 
         void startLoop();
+        void restartGame();
 
     private:
         std::shared_ptr<RL::Window> _window;

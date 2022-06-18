@@ -42,6 +42,7 @@ namespace RL {
         // Add drawable to queue to be displayed when displayDrawables() is called
         void queueDrawable(IDrawable *drawable);
         void removeDrawable(IDrawable *drawable);
+        void clearDrawables();
         
         // Display all 2D and 3D Drawables in queue
         void displayDrawables(Map map);

@@ -12,7 +12,7 @@ Core::Core()
     _window = std::make_shared<RL::Window>("INDIE_STUDIO");
     _inputManager = std::make_shared<RL::InputManager>();
     _map = std::make_shared<RL::Map>("./RaylibTesting/Assets/Maps/TestMap/test.csv", "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png");
-     _soundManager = std::make_shared<RL::SoundManager>();
+    _soundManager = std::make_shared<RL::SoundManager>();
 
     RL::Vector3f cameraPos(0, 15, 8);
     _window->_camera.setPosition(cameraPos);
@@ -85,13 +85,20 @@ void Core::startLoop()
                 _screen = _pauseMenu->openPauseMenu();
                 if (_screen == 6)
                     this->_game->startGameTimers();
+                if (_screen == 0)
+                    this->restartGame();
                 _prevS = 7;
                 break;
             default:
                 _screen = 0;
                 break;
         }
-        // if (!_game->runFrame())
-        //     break;
     }
+}
+
+void Core::restartGame()
+{
+    if (_game)
+        delete _game;
+    _game = new Bomberman(_window, _inputManager, _map, _soundManager);
 }

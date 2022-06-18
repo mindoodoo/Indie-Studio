@@ -137,8 +137,6 @@ void RL::SoundManager::playRandomMusic()
     std::srand(std::time(nullptr));
     int randomIndex = std::rand() % this->_songs.size();
 
-    std::cout << "IM TRYING TO ENTER WHILE LOOP TO SHUFFLE !!!" << std::endl;
-
     while (isAlreadyPlayed && this->_playedSongs.size() != 0) {
         for (std::size_t i = 0; i < this->_playedSongs.size(); ++i) {
             if (randomIndex == this->_playedSongs[i]) {
@@ -154,22 +152,17 @@ void RL::SoundManager::playRandomMusic()
     this->_playedSongs.push_back(randomIndex);
     playSpecificMusic(this->_songs[randomIndex]._name);
     this->_currentSongPlaying = randomIndex;
-    if (this->_playedSongs.size() == this->_songs.size()) {
-        std::cout << "IVE PLAYED ALL SONGS OF THE REPERTOIRE, GONNA CLEAR AND REPLAY ALL" << std::endl;
+    if (this->_playedSongs.size() == this->_songs.size())
         this->_playedSongs.clear();
-    }
-
 }
 
 void RL::SoundManager::playSpecificMusic(std::string songName)
 {
-    std::cout << "Im Gonna play a specific MUSIC!!" << std::endl;
     if (this->_currentSongPlaying != -1)
         StopMusicStream(this->_songs[_currentSongPlaying]._song);
 
     for (std::size_t i = 0; i < this->_songs.size(); ++i) {
         if (this->_songs[i]._name == songName) {
-            std::cout << "Im playing this song : " << this->_songs[i]._name << std::endl;
             PlayMusicStream(this->_songs[i]._song);
             this->_currentSongPlaying = i;
             SetMusicVolume(this->_songs[_currentSongPlaying]._song, this->_musicVolume);
@@ -180,13 +173,11 @@ void RL::SoundManager::playSpecificMusic(std::string songName)
 
 void RL::SoundManager::playSpecificSoundFx(std::string EffectName)
 {
-    std::cout << "Im Gonna play a specific EFFECT!!" << std::endl;
     // if (this->_currentSongPlaying != -1)
     //     StopMusicStream(this->_songs[_currentSongPlaying]._song);
 
     for (std::size_t i = 0; i < this->_soundfx.size(); ++i) {
         if (this->_soundfx[i]._name == EffectName) {
-            std::cout << "Im playing this sound effect : " << this->_soundfx[i]._name << std::endl;
             SetSoundVolume(this->_soundfx[i]._soundEffect, this->_soundEffectVolume);
             PlaySoundMulti(this->_soundfx[i]._soundEffect);
             //this->_currentSongPlaying = i;
@@ -243,9 +234,7 @@ void RL::SoundManager::decreaseSoundEffectVolume()
     this->_soundEffectVolume -= 0.1f;    
 }
 
-
 //getters
-
 std::vector<musicFile_t> RL::SoundManager::getSongList()
 {
     return this->_songs;
@@ -258,7 +247,7 @@ musicFile_t RL::SoundManager::getSong(std::string songName)
             return this->_songs[i];
         }
     }
-        //add an special song in first place of the list to make sue we can play this song
+    //add an special song in first place of the list to make sue we can play this song
     return this->_songs[0];    
 }
 
@@ -271,4 +260,3 @@ float RL::SoundManager::getSoundEffectVolume()
 {
     return this->_soundEffectVolume;
 }
-

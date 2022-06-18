@@ -55,7 +55,6 @@ void Win::PauseMenu::drawPauseMenu()
 
 int Win::PauseMenu::openPauseMenu()
 {
-    std::cout << "IN OPEN PAUSE MENU()" << std::endl;
     _mousePt = _inputManager->getMousePosition();
     drawPauseMenu();
     for (int i = 0; i < _btn.size(); i++) {

@@ -63,7 +63,6 @@ void Bomberman::checkExplosionalive() {
                 _em->Get<Sprite>(ent)->model->resize(2);
             }
             if (_em->Get<Timer>(ent)->returnTime() >= 1.5) {
-                std::cout << "EXPLOSION OVER" << std::endl;
                 //delete explosion
                 for (int i = 0; i < _window->get3Dqueue().size(); i++) {
                     if (_window->get3Dqueue()[i]->id == ent) {

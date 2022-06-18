@@ -55,7 +55,6 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset)
 
 void Bomberman::layBomb(EntityID playerid)
 {
-    std::cout << "LAYING bomb from player ID : " << playerid << std::endl;
     _em->Get<Sprite>(playerid)->model->setCurrentAnim(2);
     if (_em->Get<BombCapacity>(playerid)->curCapacity >= 1) {
         if (createBomb(*_em->Get<Pos>(playerid), playerid,*_em->Get<Skillset>(playerid)))
@@ -115,7 +114,6 @@ void Bomberman::checkBombalive() {
             if (_em->Get<Timer>(ent)->returnTime() <= 3)
                 smoothBombResize(_em->Get<Sprite>(ent)->model);
             if (_em->Get<Timer>(ent)->returnTime() >= 2) {
-                std::cout << "BOOOM" << std::endl;
                 //I DONT KNOW IF WE WANT TO LEAVE THIS LIKE THIS
                 _soundManager->playSpecificSoundFx("ExplosionTest");
                 if (checkIfVectorContain(_player, _em->Get<BombOwner>(ent)->id))
