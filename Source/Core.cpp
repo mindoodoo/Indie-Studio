@@ -99,12 +99,16 @@ void Core::startLoop()
     }
 }
 
-
-void Core::startGame()
+void sortPlayerChoices(Win::CharacterSelect *_charSelec)
 {
-
-    //make a logic for filling the rest of the vector before passing to bomberman class
-    //check between 1 and 4 and fill the rest
+    PlayerChoice temp;
+    if (_charSelec->_playerChoice.size() > 1) {
+        if (_charSelec->_playerChoice[0].playerOrder > _charSelec->_playerChoice[1].playerOrder) {
+            temp = _charSelec->_playerChoice[0];
+            _charSelec->_playerChoice[0] = _charSelec->_playerChoice[1];
+            _charSelec->_playerChoice[1] = temp;
+        }
+    }
     int checked = 0;
     for(int i = 0; i < 4; i++) {
         for (int j = 0; j <_charSelec->_playerChoice.size(); j++) {
@@ -112,16 +116,15 @@ void Core::startGame()
                 checked = 1;                               
         }
         if (checked == 0) 
-            _charSelec->_playerChoice.push_back(_charSelec->fillOutPlayerChoice(i, true, _charSelec->_playerChoice.size()));
+            _charSelec->_playerChoice.push_back(_charSelec->fillOutPlayerChoice(i, true, _charSelec->_playerChoice.size() + 1));
         checked = 0;
     }
+}
 
-    for (int i = 0; i < _charSelec->_playerChoice.size(); i++) {
-        std::cout << _charSelec->_playerChoice[i].Character << std::endl;
-
-    }
-
+void Core::startGame()
+{
+    sortPlayerChoices(_charSelec);
     _map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png");
     //_saveManager->saveMap(_map->getParsedMap()); testing
-    _game = new Bomberman(_window, _inputManager, _map, _soundManager);
+    _game = new Bomberman(_window, _inputManager, _map, _soundManager, _charSelec->_playerChoice);
 }

@@ -7,7 +7,7 @@
 
 #include "Bomberman.hpp"
 
-Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager)
+Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::vector<PlayerChoice> playerChoices)
     : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager)
 {
     _em = std::make_shared<EntityManager>();
