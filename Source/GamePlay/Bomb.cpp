@@ -127,7 +127,6 @@ void Bomberman::checkBombalive() {
                         _em->Remove<Sprite>(ent);
                         _window->removeElemtfrom3Dqueue(i);
                         _em->DestroyEntity(ent);
-
                     }
                 }
             }
@@ -136,3 +135,20 @@ void Bomberman::checkBombalive() {
     }
 }
 
+void Bomberman::pauseBombCounters()
+{
+    for (EntityID ent: EntityViewer<CollisionObjectType, Timer>(*_em.get())) {
+        CollisionObjectType type = *_em->Get<CollisionObjectType>(ent);
+        if (type == BOMB || type == EXPLOSION)
+            _em->Get<Timer>(ent)->startPause();
+    }
+}
+
+void Bomberman::resumeBombCounters()
+{
+    for (EntityID ent: EntityViewer<CollisionObjectType, Timer>(*_em.get())) {
+        CollisionObjectType type = *_em->Get<CollisionObjectType>(ent);
+        if (type == BOMB || type == EXPLOSION)
+            _em->Get<Timer>(ent)->stopPause();
+    }
+}

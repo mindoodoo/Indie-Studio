@@ -55,6 +55,8 @@ class Bomberman {
         void smoothBombResize(RL::Drawable3D *BombModel);
         RL::Drawable3D* makeDrawable3DPointer(RL::Drawable3D Model);
         bool isGameEnd();
+        void pauseBombCounters();
+        void resumeBombCounters();
 
     protected:
     private:

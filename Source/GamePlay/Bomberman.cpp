@@ -310,12 +310,14 @@ void Bomberman::startGameTimers()
         _gamePaused = false;
     }
     _deltaTimer.restartTimer();
+    this->resumeBombCounters();
 }
 
 void Bomberman::stopGameTimers()
 {
     _gamePaused = true;
     _gameTimer.startPause();
+    this->pauseBombCounters();
 }
 
 bool Bomberman::checkIfVectorContain(std::vector<EntityID> vector, EntityID id) {
