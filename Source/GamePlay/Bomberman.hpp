@@ -33,7 +33,7 @@ class Bomberman {
 
         void generateItems();
         void createPlayer(Pos pos);
-        void createPlayer(Pos pos, Skillset skill, Score score, BombCapacity capa);
+        void createPlayerTEST(Pos pos, Skillset skill, int score, BombCapacity capa);
         void createAI(Pos pos);
         void createSpeedUpItem(Pos pos);
         void createBombUpItem(Pos pos);

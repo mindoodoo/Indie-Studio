@@ -27,25 +27,35 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     //Check if loading game or not
     if (!_saveManager->getLoading()) {
         //loaded game
-        std::cout <<"MOIN test MOIN" << std::endl;
+        std::cout << "Test" << _saveManager->getPlayerPos(0).x << std::endl;
+        std::cout <<"MOIN test Player:" <<  _saveManager->getPlayers().size()  <<std::endl;
+        std::cout <<"MOIN test IA:" <<  _saveManager->getAIs().size()  <<std::endl;
+        std::cout <<"MOIN test BOMB:" <<  _saveManager->getBombs().size()  <<std::endl;
+        std::cout <<"MOIN test Explosion:" <<  _saveManager->getExplosions().size()  <<std::endl;
         for (int x = 0; x < _saveManager->getPlayers().size(); x++) {
-            createPlayer(_saveManager->getPlayerPos(x));
+            createPlayerTEST(_saveManager->getPlayerPos(x), _saveManager->getSkillsetPlayer(x), _saveManager->getScorePlayer(x), _saveManager->getBombcap(x));
         }
-        return;
+        std::cout << "test end loop" << std::endl << std::endl;
+        createAI({13, 1, 1});
+        createAI({1, 11, 1});
+        generateItems();
+    } else {
+        std::cout << "NEW GAME" << std::endl << std::endl;
+        createPlayer({13, 11, 1});
+        createPlayer({1, 1, 1});
+        createAI({13, 1, 1});
+        createAI({1, 11, 1});
+        generateItems();
+        // createSpeedUpItem({10, 10, 1});
+        // createSpeedUpItem({4, 3, 1});
+        // createBombUpItem({8, 5, 1});
+        // createBombUpItem({9, 5, 1});
+        // createFireUpItem({10, 5, 1});
+        // createWallPassItem({2, 3, 1});
+        // createBomb({5, 5, 1}, _player.back());
+        // createMonster({5, 5, 1});
     }
-    createPlayer({13, 11, 1});
-    createPlayer({1, 1, 1});
-    createAI({13, 1, 1});
-    createAI({1, 11, 1});
-    generateItems();
-    // createSpeedUpItem({10, 10, 1});
-    // createSpeedUpItem({4, 3, 1});
-    // createBombUpItem({8, 5, 1});
-    // createBombUpItem({9, 5, 1});
-    // createFireUpItem({10, 5, 1});
-    // createWallPassItem({2, 3, 1});
-    // createBomb({5, 5, 1}, _player.back());
-    // createMonster({5, 5, 1});
+    std::cout << "Start game" << std::endl;
     _gamePaused = false;
     _gameTimer.startTimer();
     _deltaTimer.startTimer();
@@ -127,19 +137,20 @@ void Bomberman::createPlayer(Pos pos)
     _em->Assign<Sprite>(id, Sprite{Player});
     _window->queueDrawable(Player);
 }
-void Bomberman::createPlayer(Pos pos, Skillset skill, Score score, BombCapacity capa)
+void Bomberman::createPlayerTEST(Pos pos, Skillset skill, int score, BombCapacity capa)
 {
+    std::cout <<"start create loadplayer" <<std::endl;
     EntityID id = _em->CreateNewEntity();
     std::string playtex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
     std::string playermod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
     std::string playeranim = playermod;
 
-
+    std::cout << "pos x = " << pos.x << " y = " << pos.y << std::endl;
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
     _em->Assign<Velocity>(id, {0.08,0.08});
     _em->Assign<Input>(id, Input{NONE});
-    _em->Assign<Score>(id, score);
+    _em->Assign<Score>(id, {std::size_t (score)});
     _em->Assign<Health>(id, Health{100});
     _em->Assign<Skillset>(id, skill);
     _em->Assign<BombCapacity>(id, capa);

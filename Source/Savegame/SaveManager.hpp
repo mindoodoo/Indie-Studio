@@ -51,6 +51,8 @@ namespace RL {
         void checkEntitys(std::string filename);
         void loadEntity(std::string line);
         void updateMap(int map);
+        void clearEntityFile();
+        void clearBeforeSafe();
 
         void writeMenu();
         void writeMap();

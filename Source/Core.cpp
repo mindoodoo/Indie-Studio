@@ -97,6 +97,7 @@ void Core::startLoop()
     }
     if (_screen == 6 || _screen == 4) {
         std::cout << "Will save the game:" << _screen << std::endl;
+        _saveManager->clearBeforeSafe();
         _saveManager->saveMap(_map->getParsedMap());
         //save Items
         for (EntityID ent: EntityViewer<CollisionObjectType, Skillset, Pos, Sprite>(*_game->getEm().get())) {
@@ -140,6 +141,5 @@ void Core::startLoop()
 void Core::startGame()
 {
     _map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png", _saveManager->getLoading());
-    //_saveManager->saveMap(_map->getParsedMap()); testing
     _game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager);
 }

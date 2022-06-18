@@ -35,7 +35,7 @@ std::vector<std::string> loadFile(std::string path)
             content.push_back(tmp);
         }
     else
-        std::cout << "Can't open SaveMap" << std::endl;
+        std::cout << "Can't open File" << std::endl;
     file.close();
     return content;
 }
@@ -46,7 +46,6 @@ RL::SaveManager::SaveManager()
     //_mapPath = _directory + ".saveMAP.csv";
     _filepath = _directory +".saveEntitys";
     std::cout << std::endl<< std::endl<< std::endl<< std::endl<< std::endl<< std::endl;
-    checkEntitys(_filepath);
     std::cout << std::endl<< std::endl<< std::endl<< std::endl<< std::endl<< std::endl;
 }
 
@@ -81,7 +80,7 @@ void RL::SaveManager::checkEntitys(std::string filename)
     std::vector<std::string> file;
     std::vector<std::string> tmp;
     std::cout << "Load Entitys in file: " << filename << std::endl;
-    file = loadFile(_directory+filename);
+    file = loadFile(filename);
 
     for (int x = 0; x < file.size(); x++) {
         tmp = seperateLine(file[x], ';');
@@ -96,6 +95,7 @@ void RL::SaveManager::checkEntitys(std::string filename)
                 _itemssave.push_back(file[x]);
             if (tmp[y] == "EXPLOSION")
                 _explosionssave.push_back(file[x]);
+            std::cout << "TEST " << tmp[y] << std::endl <<std::endl;
         }
     }
 }
@@ -137,6 +137,8 @@ void RL::SaveManager::updateMap(int map)
         case -1:
             _mapPath = _directory + ".saveMAP.csv";
             _running = true;
+            checkEntitys(_filepath);
+            clearEntityFile();
             break;
     }
 }
@@ -171,9 +173,9 @@ Pos readPos(std::string line)
         }
     }
     tmp = seperateLine(tmp[0], ',');
-    result.x = stoi(tmp[0]);
-    result.y = stoi(tmp[1]);
-    result.z = stoi(tmp[2]);
+    result.x = stof(tmp[0]);
+    result.y = stof(tmp[1]);
+    result.z = stof(tmp[2]);
 
     return result;
 }
@@ -233,6 +235,7 @@ Skillset readSkillset(std::string line)
 //from player
 Skillset RL::SaveManager::getSkillsetPlayer(int index)
 {
+
     std::vector<std::string> tmp = seperateLine(_playerssave[index],';');
     for (int x = 0; x < tmp.size(); x++) {
         if (tmp[x] == "PLAYER") {
@@ -382,7 +385,7 @@ void RL::SaveManager::writeMenu()
         file << seperateLine(seperateLine(_explosionssave[x], ';')[1], '=')[1]+ ';';
 
     file.close();
-    writeEntitys();
+    //writeEntitys();
 }
 
 void RL::SaveManager::writeEntitys()
@@ -404,4 +407,22 @@ void RL::SaveManager::writeEntitys()
     for (int x = 0; x < _explosionssave.size(); x++)
         file << _explosionssave[x] << std::endl;
     file.close();
+}
+
+void RL::SaveManager::clearEntityFile()
+{
+    std::ofstream file;
+    file.open(_filepath, std::ofstream::out | std::ofstream::trunc);
+    file.close();
+}
+
+void RL::SaveManager::clearBeforeSafe()
+{
+    _playerssave.clear();
+    _aissave.clear();
+    _bombssave.clear();
+    _explosionssave.clear();
+    _itemssave.clear();
+    clearEntityFile();
+
 }
