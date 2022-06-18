@@ -11,7 +11,7 @@ Core::Core()
 {
     _window = std::make_shared<RL::Window>("INDIE_STUDIO");
     _inputManager = std::make_shared<RL::InputManager>();
-    _map = std::make_shared<RL::Map>("./RaylibTesting/Assets/Maps/TestMap/test.csv", "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png");
+    _map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png", _saveManager->getLoading());
     _soundManager = std::make_shared<RL::SoundManager>();
     _saveManager = std::make_shared<RL::SaveManager>();
 
