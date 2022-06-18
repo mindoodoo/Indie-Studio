@@ -26,30 +26,26 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     
     //Check if loading game or not
     if (!_saveManager->getLoading()) {
-        //loaded game
-        std::cout << "Test" << _saveManager->getPlayerPos(0).x << std::endl;
-        std::cout <<"MOIN test Player:" <<  _saveManager->getPlayers().size()  <<std::endl;
-        std::cout <<"MOIN test IA:" <<  _saveManager->getAIs().size()  <<std::endl;
-        std::cout <<"MOIN test BOMB:" <<  _saveManager->getBombs().size()  <<std::endl;
-        std::cout <<"MOIN test Explosion:" <<  _saveManager->getExplosions().size()  <<std::endl;
-        for (int x = 0; x < _saveManager->getPlayers().size(); x++) {
+
+        for (int x = 0; x < _saveManager->getPlayers().size(); x++)
             createPlayerLoadGame(_saveManager->getPlayerPos(x), _saveManager->getSkillsetPlayer(x), _saveManager->getScorePlayer(x), _saveManager->getBombcapPlayer(x));
-        }
-        std::cout << "Start AI LOOP" <<_saveManager->getAIs().size() <<  std::endl << std::endl;
+
         for (int x = 0; x < _saveManager->getAIs().size(); x++)
             createAILoadGame(_saveManager->getAIPos(x), _saveManager->getSkillsetAI(x),_saveManager->getScoreAI(x) ,_saveManager->getBombcapAI(x));
-        std::cout << "Start ITEM LOOP" <<_saveManager->getItems().size() <<std::endl << std::endl;
-        for (int x = 0; x < _saveManager->getItems().size(); x++) {
+
+        for (int x = 0; x < _saveManager->getItems().size(); x++)
             generateItemsLoadGame(_saveManager->getItemPos(x), _saveManager->getSkillsetItem(x));
-        }
+
         generateItems();
 
-        for (int x = 0; x < _saveManager->getBombs().size(); x++) {
+        //TODO change id system
+        for (int x = 0; x < _saveManager->getBombs().size(); x++)
             createBomb(_saveManager->getBombPos(x), {EntityID(x)},_saveManager->getSkillsetBomb(x), _saveManager->getBombTime(x));
-        }
+
 
         for (int x = 0; x < _saveManager->getExplosions().size(); x++)
             createExplosion(_saveManager->getExploPos(x), {EntityID(x)}, _saveManager->getExploTime(x));
+
         _gamePaused = false;
         _gameTimer.startTimer();
         _deltaTimer.startTimer();
@@ -72,6 +68,8 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
 Bomberman::~Bomberman()
 {
 }
+
+
 
 void Bomberman::generateItemsLoadGame(Pos pos, Skillset skill)
 {
@@ -165,8 +163,6 @@ void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCap
     std::string playtex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
     std::string playermod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
     std::string playeranim = playermod;
-
-    std::cout << "pos x = " << pos.x << " y = " << pos.y << std::endl;
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
     _em->Assign<Velocity>(id, {0.08,0.08});
@@ -192,7 +188,6 @@ void Bomberman::createAILoadGame(Pos pos, Skillset skill, int score, BombCapacit
     EntityID id = _em->CreateNewEntity();
     std::string aitex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
     std::string aimod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
-    std::cout << "AI START TO LOAD" << std::endl;
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
     _em->Assign<Velocity>(id, {0.04,0.04});

@@ -68,8 +68,6 @@ RL::SaveManager::SaveManager()
     _running = false;
     //_mapPath = _directory + ".saveMAP.csv";
     _filepath = _directory +".saveEntitys";
-    std::cout << std::endl<< std::endl<< std::endl<< std::endl<< std::endl<< std::endl;
-    std::cout << std::endl<< std::endl<< std::endl<< std::endl<< std::endl<< std::endl;
 }
 
 void RL::SaveManager::loadMenu()
@@ -81,7 +79,6 @@ void RL::SaveManager::loadMenu()
         for (int y = 0; y < tmp.size(); y++) {
             checkRunning(tmp, y);
         }
-        std::cout << _menu[x] << std::endl;
     }
 
 
@@ -102,7 +99,7 @@ void RL::SaveManager::checkEntitys(std::string filename)
 {
     std::vector<std::string> file;
     std::vector<std::string> tmp;
-    std::cout << "Load Entitys in file: " << filename << std::endl;
+    std::cout << "Load Entitys from file: " << filename << std::endl;
     file = loadFile(filename);
 
     for (int x = 0; x < file.size(); x++) {
@@ -118,7 +115,6 @@ void RL::SaveManager::checkEntitys(std::string filename)
                 _itemssave.push_back(file[x]);
             if (tmp[y] == "EXPLOSION")
                 _explosionssave.push_back(file[x]);
-            std::cout << "TEST " << tmp[y] << std::endl <<std::endl;
         }
     }
 }
@@ -218,7 +214,6 @@ Pos RL::SaveManager::getPlayerPos(int index)
 Pos RL::SaveManager::getAIPos(int index)
 {
     std::vector<std::string> tmp = seperateLine(_aissave[index],';');
-    std::cout <<"Test Pos:" << std::endl;
     for (int x = 0; x < tmp.size(); x++) {
        if (tmp[x] == "AI") {
            return readPos(tmp[2]);
@@ -298,7 +293,6 @@ BombCapacity RL::SaveManager::getBombcapPlayer(int index)
 
 BombCapacity RL::SaveManager::getBombcapAI(int index)
 {
-    std::cout << "TEst CAPA" << std::endl;
     std::vector<std::string> tmp = seperateLine(_aissave[index],';');
     for (int x = 0; x < tmp.size(); x++) {
         if (tmp[x] == "AI") {
@@ -324,7 +318,6 @@ Skillset RL::SaveManager::getSkillsetPlayer(int index)
 
 Skillset RL::SaveManager::getSkillsetAI(int index)
 {
-    std::cout << "Test SKill" << std::endl;
     std::vector<std::string> tmp = seperateLine(_aissave[index],';');
     for (int x = 0; x < tmp.size(); x++) {
         if (tmp[x] == "AI") {
@@ -373,7 +366,6 @@ Pos RL::SaveManager::getExploPos(int index)
 
 int RL::SaveManager::getScoreAI(int index)
 {
-    std::cout << "Test Score" << std::endl;
     std::vector<std::string> tmp = seperateLine(_aissave[index],';');
     for (int x = 0; x < tmp.size(); x++) {
         if (tmp[x] == "AI") {
@@ -463,7 +455,6 @@ void RL::SaveManager::saveMap(std::vector<std::vector<gfx_tile_t>> map)
 void RL::SaveManager::writeMap()
 {
     std::ofstream file(_mapPath);
-    std::cout << "write into " << _mapPath << std::endl;
     for (int x = 0; x < _parsedMap.size(); x++) {
         for (int y = 0; y < _parsedMap[x].size(); y++) {
             file << _parsedMap[x][y].tile;
