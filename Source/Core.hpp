@@ -41,6 +41,7 @@ class Core {
 
         void startLoop();
         void restartGame();
+        void saveGame();
 
         void startGame();
     private:
