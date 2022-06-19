@@ -30,7 +30,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconFour.png"));
 
     float windowPercentageShift = _window->getDimensions().x * 25 / 100;
-    std::vector<float> windowPercentageOffset = {_window->getDimensions().x * 0.42 / 100, _window->getDimensions().x * 2.1 / 100, _window->getDimensions().x * 1.7 / 100, _window->getDimensions().x * 1.7 / 100};//_window->getDimensions().x * 6 / 100;
+    std::vector<float> windowPercentageOffset = {float(_window->getDimensions().x * 0.42 / 100), float(_window->getDimensions().x * 2.1 / 100), float(_window->getDimensions().x * 1.7 / 100), float(_window->getDimensions().x * 1.7 / 100)};//_window->getDimensions().x * 6 / 100;
 
     for ( int i = 0; i < _allIcons.size(); i++ ){
         _allIcons[playerChoices[i].Character]->resize({60,60});
@@ -79,7 +79,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
         std::cout << "NEW GAME" << std::endl << std::endl;
         for (int i = 0 ; i < playerChoices.size(); i++) {
             std::cout << "choices: " << playerChoices[i].CPU << std::endl;
-            UIPos uiPos = {int((i * windowPercentageShift) + (windowPercentageOffset) + 65), 0};
+            UIPos uiPos = {int((i * windowPercentageShift) + (windowPercentageOffset[i]) + 65), 0};
             if (playerChoices[i].CPU == false) 
                 createPlayer(playerStartPositions[i], playerChoices[i].Character, uiPos);
             else {
