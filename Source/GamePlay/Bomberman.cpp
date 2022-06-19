@@ -248,7 +248,7 @@ void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCap
     RL::Drawable3D *Player = new RL::Drawable3D(playtex, playermod, playeranim, RL::MODEL, 0.25);
     Player->setPosition((RL::Vector3f){
             translateFigureCoordinates(pos.x, _map->getMapWidth()),
-            pos.y,
+            0.5f,
             translateFigureCoordinates(pos.y, _map->getMapDepth())
     });
     _em->Assign<Sprite>(id, Sprite{Player});
@@ -278,7 +278,7 @@ void Bomberman::createAILoadGame(Pos pos, Skillset skill, int score, BombCapacit
     RL::Drawable3D *AI = new RL::Drawable3D(aitex, aimod, aimod, RL::MODEL, 0.25);
     AI->setPosition((RL::Vector3f){
             translateFigureCoordinates(pos.x, _map->getMapWidth()),
-            pos.y,
+            0.5f,
             translateFigureCoordinates(pos.y, _map->getMapDepth())
     });
     _em->Assign<Sprite>(id, Sprite{AI});

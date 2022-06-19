@@ -58,14 +58,14 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset, float
     Bomb->id = id;
     _em->Assign<Sprite>(id, Sprite{Bomb});
     BombProperty blocking;
-    blocking.blockingForPlayer.push_back({bombOwner, false});
     for (EntityID ent : _player) {
-        if (ent == INVALID_ENTITY || ent == bombOwner)
+        if (ent == INVALID_ENTITY)
             continue;
         if (_colManager.collisionsWithModels(*Bomb, *_em->Get<Sprite>(ent)->model))
             blocking.blockingForPlayer.push_back({ent, false});
         else
             blocking.blockingForPlayer.push_back({ent, true});
+        std::cout << "Is blocking:" << blocking.blockingForPlayer.back().isBlocking << std::endl;
     }
     _em->Assign<BombProperty>(id, blocking);
     _window->queueDrawable(Bomb);
