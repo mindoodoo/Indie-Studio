@@ -16,7 +16,7 @@ class ISystem {
     public:
         ~ISystem() = default;
 
-        virtual void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying) = 0;
+        virtual void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying, std::vector<std::size_t> &deadPlayers) = 0;
     
     protected:
         std::shared_ptr<EntityManager> _em;

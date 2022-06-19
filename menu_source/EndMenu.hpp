@@ -25,8 +25,8 @@ namespace Win {
             EndMenu(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager);
             ~EndMenu();
 
-            int openEndMenu();
-            void drawEndMenu();
+            int openEndMenu(std::vector<std::size_t> deadPlayers);
+            void drawEndMenu(std::vector<std::size_t> deadPlayers);
         private:
             std::shared_ptr<RL::Window> _window;
             std::shared_ptr<RL::InputManager> _inputManager;
@@ -38,8 +38,10 @@ namespace Win {
             int _win_y;
             std::vector<std::string> _text;
             RL::Drawable2D *_bg = nullptr;
+            RL::Drawable2D *_bgTxt = nullptr;
             std::vector<RL::Button> _btn;
             int _win;
+            int _open = 0;
     };
 }
 #endif /* !ENDMENU_HPP_ */

@@ -124,6 +124,7 @@ void RL::SoundManager::updateMusicStream()
     UpdateMusicStream(this->_songs[_currentSongPlaying]._song);
     this->_songTimePlayed = GetMusicTimePlayed(this->_songs[_currentSongPlaying]._song) /
     GetMusicTimeLength(this->_songs[_currentSongPlaying]._song) * 400;
+    SetMusicVolume(this->_songs[_currentSongPlaying]._song, this->_musicVolume);
     if (this->_songTimePlayed > 399) {
         StopMusicStream(this->_songs[_currentSongPlaying]._song);
         this->_currentSongPlaying = -1;
@@ -259,4 +260,15 @@ float RL::SoundManager::getMusicVolume()
 float RL::SoundManager::getSoundEffectVolume()
 {
     return this->_soundEffectVolume;
+}
+
+void RL::SoundManager::muteGame()
+{
+    if (_soundEffectVolume == 0 || _musicVolume == 0) {
+        _soundEffectVolume = 0.5f;
+        _musicVolume = 0.5f;
+    } else {
+        _soundEffectVolume = 0;
+        _musicVolume = 0;
+    }
 }

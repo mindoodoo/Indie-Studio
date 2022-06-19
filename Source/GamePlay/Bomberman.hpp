@@ -71,6 +71,8 @@ class Bomberman {
         void pauseBombCounters();
         void resumeBombCounters();
         int getTimeasInt();
+        std::vector<std::size_t> getDeadPlayers();
+        void addRemainingPlayer();
 
     protected:
     private:
@@ -90,6 +92,7 @@ class Bomberman {
         std::vector<RL::Drawable2D *> _allIcons;
         RL::Drawable2D _background;
         RL::Drawable2D _layout;
+        std::vector<std::size_t> _deadPlayers;
 
         Timer _gameTimer;
         int _maxGameTime;
