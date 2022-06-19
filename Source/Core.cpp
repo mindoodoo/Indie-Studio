@@ -94,8 +94,6 @@ void Core::saveGame() {
 
 void Core::startLoop() {
     while (_window->isWindowOpen()) {
-        // _soundManager->updateMusicStream();
-        // _soundManager->playSpecificMusic("BackgroundMusicOne");
         switch (_screen) {
             case START_SCREEN:
                 //_charSelec->clearCharSelected();
