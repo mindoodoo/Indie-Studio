@@ -225,14 +225,18 @@ void RL::SoundManager::increaseSoundEffectVolume()
 {
     if (this->_soundEffectVolume >= 1.0f)
         return;
-    this->_soundEffectVolume += 0.1f;  
+    this->_soundEffectVolume += 0.1f;
+    std::cout << "Sound Volume: " << this->_soundEffectVolume << std::endl;
+
 }
 
 void RL::SoundManager::decreaseSoundEffectVolume()
 {
-    if (this->_soundEffectVolume <= 1.0f)
+    if (this->_soundEffectVolume <= 0)
         return;
-    this->_soundEffectVolume -= 0.1f;    
+    this->_soundEffectVolume -= 0.1f;
+    std::cout << "Sound Volume: " << this->_soundEffectVolume << std::endl;
+
 }
 
 //getters

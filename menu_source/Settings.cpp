@@ -94,6 +94,7 @@ int Win::Settings::openSettings(int prev)
                 }
             }
         }
+        //_soundManager->updateMusicStream();
     }
     if (_btn[0].getBtnAction() == true) {
         _btn[0].setBtnAction(false);
@@ -103,18 +104,23 @@ int Win::Settings::openSettings(int prev)
     if (_btn[1].getBtnAction() == true) {
         _btn[1].setBtnAction(false);
         _soundManager->decreaseSoundEffectVolume();
+        _soundManager->playSpecificSoundFx("Item1");
     }
     if (_btn[2].getBtnAction() == true) {
         _btn[2].setBtnAction(false);
         _soundManager->increaseSoundEffectVolume();
+        _soundManager->playSpecificSoundFx("Item1");
     }
     if (_btn[3].getBtnAction() == true) {
         _btn[3].setBtnAction(false);
         _soundManager->decreaseMusicVolume();
+        //_soundManager->playSpecificMusic("Explosion1");
     }
     if (_btn[4].getBtnAction() == true) {
         _btn[4].setBtnAction(false);
         _soundManager->increaseMusicVolume();
+        //_soundManager->playSpecificMusic("Explosion1");
+
     }
     if (_btn[5].getBtnAction() == true) {
         _btn[5].setBtnAction(false);
