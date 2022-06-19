@@ -74,7 +74,6 @@ void Win::CharacterSelect::clearCharSelected()
 {
     if (_playerChoice.size() != 0) {
         _playerChoice.clear();
-        std::cout << "cleared" << std::endl;
     }
 }
 

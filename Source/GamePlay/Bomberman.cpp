@@ -62,7 +62,6 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     //Check if loading game or not
     if (!_saveManager->getLoading()) {
         _maxGameTime = _saveManager->getTime();
-        std::cout << "TRY TO LOAD GAME" << std::endl;
         int count = 0;
         UIPos uiPos;
         for (int x = 0; x < _saveManager->getPlayers().size(); x++) {
@@ -96,10 +95,8 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
         _deltaTimer.startTimer();
 
     } else {
-        std::cout << "NEW GAME" << std::endl << std::endl;
         _maxGameTime = 180;
         for (int i = 0 ; i < playerChoices.size(); i++) {
-            std::cout << "choices: " << playerChoices[i].CPU << std::endl;
             UIPos uiPos = {int((i * windowPercentageShift) + (windowPercentageOffsetPowerUp[i]) + 65), 5};
             if (playerChoices[i].CPU == false) 
                 createPlayer(playerStartPositions[i], playerChoices[i].Character, uiPos);
@@ -115,7 +112,6 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
         _gameTimer.startTimer();
         _deltaTimer.startTimer();
     }
-    std::cout << "Start game" << std::endl;
     _gamePaused = false;
     this->_pauseGame = false;
 }
@@ -254,11 +250,8 @@ void Bomberman::createUIPowerIconsForPlayer(Skillset skill, UIPos uiPos, bool co
 
 void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCapacity capa, int character, UIPos uiPos)
 {
-    std::cout <<"start create loadplayer" <<std::endl;
     std::vector<std::string> paths = findCharPaths(character);
-    for (int x = 0; x < paths.size(); x++) {
-        std::cout << paths[x] << std::endl;
-    }
+
     EntityID id = _em->CreateNewEntity();
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
@@ -604,7 +597,6 @@ void Bomberman::stopDrawScene()
 
 std::vector<std::size_t> Bomberman::getDeadPlayers()
 {
-    std::cout << _deadPlayers.size() << std::endl;
     return _deadPlayers;
 }
 
@@ -612,7 +604,6 @@ void Bomberman::addRemainingPlayer()
 {
     for(int i = 0; i < _player.size(); i++) {
         if (_player[i] != INVALID_ENTITY) {
-            std::cout << std::to_string(i) + " " + std::to_string(_player[i]) + " " + std::to_string(GetEntityIndex(_player[i])) << std::endl;
             _deadPlayers.push_back(GetEntityIndex(_player[i]));
         }
     }

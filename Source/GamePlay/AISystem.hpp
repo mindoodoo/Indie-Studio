@@ -293,7 +293,6 @@ class AISystem : public ISystem {
                     for (int x = startX; x <= endX; x++) {
                         for (Pos curPos : bombPos) {
                             if (!_detectedBomb && round(curPos.x) == x && round(curPos.y) == y) {
-                                // std::cout << "found BOMB" << std::endl;
                                 _target = {(float)x, (float)y, 1};
                                 _bombPos.push_back(_target);
                                 _detectedBomb = true;

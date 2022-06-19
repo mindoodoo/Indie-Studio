@@ -69,6 +69,7 @@ RL::SaveManager::SaveManager()
      _mapPath = _directory + ".saveMAP.csv";
     _filepath = _directory +".saveEntitys";
     _mapselect = -1;
+    _coinmode = false;
 }
 
 void RL::SaveManager::loadMenu()
@@ -100,7 +101,6 @@ void RL::SaveManager::checkEntitys(std::string filename)
 {
     std::vector<std::string> file;
     std::vector<std::string> tmp;
-    std::cout << "Load Entitys from file: " << filename << std::endl;
     file = loadFile(filename);
 
     for (int x = 0; x < file.size(); x++) {
@@ -134,7 +134,6 @@ std::vector <std::string> RL::SaveManager::getMenu()
 
 std::string RL::SaveManager::getMappath()
 {
-    std::cout << "You get the following mapPath: " << _mapPath << std::endl;
     return _mapPath;
 }
 
@@ -154,7 +153,7 @@ std::string RL::SaveManager::getMapName(int mapid)
         case 4:
             return "Stage 5";
         case 5:
-            return "Stage 6";
+            return "COIN FIGHT";
         default:
             return "ERROR";
     }
@@ -211,6 +210,7 @@ void RL::SaveManager::updateMap(int map)
             _floorPath = "./Source/Assets/Maps/Stage6/Floor.png";
             _cratePath = "./Source/Assets/Maps/Stage6/crate.png";
             _mapselect = map;
+            _coinmode = true;
             break;
         case -1:
             _mapPath = _directory + ".saveMAP.csv";
@@ -223,6 +223,11 @@ void RL::SaveManager::updateMap(int map)
             //clearEntityFile();
             break;
     }
+}
+
+bool RL::SaveManager::ifCoinMode()
+{
+    return _coinmode;
 }
 
 BombCapacity readBomb(std::string line)

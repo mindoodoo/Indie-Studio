@@ -58,7 +58,6 @@ bool Bomberman::createExplosion(Pos pos, EntityID bombOwner, float time)
         Sprite *itemAsset = _em->Get<Sprite>(ent);
         if (*objectType == ITEM && itemPos->x == pos.x && itemPos->y == pos.y) {
             itemAsset->model->setHidden(false);
-            std::cout << "set item visual" << std::endl;
             _map->addItem({(int)itemPos->x, (int)itemPos->y}, *itemType);
         }
     }
