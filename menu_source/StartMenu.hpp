@@ -27,6 +27,7 @@ namespace Win {
 
             int openStartMenu();
             void drawMenu();
+            int starIntro();
         private:
             std::shared_ptr<RL::Window> _window;
             std::shared_ptr<RL::InputManager> _inputManager;
@@ -39,6 +40,7 @@ namespace Win {
             std::vector<std::string> _text;
             RL::Drawable2D *_bg = nullptr;
             std::vector<RL::Button> _btn;
+            RL::Drawable2D *_intro;
     };
 }
 

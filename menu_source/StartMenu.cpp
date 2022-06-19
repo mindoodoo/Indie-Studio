@@ -11,10 +11,12 @@ Win::StartMenu::StartMenu(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL
 {
     _mousePt = {0,0};
     _bg = new RL::Drawable2D("./menu_source/assets/bg_bomberman.png");
+    _intro = new RL::Drawable2D("./menu_source/assets/introScene.png");
     _name = "START";
     _win_x = _window->getDimensions().x;
     _win_y = _window->getDimensions().y;
     _bg->resize({_win_x, _win_y});
+    _intro->resize({_win_x, _win_y});
     _text.push_back("BOMBERMAN");
     _text.push_back("1 PLAYER");
     _text.push_back("2 PLAYER");
@@ -44,6 +46,8 @@ Win::StartMenu::~StartMenu()
 {
     if (_bg)
         delete _bg;
+    if (_intro)
+        delete _intro;
 }
 
 void Win::StartMenu::drawMenu()
@@ -92,5 +96,14 @@ int Win::StartMenu::openStartMenu()
         _btn[4].setBtnAction(false);
         return 4;
     }
+    return 0;
+}
+
+int Win::StartMenu::starIntro()
+{
+    BeginDrawing();
+    _window->clearWindow(WHITE);
+    _intro->draw();
+    EndDrawing();
     return 0;
 }
