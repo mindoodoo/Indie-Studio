@@ -80,25 +80,21 @@ int Win::MapSelect::openMapMenu(int prev)
             }
         }
     }
-    if (_btn[0].getBtnAction() == true) {
-        _btn[0].setBtnAction(false);
-        _saveManager->updateMap(0);
-        return 6;
-         // choose map
-    }
-    if (_btn[1].getBtnAction() == true) {
-        _btn[1].setBtnAction(false);
-        _saveManager->updateMap(1);
-        return 6;
-        // choose map
-    }
-    if (_btn[_btn.size() - 2].getBtnAction() == true) {
-        _btn[_btn.size() - 2].setBtnAction(false);
-        return prev;
-    }
-    if (_btn[_btn.size() - 1].getBtnAction() == true) {
-        _btn[_btn.size() - 1].setBtnAction(false);
-        return 4;
+    for (int x = 0; x < _btn.size(); x++) {
+        if (_btn[x].getBtnAction() == true) {
+            _btn[x].setBtnAction(false);
+            _saveManager->updateMap(x);
+            return 6;
+            // choose map
+        }
+        if (_btn[_btn.size() - 2].getBtnAction() == true) {
+            _btn[_btn.size() - 2].setBtnAction(false);
+            return prev;
+        }
+        if (_btn[_btn.size() - 1].getBtnAction() == true) {
+            _btn[_btn.size() - 1].setBtnAction(false);
+            return 4;
+        }
     }
     return 5;
 }

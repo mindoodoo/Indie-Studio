@@ -141,8 +141,8 @@ std::string RL::SaveManager::getMappath()
 std::string RL::SaveManager::getMapName(int mapid)
 {
     switch (mapid) {
-        case 5:
-            return "SaveGame";
+        case 10:
+            return "Load Game";
         case 0:
             return  "Stage 1";
         case 1:
@@ -153,6 +153,8 @@ std::string RL::SaveManager::getMapName(int mapid)
             return "Stage 4";
         case 4:
             return "Stage 5";
+        case 5:
+            return "Stage 6";
         default:
             return "ERROR";
     }
@@ -169,11 +171,27 @@ void RL::SaveManager::updateMap(int map)
 {
     switch (map) {
         case 0:
-            _mapPath = "./Source/Assets/Maps/Stage2/test.csv";
+            _mapPath = "./Source/Assets/Maps/Stage1/test.csv";
             _mapselect = map;
             break;
         case 1:
+            _mapPath = "./Source/Assets/Maps/Stage2/test.csv";
+            _mapselect = map;
+            break;
+        case 2:
+            _mapPath = "./Source/Assets/Maps/Stage2/test.csv";
+            _mapselect = map;
+            break;
+        case 3:
             _mapPath = "./Source/Assets/Maps/Stage3/test.csv";
+            _mapselect = map;
+            break;
+        case 4:
+            _mapPath = "./Source/Assets/Maps/Stage4/test.csv";
+            _mapselect = map;
+            break;
+        case 5:
+            _mapPath = "./Source/Assets/Maps/Stage5/test.csv";
             _mapselect = map;
             break;
         case -1:

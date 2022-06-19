@@ -141,7 +141,6 @@ void Core::startLoop()
                 _screen = this->_startMenu->starIntro();
                 break;
             case LOAD:
-                //TODO INSERT LOAD here!
                 _saveManager->updateMap(-1);
                 _screen = 6;
                 break;
