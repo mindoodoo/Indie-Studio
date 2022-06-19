@@ -137,7 +137,7 @@ void Bomberman::checkBombalive() {
                 smoothBombResize(_em->Get<Sprite>(ent)->model);
             if (_em->Get<Timer>(ent)->returnTime() >= 2) {
                 //I DONT KNOW IF WE WANT TO LEAVE THIS LIKE THIS
-                _soundManager->playSpecificSoundFx("ExplosionTest");
+                _soundManager->playSpecificSoundFx("detonationBomb");
                 if (checkIfVectorContain(_player, _em->Get<BombOwner>(ent)->id))
                     _em->Get<BombCapacity>(_em->Get<BombOwner>(ent)->id)->curCapacity += 1;
                 //create explosion

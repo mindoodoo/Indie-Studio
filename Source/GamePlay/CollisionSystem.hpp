@@ -54,7 +54,7 @@ class CollisionSystem : public ISystem {
                     _em->DestroyEntity(id);
                     _window->removeDrawable(entModel->model);
                     if (checkIfVectorContains(playerIds, id)) {
-                        _soundManager->playSpecificSoundFx("hurt");
+                        _soundManager->playSpecificSoundFx("hitSound");
                         std::replace(playerIds.begin(), playerIds.end(), id, INVALID_ENTITY);
                     }
                 }
@@ -101,6 +101,7 @@ class CollisionSystem : public ISystem {
                     return INVALID_ENTITY;
                 Skillset* playerSkills = _em->Get<Skillset>(highEnt);
                 UIPos* playerBasePos = _em->Get<UIPos>(highEnt);
+                UiContinue* playerContinue = _em->Get<UiContinue>(highEnt);
                 Skillset* skillIncrease = _em->Get<Skillset>(itemEnt);
                 Pos* itemPos = _em->Get<Pos>(itemEnt);
                 *playerSkills += *skillIncrease;
@@ -108,13 +109,13 @@ class CollisionSystem : public ISystem {
                     BombCapacity* playerBombCapacity = _em->Get<BombCapacity>(highEnt);
                     playerBombCapacity->curCapacity += skillIncrease->bombUp;
                     playerBombCapacity->totalAmount += skillIncrease->bombUp;
-                    _uiManager.createBombUp(*playerBasePos, playerSkills->bombUp);
+                    _uiManager.createBombUp(*playerBasePos, playerSkills->bombUp, playerContinue->continueToRight);
                 }
                 if (skillIncrease->fireUp) {
-                    _uiManager.createFireUp(*playerBasePos, playerSkills->fireUp);
+                    _uiManager.createFireUp(*playerBasePos, playerSkills->fireUp, playerContinue->continueToRight);
                 }
                 if (skillIncrease->speedUp) {
-                    _uiManager.createSpeedUp(*playerBasePos, playerSkills->speedUp);
+                    _uiManager.createSpeedUp(*playerBasePos, playerSkills->speedUp, playerContinue->continueToRight);
                 }
                 if (skillIncrease->wallPass) {
                     _uiManager.createWallPass(*playerBasePos);

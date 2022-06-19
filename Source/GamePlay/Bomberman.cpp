@@ -21,7 +21,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _systems.push_back(std::make_shared<AISystem>(_em, _map));
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
     
-    _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/3d_models/Skull/Skull.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));
+    _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Bomb/bombModified.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Explosion/textures/fire.png", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", RL::MODEL, 3));
 
     _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconOne.png"));
@@ -30,18 +30,28 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconFour.png"));
 
     float windowPercentageShift = _window->getDimensions().x * 25 / 100;
-    std::vector<float> windowPercentageOffset = {float(_window->getDimensions().x * 0.42 / 100), float(_window->getDimensions().x * 2.1 / 100), float(_window->getDimensions().x * 1.7 / 100), float(_window->getDimensions().x * 1.7 / 100)};//_window->getDimensions().x * 6 / 100;
+    std::vector<float> windowPercentageOffsetIcon = {
+        float(_window->getDimensions().x * 18 / 100),
+        float(_window->getDimensions().x * 18 / 100),
+        float(_window->getDimensions().x * 2 / 100),
+        float(_window->getDimensions().x * 2 / 100)};
+    std::vector<float> windowPercentageOffsetPowerUp = {
+        float(_window->getDimensions().x * 10.2 / 100),
+        float(_window->getDimensions().x * 10.2 / 100),
+        float(_window->getDimensions().x * 2.3 / 100),
+        float(_window->getDimensions().x * 2.3 / 100)};
 
     for ( int i = 0; i < _allIcons.size(); i++ ){
         _allIcons[playerChoices[i].Character]->resize({60,60});
-        _allIcons[playerChoices[i].Character]->setPosition((i * windowPercentageShift) + (windowPercentageOffset[i]), 5, 0);
+        _allIcons[playerChoices[i].Character]->setPosition((i * windowPercentageShift) + (windowPercentageOffsetIcon[i]), 15, 0);
         _window->queueDrawable(_allIcons[i]);
     }
 
     
     //this is respndible for the music being played then shuffle enabled, comment out to cancel
     //_soundManager->playRandomMusic();
-    //_soundManager->enableDisableShuffle();
+    _soundManager->playSpecificMusic("BackgroundMusicOne");
+    _soundManager->enableDisableShuffle();
 
     std::vector<Pos>playerStartPositions;
     playerStartPositions.push_back({13, 11, 1});
@@ -81,7 +91,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
         std::cout << "NEW GAME" << std::endl << std::endl;
         for (int i = 0 ; i < playerChoices.size(); i++) {
             std::cout << "choices: " << playerChoices[i].CPU << std::endl;
-            UIPos uiPos = {int((i * windowPercentageShift) + (windowPercentageOffset[i]) + 65), 0};
+            UIPos uiPos = {int((i * windowPercentageShift) + (windowPercentageOffsetPowerUp[i]) + 65), 5};
             if (playerChoices[i].CPU == false) 
                 createPlayer(playerStartPositions[i], playerChoices[i].Character, uiPos);
             else {
@@ -198,6 +208,7 @@ void Bomberman::createPlayer(Pos pos, int character, UIPos uiPos) // extra argum
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
     _em->Assign<UIPos>(id, uiPos);
+    _em->Assign<UiContinue>(id, {(character <= 1 ? false : true)});
     _em->Assign<Velocity>(id, {0.08,0.08});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, Score{0});
@@ -225,6 +236,7 @@ void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCap
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
     _em->Assign<UIPos>(id, {0, 0}); // TODO: replace default values by saved stuff
+    _em->Assign<UiContinue>(id, {false}); //((*if is first or second player/ai) ? false : true));
     _em->Assign<Velocity>(id, {0.08,0.08});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, {std::size_t (score)});
@@ -251,6 +263,7 @@ void Bomberman::createAILoadGame(Pos pos, Skillset skill, int score, BombCapacit
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
     _em->Assign<UIPos>(id, {0, 0}); // TODO: replace default values by saved stuff
+    _em->Assign<UiContinue>(id, {true}); //((*if is first or second player/ai) ? false : true));
     _em->Assign<Velocity>(id, {0.04,0.04});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, {std::size_t(score)});
@@ -284,6 +297,7 @@ void Bomberman::createAI(Pos pos, int character, UIPos uiPos)
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
     _em->Assign<UIPos>(id, uiPos);
+    _em->Assign<UiContinue>(id, {(character <= 1 ? false : true)});
     _em->Assign<Velocity>(id, {0.08,0.08});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, Score{0});
@@ -312,7 +326,7 @@ void Bomberman::createSpeedUpItem(Pos pos, bool hidden)
     _em->Assign<Skillset>(id, Skillset{0, 1, 0, false});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
     _em->Assign<ItemType>(id, ItemType{SPEED_UP});
-    std::string speedUpPath = "./Source/PowerUps/Speed.png";
+    std::string speedUpPath = "./Source/PowerUps/SpeedFlipped.png";
     RL::Drawable3D *speedUp = new RL::Drawable3D(speedUpPath, "", "", RL::POWER);
     speedUp->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
@@ -331,7 +345,7 @@ void Bomberman::createBombUpItem(Pos pos, bool hidden)
     _em->Assign<Skillset>(id, Skillset{1, 0, 0, false});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
     _em->Assign<ItemType>(id, ItemType{BOMB_UP});
-    std::string bombUpPath = "./Source/PowerUps/BombUp.png";
+    std::string bombUpPath = "./Source/PowerUps/BombUpFlipped.png";
     RL::Drawable3D *bombUp = new RL::Drawable3D(bombUpPath, "", "", RL::POWER);
     bombUp->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
@@ -350,7 +364,7 @@ void Bomberman::createFireUpItem(Pos pos, bool hidden)
     _em->Assign<Skillset>(id, Skillset{0, 0, 1, false});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
     _em->Assign<ItemType>(id, ItemType{FIRE_UP});
-    std::string fireUpPath = "./Source/PowerUps/PowerUp.png";
+    std::string fireUpPath = "./Source/PowerUps/PowerUpFlipped.png";
     RL::Drawable3D *fireUp = new RL::Drawable3D(fireUpPath, "", "", RL::POWER);
     fireUp->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
@@ -369,7 +383,7 @@ void Bomberman::createWallPassItem(Pos pos, bool hidden)
     _em->Assign<Skillset>(id, Skillset{0, 0, 0, true});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
     _em->Assign<ItemType>(id, ItemType{WALLPASS});
-    std::string wallPassPath = "./Source/PowerUps/WallsWalkable.png";
+    std::string wallPassPath = "./Source/PowerUps/WallsWalkableFlipped.png";
     RL::Drawable3D *wallPass = new RL::Drawable3D(wallPassPath, "", "", RL::POWER);
     wallPass->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
