@@ -116,7 +116,6 @@ void Core::startLoop() {
                 break;
             case MAP_SCREEN:
                 _screen = _mapSelect->openMapMenu(_prevM);
-                std::cout << "TEEEEEEEST: " << _screen << std::endl;
                 _prevS = MAP_SCREEN;
                 break;
             case 6:
@@ -124,10 +123,7 @@ void Core::startLoop() {
                     std::cout << "HAVE TO START A NEW GAME" << std::endl;
                     this->startGame();
                     break;
-                } else {
-                    std::cout << "STILL HAVE A RUNNING GAME" << std::endl;
                 }
-
                 if (!(_screen = _game->runFrame())) {
                     //  std::cout <<"test2" << std::endl;
                     _screen = 4;
@@ -138,7 +134,6 @@ void Core::startLoop() {
             case PAUSE_SCREEN:
                 _screen = _pauseMenu->openPauseMenu();
                 if (_screen == GAME_SCREEN) {
-                    this->startGame();
                     this->_game->startGameTimers();
                 }
                 if (_screen == START_SCREEN)
@@ -196,6 +191,7 @@ void Core::killGame()
     if (_map)
         _map.reset();
     _window->clearDrawables();
+    _saveManager->clearBeforeSafe();
     _game = nullptr;
 }
 
@@ -203,6 +199,7 @@ void Core::startGame()
 {
     std::cout << "START" << std::endl;
     sortPlayerChoices(_charSelec);
+    _window->clearDrawables();
     _map = std::make_shared<RL::Map>(_saveManager->getMappath(), _saveManager->getWallTexture(), _saveManager->getFloorTexture(), _saveManager->getCrateTexture(), _saveManager->getLoading());
     _game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager, _charSelec->_playerChoice);
     std::cout << "Stsart DONE" << std::endl;

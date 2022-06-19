@@ -51,10 +51,12 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
 
     //Check if loading game or not
     if (!_saveManager->getLoading()) {
-
+        std::cout << "TRY TO LOAD GAME" << std::endl;
         for (int x = 0; x < _saveManager->getPlayers().size(); x++)
             createPlayerLoadGame(_saveManager->getPlayerPos(x), _saveManager->getSkillsetPlayer(x), _saveManager->getScorePlayer(x), _saveManager->getBombcapPlayer(x));
-
+        if (_saveManager->getPlayers().size() >= 1) {
+            _player.push_back(INVALID_ENTITY);
+        }
         for (int x = 0; x < _saveManager->getAIs().size(); x++)
             createAILoadGame(_saveManager->getAIPos(x), _saveManager->getSkillsetAI(x),_saveManager->getScoreAI(x) ,_saveManager->getBombcapAI(x));
 

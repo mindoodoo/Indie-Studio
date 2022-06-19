@@ -214,7 +214,6 @@ void RL::SaveManager::updateMap(int map)
             break;
         case -1:
             _mapPath = _directory + ".saveMAP.csv";
-            //TODO save path for map
             _wallPath = "./Source/Assets/Maps/Stage1/TEST_WALL.png";
             _floorPath = "./Source/Assets/Maps/Stage1/Floor.png";
             _cratePath = "./Source/Assets/Maps/Stage1/crate.png";
@@ -613,6 +612,6 @@ void RL::SaveManager::clearBeforeSafe()
     _bombssave.clear();
     _explosionssave.clear();
     _itemssave.clear();
-    clearEntityFile();
+    //clearEntityFile();
 
 }
