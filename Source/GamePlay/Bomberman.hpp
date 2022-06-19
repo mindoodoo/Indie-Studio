@@ -9,6 +9,7 @@
 #define BOMBERMAN_HPP_
 
 #include <vector>
+#include <string>
 #include "ISystem.hpp"
 #include "MovementSystem.hpp"
 #include "CollisionSystem.hpp"
@@ -53,6 +54,7 @@ class Bomberman {
         void getSecondPlayerInput();
         void startGameTimers();
         void stopGameTimers();
+        std::string getGameTime();
         int runFrame();
         bool checkIfVectorContain(std::vector<EntityID> vector, EntityID id);
         void startDrawScene();
@@ -86,6 +88,7 @@ class Bomberman {
         RL::Drawable2D _layout;
 
         Timer _gameTimer;
+        int _maxGameTime;
         Timer _deltaTimer;
         bool _gamePaused;
         bool _pauseGame;

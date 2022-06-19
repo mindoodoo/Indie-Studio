@@ -8,11 +8,12 @@
 #include "Bomberman.hpp"
 
 Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager, std::vector<PlayerChoice> playerChoices)
-    : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager), _background("./RaylibTesting/Assets/Background/background1.png"), _layout("./Source/PowerUps/Layout.png"), _saveManager(SaveManager)
+    : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager), _background("./RaylibTesting/Assets/Background/background1.png"), _layout("./Source/PowerUps/Layout_Small.png"), _saveManager(SaveManager)
 {
     _background.resize(_window->getDimensions());
-    _layout.resize({_window->getDimensions().x, 200});
+    _layout.resize({_window->getDimensions().x, 150});
     _em = std::make_shared<EntityManager>();
+    _maxGameTime = 180;
 
     // Take care with system order when adding to vector
     _systems.push_back(std::make_shared<CollisionSystem>(_em, _window, _soundManager, _map));
@@ -28,12 +29,12 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconThree.png"));
     _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconFour.png"));
 
-    float windowPercentageShift = _window->getDimensions().x * 23 / 100;
-    float windowPercentageOffset = _window->getDimensions().x * 6 / 100;
+    float windowPercentageShift = _window->getDimensions().x * 25 / 100;
+    std::vector<float> windowPercentageOffset = {_window->getDimensions().x * 0.42 / 100, _window->getDimensions().x * 2.1 / 100, _window->getDimensions().x * 1.7 / 100, _window->getDimensions().x * 1.7 / 100};//_window->getDimensions().x * 6 / 100;
 
     for ( int i = 0; i < _allIcons.size(); i++ ){
         _allIcons[playerChoices[i].Character]->resize({60,60});
-        _allIcons[playerChoices[i].Character]->setPosition((i * windowPercentageShift) + (windowPercentageOffset), 0, 0);
+        _allIcons[playerChoices[i].Character]->setPosition((i * windowPercentageShift) + (windowPercentageOffset[i]), 5, 0);
         _window->queueDrawable(_allIcons[i]);
     }
 
@@ -525,11 +526,25 @@ int Bomberman::runFrame()
     return 6;
 }
 
+std::string Bomberman::getGameTime()
+{
+    int leftTime = _maxGameTime - _gameTimer.returnTime();
+
+    int minutes = leftTime / 60;
+    int seconds = leftTime % 60;
+    std::string timeString = std::to_string(minutes) + " : ";
+    if (seconds < 10)
+        timeString += "0" + std::to_string(seconds);
+    else
+        timeString += std::to_string(seconds);
+    return timeString;
+}
+
 void Bomberman::startDrawScene()
 {
     _window->displayDrawable2D(_background);
     _window->displayDrawable2D(_layout);
-    _window->displayDrawables(*_map.get());
+    _window->displayDrawables(*_map.get(), getGameTime(), _window->getDimensions().x / 2 - 45, 110);
     _window->clearWindow(BLACK);
 }
 
@@ -539,6 +554,8 @@ void Bomberman::stopDrawScene()
 
 bool Bomberman::isGameEnd()
 {
+    if (_maxGameTime - _gameTimer.returnTime() < 0)
+        return true;
     int playerCount = 0;
     int aiCount = 0;
     

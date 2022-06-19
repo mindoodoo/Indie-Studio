@@ -55,7 +55,7 @@ namespace RL {
         void clearDrawables();
         
         // Display all 2D and 3D Drawables in queue
-        void displayDrawables(Map map);
+        void displayDrawables(Map map, std::string text, int textX, int textY);
 
         // Draw some text on the window
         void draw_text(std::string text, Color color, int x, int y, Font font, float size); // temporary, should create text class with font and size
