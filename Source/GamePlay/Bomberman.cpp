@@ -13,7 +13,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _background.resize(_window->getDimensions());
     _layout.resize({_window->getDimensions().x, 150});
     _em = std::make_shared<EntityManager>();
-    _maxGameTime = 180;
+
 
     // Take care with system order when adding to vector
     _systems.push_back(std::make_shared<CollisionSystem>(_em, _window, _soundManager, _map));
@@ -61,14 +61,25 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
 
     //Check if loading game or not
     if (!_saveManager->getLoading()) {
+        _maxGameTime = _saveManager->getTime();
         std::cout << "TRY TO LOAD GAME" << std::endl;
-        for (int x = 0; x < _saveManager->getPlayers().size(); x++)
-            createPlayerLoadGame(_saveManager->getPlayerPos(x), _saveManager->getSkillsetPlayer(x), _saveManager->getScorePlayer(x), _saveManager->getBombcapPlayer(x));
+        int count = 0;
+        UIPos uiPos;
+        for (int x = 0; x < _saveManager->getPlayers().size(); x++) {
+            uiPos = {int((x * windowPercentageShift) + (windowPercentageOffsetPowerUp[x]) + 65), 5};
+            createPlayerLoadGame(_saveManager->getPlayerPos(x), _saveManager->getSkillsetPlayer(x),
+                                 _saveManager->getScorePlayer(x), _saveManager->getBombcapPlayer(x), playerChoices[x].Character, uiPos);
+            count++;
+        }
         if (_saveManager->getPlayers().size() >= 1) {
             _player.push_back(INVALID_ENTITY);
         }
-        for (int x = 0; x < _saveManager->getAIs().size(); x++)
-            createAILoadGame(_saveManager->getAIPos(x), _saveManager->getSkillsetAI(x),_saveManager->getScoreAI(x) ,_saveManager->getBombcapAI(x));
+        for (int x = 0; x < _saveManager->getAIs().size(); x++) {
+            uiPos = {int((count * windowPercentageShift) + (windowPercentageOffsetPowerUp[count]) + 65), 5};
+            createAILoadGame(_saveManager->getAIPos(x), _saveManager->getSkillsetAI(x), _saveManager->getScoreAI(x),
+                             _saveManager->getBombcapAI(x), playerChoices[count].Character, uiPos);
+            count++;
+        }
 
         for (int x = 0; x < _saveManager->getItems().size(); x++)
             generateItemsLoadGame(_saveManager->getItemPos(x), _saveManager->getSkillsetItem(x));
@@ -89,6 +100,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
 
     } else {
         std::cout << "NEW GAME" << std::endl << std::endl;
+        _maxGameTime = 180;
         for (int i = 0 ; i < playerChoices.size(); i++) {
             std::cout << "choices: " << playerChoices[i].CPU << std::endl;
             UIPos uiPos = {int((i * windowPercentageShift) + (windowPercentageOffsetPowerUp[i]) + 65), 5};
@@ -226,17 +238,18 @@ void Bomberman::createPlayer(Pos pos, int character, UIPos uiPos) // extra argum
     _em->Assign<Sprite>(id, Sprite{Player});
     _window->queueDrawable(Player);
 }
-void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCapacity capa)
+void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCapacity capa, int character, UIPos uiPos)
 {
     std::cout <<"start create loadplayer" <<std::endl;
+    std::vector<std::string> paths = findCharPaths(character);
+    for (int x = 0; x < paths.size(); x++) {
+        std::cout << paths[x] << std::endl;
+    }
     EntityID id = _em->CreateNewEntity();
-    std::string playtex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
-    std::string playermod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
-    std::string playeranim = playermod;
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
-    _em->Assign<UIPos>(id, {0, 0}); // TODO: replace default values by saved stuff
-    _em->Assign<UiContinue>(id, {false}); //((*if is first or second player/ai) ? false : true));
+    _em->Assign<UIPos>(id, uiPos);
+    _em->Assign<UiContinue>(id, {(character <= 1 ? false : true)});
     _em->Assign<Velocity>(id, {0.08,0.08});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, {std::size_t (score)});
@@ -245,7 +258,7 @@ void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCap
     _em->Assign<BombCapacity>(id, capa);
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{PLAYER});
 
-    RL::Drawable3D *Player = new RL::Drawable3D(playtex, playermod, playeranim, RL::MODEL, 0.25);
+    RL::Drawable3D *Player = new RL::Drawable3D(paths[0], paths[1], paths[1], RL::MODEL, 0.25);
     Player->setPosition((RL::Vector3f){
             translateFigureCoordinates(pos.x, _map->getMapWidth()),
             0.5f,
@@ -255,15 +268,15 @@ void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCap
     _window->queueDrawable(Player);
 }
 
-void Bomberman::createAILoadGame(Pos pos, Skillset skill, int score, BombCapacity capa)
+void Bomberman::createAILoadGame(Pos pos, Skillset skill, int score, BombCapacity capa, int character, UIPos uiPos)
 {
     EntityID id = _em->CreateNewEntity();
-    std::string aitex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
-    std::string aimod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
+    std::vector<std::string> paths = findCharPaths(character);
+
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
-    _em->Assign<UIPos>(id, {0, 0}); // TODO: replace default values by saved stuff
-    _em->Assign<UiContinue>(id, {true}); //((*if is first or second player/ai) ? false : true));
+    _em->Assign<UIPos>(id, uiPos);
+    _em->Assign<UiContinue>(id, {(character <= 1 ? false : true)});
     _em->Assign<Velocity>(id, {0.04,0.04});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, {std::size_t(score)});
@@ -275,7 +288,7 @@ void Bomberman::createAILoadGame(Pos pos, Skillset skill, int score, BombCapacit
     AIData data = {false, {0, 0, 0}, RANDOM, 5, {}, {1, 2}};
     _em->Assign<AIData>(id, data);
 
-    RL::Drawable3D *AI = new RL::Drawable3D(aitex, aimod, aimod, RL::MODEL, 0.25);
+    RL::Drawable3D *AI = new RL::Drawable3D(paths[0], paths[1], paths[1], RL::MODEL, 0.25);
     AI->setPosition((RL::Vector3f){
             translateFigureCoordinates(pos.x, _map->getMapWidth()),
             0.5f,
@@ -540,6 +553,11 @@ int Bomberman::runFrame()
     startDrawScene();
     _deltaTimer.restartTimer();
     return 6;
+}
+
+int Bomberman::getTimeasInt()
+{
+    return _maxGameTime - _gameTimer.returnTime();
 }
 
 std::string Bomberman::getGameTime()

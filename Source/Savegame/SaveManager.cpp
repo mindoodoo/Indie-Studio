@@ -480,21 +480,21 @@ std::vector <std::string> RL::SaveManager::getItems()
     return _itemssave;
 }
 
-void RL::SaveManager::savePlayer(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score)
+void RL::SaveManager::savePlayer(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score, int choice)
 {
     std::string newplayer= "PLAYER;ID="+ std::to_string(id) +";"+ "POS[" + std::to_string(position.x) + "," + std::to_string(position.y) + "," + std::to_string(position.z) +\
     "];SKILL["+ std::to_string(skill.bombUp) + "," + std::to_string(skill.speedUp) +\
     "," + std::to_string(skill.fireUp) + "," + std::to_string(skill.wallPass) + "];BOMB[" + std::to_string(bombcapa.totalAmount) + "," +\
-    std::to_string(bombcapa.curCapacity) +"];SCORE="+ std::to_string(int(score.score));
+    std::to_string(bombcapa.curCapacity) +"];SCORE="+ std::to_string(int(score.score)) +";CHOICE="+std::to_string(choice);
     _playerssave.push_back(newplayer);
 }
 
-void RL::SaveManager::saveAis(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score)
+void RL::SaveManager::saveAis(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score, int choice)
 {
     std::string newai= "AI;ID="+ std::to_string(id) +";"+ "POS[" + std::to_string(position.x) + "," + std::to_string(position.y) + "," + std::to_string(position.z) +\
     "];SKILL["+ std::to_string(skill.bombUp) + "," + std::to_string(skill.speedUp) +\
     "," + std::to_string(skill.fireUp) + "," + std::to_string(skill.wallPass) + "];BOMB[" + std::to_string(bombcapa.totalAmount) + "," +\
-    std::to_string(bombcapa.curCapacity) +"];SCORE="+ std::to_string(int(score.score));
+    std::to_string(bombcapa.curCapacity) +"];SCORE="+ std::to_string(int(score.score))+";CHOICE="+std::to_string(choice);
     _aissave.push_back(newai);
 }
 
@@ -527,6 +527,11 @@ void RL::SaveManager::saveMap(std::vector<std::vector<gfx_tile_t>> map)
     _parsedMap = map;
     _mapPath = _directory + ".saveMAP.csv";
     writeMap();
+}
+
+void RL::SaveManager::saveTime(int time)
+{
+    _playerssave[0] += ";TIME=" + std::to_string(time);
 }
 
 
@@ -614,4 +619,23 @@ void RL::SaveManager::clearBeforeSafe()
     _itemssave.clear();
     //clearEntityFile();
 
+}
+
+int RL::SaveManager::getTime()
+{
+    std::vector<std::string> tmp = seperateLine(_playerssave[0],';');
+    return std::stoi(seperateLine(tmp[7],'=')[1]);
+}
+
+int RL::SaveManager::getPlayerChoice(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_playerssave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "PLAYER") {
+            tmp = seperateLine(tmp[6], '=');
+            return stoi(tmp[1]);
+        }
+    }
+    std::cerr << "Unable to load Player Choice" << std::endl;
+    return -1;
 }
