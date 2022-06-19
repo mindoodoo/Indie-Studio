@@ -83,12 +83,14 @@ int Win::MapSelect::openMapMenu(int prev)
     if (_btn[0].getBtnAction() == true) {
         _btn[0].setBtnAction(false);
         _saveManager->updateMap(0);
+        std::cout << "USE STAGE 1" << std::endl << std::endl <<std::endl;
         return 6;
          // choose map
     }
     if (_btn[1].getBtnAction() == true) {
         _btn[1].setBtnAction(false);
         _saveManager->updateMap(1);
+        std::cout << "USE STAGE 2" << std::endl << std::endl <<std::endl;
         return 6;
         // choose map
     }

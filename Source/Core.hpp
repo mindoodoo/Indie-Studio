@@ -43,7 +43,7 @@ class Core {
         ~Core();
 
         void startLoop();
-        void restartGame();
+        void killGame();
         void saveGame();
 
         void startGame();
