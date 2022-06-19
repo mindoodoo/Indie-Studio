@@ -97,6 +97,11 @@ struct BombOwner {
     EntityID id;
 };
 
+struct UIPos {
+    int x;
+    int y;
+};
+
 struct Blocking {
     EntityID id;
     bool isBlocking;

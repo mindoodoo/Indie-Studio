@@ -326,7 +326,7 @@ float RL::SaveManager::getExploTime(int index)
     std::vector<std::string> tmp = seperateLine(_explosionssave[index],';');
     for (int x = 0; x < tmp.size(); x++) {
         if (tmp[x] == "EXPLOSION")
-            return std::stof(seperateLine(tmp[5], '=')[1]);
+            return std::stof(seperateLine(tmp[4], '=')[1]);
     }
     std::cerr << "Unable to load Bomb time" << std::endl;
     return -99;

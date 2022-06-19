@@ -95,6 +95,6 @@ int Win::MapSelect::openMapMenu(int prev)
             _btn[_btn.size() - 1].setBtnAction(false);
             return 4;
         }
-    }
+
     return 5;
 }

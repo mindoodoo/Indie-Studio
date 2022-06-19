@@ -14,12 +14,14 @@
 #include "../GameEngine/Map.hpp"
 #include "../GameEngine/CollisionManager.hpp"
 #include "../Raylib/RaylibTypeEncaps.hpp"
+#include "../Raylib/UIManager.hpp"
 #include "../SoundManager.hpp"
 #include "../Window.hpp"
 
 class CollisionSystem : public ISystem {
     public:
-        CollisionSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Window> window, std::shared_ptr<RL::SoundManager> sM, std::shared_ptr<RL::Map> map) : _window(window), _soundManager(sM), _map(map)
+        CollisionSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Window> window, std::shared_ptr<RL::SoundManager> sM, std::shared_ptr<RL::Map> map)
+         : _window(window), _soundManager(sM), _map(map), _uiManager(window)
         {
             _em = em;
         };
@@ -98,6 +100,7 @@ class CollisionSystem : public ISystem {
                 if (itemSprite->model->isHidden())
                     return INVALID_ENTITY;
                 Skillset* playerSkills = _em->Get<Skillset>(highEnt);
+                UIPos* playerBasePos = _em->Get<UIPos>(highEnt);
                 Skillset* skillIncrease = _em->Get<Skillset>(itemEnt);
                 Pos* itemPos = _em->Get<Pos>(itemEnt);
                 *playerSkills += *skillIncrease;
@@ -105,14 +108,17 @@ class CollisionSystem : public ISystem {
                     BombCapacity* playerBombCapacity = _em->Get<BombCapacity>(highEnt);
                     playerBombCapacity->curCapacity += skillIncrease->bombUp;
                     playerBombCapacity->totalAmount += skillIncrease->bombUp;
-                    // std::cout << "updated bomb capacity to " << playerBombCapacity->totalAmount << std::endl;
+                    _uiManager.createBombUp(*playerBasePos, playerSkills->bombUp);
                 }
-                // if (skillIncrease->fireUp)
-                //     std::cout << "updated fire up" << std::endl;
-                // if (skillIncrease->speedUp)
-                //     std::cout << "updated speed up" << std::endl;
-                // if (skillIncrease->wallPass)
-                //     std::cout << "updated wallPass" << std::endl;
+                if (skillIncrease->fireUp) {
+                    _uiManager.createFireUp(*playerBasePos, playerSkills->fireUp);
+                }
+                if (skillIncrease->speedUp) {
+                    _uiManager.createSpeedUp(*playerBasePos, playerSkills->speedUp);
+                }
+                if (skillIncrease->wallPass) {
+                    _uiManager.createWallPass(*playerBasePos);
+                }
                 _soundManager->playSpecificSoundFx("Item1");
                 _map->removeItem({(int)itemPos->x, (int)itemPos->y});
                 return itemEnt;
@@ -152,6 +158,7 @@ class CollisionSystem : public ISystem {
         std::shared_ptr<RL::Window> _window;
         std::shared_ptr<RL::Map> _map;
         RL::CollisionManager _colManager;
+        UIManager _uiManager;
         std::vector<EntityID> _destroyQueue;
         std::shared_ptr<RL::SoundManager> _soundManager;
 };

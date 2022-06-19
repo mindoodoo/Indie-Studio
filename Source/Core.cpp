@@ -17,7 +17,7 @@ Core::Core()
     _soundManager = std::make_shared<RL::SoundManager>();
 
 
-    RL::Vector3f cameraPos(0, 15, 8);
+    RL::Vector3f cameraPos(0, 19, 7.5);
     _window->_camera.setPosition(cameraPos);
     _window->_camera.setRotation({0.0f, 1.0f, 0.0f });
     _game = NULL;
@@ -94,17 +94,21 @@ void Core::saveGame() {
 }
 
 
-void Core::startLoop()
-{
-   while (_window->isWindowOpen()) {
+void Core::startLoop() {
+    while (_window->isWindowOpen()) {
         switch (_screen) {
             case START_SCREEN:
+                //_charSelec->clearCharSelected();
                 _screen = _startMenu->openStartMenu();
                 _prevS = START_SCREEN;
                 break;
             case CHAR_SCREEN:
                 _screen = _charSelec->openCharSelect(_screen);
                 _prevM = CHAR_SCREEN;
+                break;
+            case CHAR_SELEC_TWO:
+                _screen = _charSelec->openCharSelect(_screen);
+                _prevM = CHAR_SELEC_TWO;
                 break;
             case SETTINGS_SCREEN:
                 _screen = _settings->openSettings(_prevS);
@@ -114,22 +118,33 @@ void Core::startLoop()
                 break;
             case MAP_SCREEN:
                 _screen = _mapSelect->openMapMenu(_prevM);
+                std::cout << "TEEEEEEEST: " << _screen << std::endl;
                 _prevS = MAP_SCREEN;
                 break;
             case 6:
-                if (!_game)
-                    startGame();
-                if (!(_screen = _game->runFrame()))
+                if (!_game) {
+                    std::cout << "HAVE TO START A NEW GAME" << std::endl;
+                    this->startGame();
+                    break;
+                } else {
+                    std::cout << "STILL HAVE A RUNNING GAME" << std::endl;
+                }
+
+                if (!(_screen = _game->runFrame())) {
+                    //  std::cout <<"test2" << std::endl;
                     _screen = 4;
+                }
                 if (_screen == 8)
-                    this->restartGame();
+                    this->killGame();
                 break;
             case PAUSE_SCREEN:
                 _screen = _pauseMenu->openPauseMenu();
-                if (_screen == GAME_SCREEN)
+                if (_screen == GAME_SCREEN) {
+                    this->startGame();
                     this->_game->startGameTimers();
+                }
                 if (_screen == START_SCREEN)
-                    this->restartGame();
+                    this->killGame();
                 if (_screen == 99)
                     saveGame();
                 _prevS = PAUSE_SCREEN;
@@ -149,21 +164,51 @@ void Core::startLoop()
                 break;
         }
     }
+
 }
 
-void Core::restartGame()
+void sortPlayerChoices(Win::CharacterSelect *_charSelec)
 {
+    PlayerChoice temp;
+    if (_charSelec->_playerChoice.size() > 1) {
+        if (_charSelec->_playerChoice[0].playerOrder > _charSelec->_playerChoice[1].playerOrder) {
+            temp = _charSelec->_playerChoice[0];
+            _charSelec->_playerChoice[0] = _charSelec->_playerChoice[1];
+            _charSelec->_playerChoice[1] = temp;
+        }
+    }
+    int checked = 0;
+    for(int i = 0; i < 4; i++) {
+        for (int j = 0; j <_charSelec->_playerChoice.size(); j++) {
+            if (_charSelec->_playerChoice[j].Character == i)
+                checked = 1;                               
+        }
+        if (checked == 0) 
+            _charSelec->_playerChoice.push_back(_charSelec->fillOutPlayerChoice(i, true, _charSelec->_playerChoice.size() + 1));
+        checked = 0;
+    }
+
+}
+
+void Core::killGame()
+{
+    std::cout << "KILL GAME" << std::endl;
     if (_game)
         delete _game;
     if (_map)
         _map.reset();
     _window->clearDrawables();
-    _map = std::make_shared<RL::Map>(_saveManager->getMappath(), _saveManager->getWallTexture(), _saveManager->getFloorTexture(), _saveManager->getCrateTexture(), _saveManager->getLoading());
-    _game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager);
+    _game = nullptr;
+    //_map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png", _saveManager->getLoading());
+    //_game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager, _charSelec->_playerChoice);
+    //std::cout << "RESTART DONE" << std::endl;
 }
 
 void Core::startGame()
 {
-    _map = std::make_shared<RL::Map>(_saveManager->getMappath(),_saveManager->getWallTexture(), _saveManager->getFloorTexture(), _saveManager->getCrateTexture(), _saveManager->getLoading());
-    _game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager);
+    std::cout << "START" << std::endl;
+    sortPlayerChoices(_charSelec);
+    _map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png", _saveManager->getLoading());
+    _game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager, _charSelec->_playerChoice);
+    std::cout << "Stsart DONE" << std::endl;
 }

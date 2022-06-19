@@ -19,6 +19,7 @@ namespace RL {
         public:
             // Arg is Path to .png
             Drawable2D(std::string assetPath);
+            Drawable2D(Texture2D texture, int x, int y);
             ~Drawable2D();
 
             // IDrawable methods
@@ -37,6 +38,7 @@ namespace RL {
 
             Vector3f getPosition();
             Texture2D getTexture();
+            Color getTint();
 
             DrawableType getType() const;
             bool isHidden() const override;
