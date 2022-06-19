@@ -26,6 +26,7 @@ class UIManager {
     private:
         std::shared_ptr<RL::Window> _window;
         std::vector<RL::Drawable2D *> _allIcons;
+        int offset;
 };
 
 #endif /* !UIMANAGER_HPP_ */

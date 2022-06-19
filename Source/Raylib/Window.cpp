@@ -104,7 +104,7 @@ void RL::Window::clearDrawables()
     this->_displayQueue3D.clear();
 }
 
-void RL::Window::displayDrawables(Map map)
+void RL::Window::displayDrawables(Map map, std::string text, int textX, int textY)
 {
     BeginDrawing();
     if (!this->_displayQueue3D.empty()) {
@@ -118,6 +118,7 @@ void RL::Window::displayDrawables(Map map)
     }
     for (auto drawable: this->_displayQueue2D)
         drawable->draw();
+    draw_text(text, BLACK, textX, textY, _txtFont, 40);
     EndDrawing();
 }
 

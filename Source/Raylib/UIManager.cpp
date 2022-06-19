@@ -19,7 +19,8 @@ UIManager::UIManager(std::shared_ptr<RL::Window> window) : _window(window)
     _allIcons.push_back(speedUp);
     _allIcons.push_back(wallPass);
     for (RL::Drawable2D *powerUp : _allIcons)
-        powerUp->resize({25, 25});
+        powerUp->resize({20, 20});
+    offset = 23;
 }
 
 UIManager::~UIManager()
@@ -33,28 +34,28 @@ RL::Drawable2D* makeDrawable2DPointer(RL::Drawable2D Model, UIPos uiPos)
 }
 
 void UIManager::createBombUp(UIPos uiPos, int amount) {
-    uiPos.x += (amount - 1) * 28;
+    uiPos.x += (amount - 1) * offset;
     RL::Drawable2D *bombUp = makeDrawable2DPointer(*_allIcons[0], uiPos);
     std::cout << "bomb up amount  " << amount << std::endl;
     _window->queueDrawable(bombUp);
 }
 
 void UIManager::createFireUp(UIPos uiPos, int amount) {
-    uiPos.x += (amount - 2) * 28;
-    uiPos.y += 28;
+    uiPos.x += (amount - 2) * offset;
+    uiPos.y += offset;
     RL::Drawable2D *fireUp = makeDrawable2DPointer(*_allIcons[1], uiPos);
     _window->queueDrawable(fireUp);
 }
 
 void UIManager::createSpeedUp(UIPos uiPos, int amount) {
-    uiPos.x += (amount - 1) * 28;
-    uiPos.y += 2 * 28;
+    uiPos.x += (amount - 1) * offset;
+    uiPos.y += 2 * offset;
     RL::Drawable2D *speedUp = makeDrawable2DPointer(*_allIcons[2], uiPos);
     _window->queueDrawable(speedUp);
 }
 
 void UIManager::createWallPass(UIPos uiPos) {
-    uiPos.y += 3 * 28;
+    uiPos.y += 3 * offset;
     RL::Drawable2D *wallPass = makeDrawable2DPointer(*_allIcons[3], uiPos);
     _window->queueDrawable(wallPass);
 }
