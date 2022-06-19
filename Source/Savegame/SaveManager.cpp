@@ -68,6 +68,7 @@ RL::SaveManager::SaveManager()
     //_running = false;
      _mapPath = _directory + ".saveMAP.csv";
     _filepath = _directory +".saveEntitys";
+    _mapselect = -1;
 }
 
 void RL::SaveManager::loadMenu()
@@ -137,6 +138,28 @@ std::string RL::SaveManager::getMappath()
     return _mapPath;
 }
 
+std::string RL::SaveManager::getMapName(int mapid)
+{
+    switch (mapid) {
+        case 10:
+            return "Load Game";
+        case 0:
+            return  "Stage 1";
+        case 1:
+            return "Stage 2";
+        case 2:
+            return "Stage 3";
+        case 3:
+            return "Stage 4";
+        case 4:
+            return "Stage 5";
+        case 5:
+            return "Stage 6";
+        default:
+            return "ERROR";
+    }
+}
+
 bool RL::SaveManager::getLoading()
 {
     if (_mapPath == _directory+".saveMAP.csv")
@@ -148,14 +171,55 @@ void RL::SaveManager::updateMap(int map)
 {
     switch (map) {
         case 0:
-            _mapPath = "RaylibTesting/Assets/Maps/TestMap/test.csv";
+            _mapPath = "./Source/Assets/Maps/Stage1/test.csv";
+            _wallPath = "./Source/Assets/Maps/Stage1/TEST_WALL.png";
+            _floorPath = "./Source/Assets/Maps/Stage1/Floor.png";
+            _cratePath = "./Source/Assets/Maps/Stage1/crate.png";
+            _mapselect = map;
             break;
         case 1:
-            _mapPath = "RaylibTesting/Assets/Maps/TestMap1/test.csv";
+            _mapPath = "./Source/Assets/Maps/Stage2/test.csv";
+            _wallPath = "./Source/Assets/Maps/Stage2/TEST_WALL.png";
+            _floorPath = "./Source/Assets/Maps/Stage2/Floor.png";
+            _cratePath = "./Source/Assets/Maps/Stage2/crate.png";
+            _mapselect = map;
+            break;
+        case 2:
+            _mapPath = "./Source/Assets/Maps/Stage3/test.csv";
+            _wallPath = "./Source/Assets/Maps/Stage3/TEST_WALL.png";
+            _floorPath = "./Source/Assets/Maps/Stage3/Floor.png";
+            _cratePath = "./Source/Assets/Maps/Stage3/crate.png";
+            _mapselect = map;
+            break;
+        case 3:
+            _mapPath = "./Source/Assets/Maps/Stage4/test.csv";
+            _wallPath = "./Source/Assets/Maps/Stage4/TEST_WALL.png";
+            _floorPath = "./Source/Assets/Maps/Stage4/Floor.png";
+            _cratePath = "./Source/Assets/Maps/Stage4/crate.png";
+            _mapselect = map;
+            break;
+        case 4:
+            _mapPath = "./Source/Assets/Maps/Stage5/test.csv";
+            _wallPath = "./Source/Assets/Maps/Stage5/TEST_WALL.png";
+            _floorPath = "./Source/Assets/Maps/Stage5/Floor.png";
+            _cratePath = "./Source/Assets/Maps/Stage5/crate.png";
+            _mapselect = map;
+            break;
+        case 5:
+            _mapPath = "./Source/Assets/Maps/Stage6/test.csv";
+            _wallPath = "./Source/Assets/Maps/Stage6/TEST_WALL.png";
+            _floorPath = "./Source/Assets/Maps/Stage6/Floor.png";
+            _cratePath = "./Source/Assets/Maps/Stage6/crate.png";
+            _mapselect = map;
             break;
         case -1:
             _mapPath = _directory + ".saveMAP.csv";
+            //TODO save path for map
+            _wallPath = "./Source/Assets/Maps/Stage1/TEST_WALL.png";
+            _floorPath = "./Source/Assets/Maps/Stage1/Floor.png";
+            _cratePath = "./Source/Assets/Maps/Stage1/crate.png";
             _running = true;
+            _mapselect = map;
             checkEntitys(_filepath);
             //clearEntityFile();
             break;
@@ -375,6 +439,21 @@ int RL::SaveManager::getScoreAI(int index)
     }
     std::cerr << "Unable to load AI Score" << std::endl;
     return -1;
+}
+
+std::string RL::SaveManager::getCrateTexture()
+{
+    return _cratePath;
+}
+
+std::string RL::SaveManager::getFloorTexture()
+{
+    return _floorPath;
+}
+
+std::string RL::SaveManager::getWallTexture()
+{
+    return _wallPath;
 }
 
 std::vector <std::string> RL::SaveManager::getPlayers()

@@ -10,8 +10,8 @@
 RL::SoundManager::SoundManager()
 {
     InitAudioDevice();
-    loadMusic("./RaylibTesting/Assets/audio_assets/Music");
-    loadAudioEffects("./RaylibTesting/Assets/audio_assets/Effects");
+    loadMusic("./Source/Assets/audio_assets/Music");
+    loadAudioEffects("./Source/Assets/audio_assets/Effects");
     this->_currentSongPlaying = -1;
     this->_musicPaused = false;
     this->_songTimePlayed = 0.0f;

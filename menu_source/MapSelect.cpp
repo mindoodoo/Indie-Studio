@@ -39,7 +39,7 @@ Win::MapSelect::MapSelect(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL
         }
         RL::Vector3f tmpV = {x, y, 0};
         if (i < num.size()) {
-            RL::Button tmp(std::to_string(num[i]), tmpV, "./menu_source/assets/btn2smol.png", "./menu_source/assets/btn2hover.png", "./menu_source/assets/btn2pressed.png", 50, _window);
+            RL::Button tmp(_saveManager->getMapName(i), tmpV, "./menu_source/assets/btn2smol.png", "./menu_source/assets/btn2hover.png", "./menu_source/assets/btn2pressed.png", 50, _window);
             _btn.push_back(tmp);
         } else {
             RL::Button tmp(_text[z], tmpV, "./menu_source/assets/btn2smol.png", "./menu_source/assets/btn2hover.png", "./menu_source/assets/btn2pressed.png", 50, _window);
@@ -80,27 +80,21 @@ int Win::MapSelect::openMapMenu(int prev)
             }
         }
     }
-    if (_btn[0].getBtnAction() == true) {
-        _btn[0].setBtnAction(false);
-        _saveManager->updateMap(0);
-        std::cout << "USE STAGE 1" << std::endl << std::endl <<std::endl;
-        return 6;
-         // choose map
-    }
-    if (_btn[1].getBtnAction() == true) {
-        _btn[1].setBtnAction(false);
-        _saveManager->updateMap(1);
-        std::cout << "USE STAGE 2" << std::endl << std::endl <<std::endl;
-        return 6;
-        // choose map
-    }
-    if (_btn[_btn.size() - 2].getBtnAction() == true) {
-        _btn[_btn.size() - 2].setBtnAction(false);
-        return prev;
-    }
-    if (_btn[_btn.size() - 1].getBtnAction() == true) {
-        _btn[_btn.size() - 1].setBtnAction(false);
-        return 4;
-    }
+    for (int x = 0; x < _btn.size(); x++) {
+        if (_btn[x].getBtnAction() == true) {
+            _btn[x].setBtnAction(false);
+            _saveManager->updateMap(x);
+            return 6;
+            // choose map
+        }
+        if (_btn[_btn.size() - 2].getBtnAction() == true) {
+            _btn[_btn.size() - 2].setBtnAction(false);
+            return prev;
+        }
+        if (_btn[_btn.size() - 1].getBtnAction() == true) {
+            _btn[_btn.size() - 1].setBtnAction(false);
+            return 4;
+        }
+
     return 5;
 }

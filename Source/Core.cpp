@@ -13,7 +13,7 @@ Core::Core()
     _saveManager = std::make_shared<RL::SaveManager>();
     _inputManager = std::make_shared<RL::InputManager>();
     std::cout << "test: " << _saveManager->getMappath() << std::endl;
-    _map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png", _saveManager->getLoading());
+    //_map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./Source/Assets/Maps/Stage2/TEST_WALL.png", "./Source/Assets/Maps/Stage2/Floor.png", "./Source/Assets/Maps/Stage2/crate.png", _saveManager->getLoading());
     _soundManager = std::make_shared<RL::SoundManager>();
 
 
@@ -156,7 +156,6 @@ void Core::startLoop() {
                 _screen = this->_startMenu->starIntro();
                 break;
             case LOAD:
-                //TODO INSERT LOAD here!
                 _saveManager->updateMap(-1);
                 _screen = 6;
                 break;
@@ -165,6 +164,7 @@ void Core::startLoop() {
                 break;
         }
     }
+
 }
 
 void sortPlayerChoices(Win::CharacterSelect *_charSelec)
@@ -187,6 +187,7 @@ void sortPlayerChoices(Win::CharacterSelect *_charSelec)
             _charSelec->_playerChoice.push_back(_charSelec->fillOutPlayerChoice(i, true, _charSelec->_playerChoice.size() + 1));
         checked = 0;
     }
+
 }
 
 void Core::killGame()
