@@ -102,6 +102,10 @@ struct UIPos {
     int y;
 };
 
+struct UiContinue {
+    bool continueToRight;
+};
+
 struct Blocking {
     EntityID id;
     bool isBlocking;

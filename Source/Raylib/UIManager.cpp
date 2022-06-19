@@ -33,22 +33,30 @@ RL::Drawable2D* makeDrawable2DPointer(RL::Drawable2D Model, UIPos uiPos)
     return ModelPointer;
 }
 
-void UIManager::createBombUp(UIPos uiPos, int amount) {
-    uiPos.x += (amount - 1) * offset;
+void UIManager::createBombUp(UIPos uiPos, int amount, bool continueToRight) {
+    if (continueToRight)
+        uiPos.x += (amount - 1) * offset;
+    else
+        uiPos.x -= (amount - 1) * offset;
     RL::Drawable2D *bombUp = makeDrawable2DPointer(*_allIcons[0], uiPos);
-    std::cout << "bomb up amount  " << amount << std::endl;
     _window->queueDrawable(bombUp);
 }
 
-void UIManager::createFireUp(UIPos uiPos, int amount) {
-    uiPos.x += (amount - 2) * offset;
+void UIManager::createFireUp(UIPos uiPos, int amount, bool continueToRight) {
+    if (continueToRight)
+        uiPos.x += (amount - 2) * offset;
+    else
+        uiPos.x -= (amount - 2) * offset;
     uiPos.y += offset;
     RL::Drawable2D *fireUp = makeDrawable2DPointer(*_allIcons[1], uiPos);
     _window->queueDrawable(fireUp);
 }
 
-void UIManager::createSpeedUp(UIPos uiPos, int amount) {
-    uiPos.x += (amount - 1) * offset;
+void UIManager::createSpeedUp(UIPos uiPos, int amount, bool continueToRight) {
+    if (continueToRight)
+        uiPos.x += (amount - 1) * offset;
+    else
+        uiPos.x -= (amount - 1) * offset;
     uiPos.y += 2 * offset;
     RL::Drawable2D *speedUp = makeDrawable2DPointer(*_allIcons[2], uiPos);
     _window->queueDrawable(speedUp);

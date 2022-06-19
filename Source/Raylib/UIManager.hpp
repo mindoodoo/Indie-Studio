@@ -18,9 +18,9 @@ class UIManager {
         UIManager(std::shared_ptr<RL::Window> window);
         ~UIManager();
 
-        void createBombUp(UIPos uiPos, int amount);
-        void createFireUp(UIPos uiPos, int amount);
-        void createSpeedUp(UIPos uiPos, int amount);
+        void createBombUp(UIPos uiPos, int amount, bool continueToRight);
+        void createFireUp(UIPos uiPos, int amount, bool continueToRight);
+        void createSpeedUp(UIPos uiPos, int amount, bool continueToRight);
         void createWallPass(UIPos uiPos);
 
     private:
