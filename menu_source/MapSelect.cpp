@@ -66,8 +66,7 @@ void Win::MapSelect::drawMapMenu()
     EndDrawing();
 }
 
-int Win::MapSelect::openMapMenu(int prev)
-{
+int Win::MapSelect::openMapMenu(int prev) {
     _mousePt = _inputManager->getMousePosition();
     drawMapMenu();
     for (int i = 0; i < _btn.size(); i++) {
@@ -95,6 +94,6 @@ int Win::MapSelect::openMapMenu(int prev)
             _btn[_btn.size() - 1].setBtnAction(false);
             return 4;
         }
-
+    }
     return 5;
 }

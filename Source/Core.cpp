@@ -12,8 +12,6 @@ Core::Core()
     _window = std::make_shared<RL::Window>("INDIE_STUDIO");
     _saveManager = std::make_shared<RL::SaveManager>();
     _inputManager = std::make_shared<RL::InputManager>();
-    std::cout << "test: " << _saveManager->getMappath() << std::endl;
-    //_map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./Source/Assets/Maps/Stage2/TEST_WALL.png", "./Source/Assets/Maps/Stage2/Floor.png", "./Source/Assets/Maps/Stage2/crate.png", _saveManager->getLoading());
     _soundManager = std::make_shared<RL::SoundManager>();
 
 
@@ -199,16 +197,13 @@ void Core::killGame()
         _map.reset();
     _window->clearDrawables();
     _game = nullptr;
-    //_map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png", _saveManager->getLoading());
-    //_game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager, _charSelec->_playerChoice);
-    //std::cout << "RESTART DONE" << std::endl;
 }
 
 void Core::startGame()
 {
     std::cout << "START" << std::endl;
     sortPlayerChoices(_charSelec);
-    _map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png", _saveManager->getLoading());
+    _map = std::make_shared<RL::Map>(_saveManager->getMappath(), _saveManager->getWallTexture(), _saveManager->getFloorTexture(), _saveManager->getCrateTexture(), _saveManager->getLoading());
     _game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager, _charSelec->_playerChoice);
     std::cout << "Stsart DONE" << std::endl;
 }
