@@ -8,7 +8,7 @@
 #include "Bomberman.hpp"
 
 Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager, std::vector<PlayerChoice> playerChoices)
-    : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager), _background("./RaylibTesting/Assets/Background/background1.png"), _layout("./Source/PowerUps/Layout_Small.png"), _saveManager(SaveManager)
+    : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager), _background("./RaylibTesting/Assets/Background/background1.png"), _layout("./Source/PowerUps/Layout_Small.png"), _saveManager(SaveManager), _uiManager(Window)
 {
     _background.resize(_window->getDimensions());
     _layout.resize({_window->getDimensions().x, 150});
@@ -20,7 +20,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _systems.push_back(std::make_shared<MovementSystem>(_em, _map, _inputManager));
     _systems.push_back(std::make_shared<AISystem>(_em, _map));
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
-    
+
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Bomb/bombModified.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Explosion/textures/fire.png", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", RL::MODEL, 3));
 
@@ -85,11 +85,8 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
             generateItemsLoadGame(_saveManager->getItemPos(x), _saveManager->getSkillsetItem(x));
 
         generateItems(0);
-
-        //TODO change id system
         for (int x = 0; x < _saveManager->getBombs().size(); x++)
             createBomb(_saveManager->getBombPos(x), {EntityID(x)},_saveManager->getSkillsetBomb(x), _saveManager->getBombTime(x));
-
 
         for (int x = 0; x < _saveManager->getExplosions().size(); x++)
             createExplosion(_saveManager->getExploPos(x), {EntityID(x)}, _saveManager->getExploTime(x));
@@ -238,6 +235,23 @@ void Bomberman::createPlayer(Pos pos, int character, UIPos uiPos) // extra argum
     _em->Assign<Sprite>(id, Sprite{Player});
     _window->queueDrawable(Player);
 }
+
+void Bomberman::createUIPowerIconsForPlayer(Skillset skill, UIPos uiPos, bool continueToRight)
+{
+    for (int i = 1; i <= skill.bombUp; i++)
+        _uiManager.createBombUp(uiPos, i, continueToRight);
+
+    for (int i = 1; i <= skill.speedUp; i++)
+        _uiManager.createSpeedUp(uiPos, i, continueToRight);
+
+    for (int i = 2; i <= skill.fireUp; i++)
+        _uiManager.createFireUp(uiPos, i, continueToRight);
+
+    if (skill.wallPass)
+        _uiManager.createWallPass(uiPos);
+}
+
+
 void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCapacity capa, int character, UIPos uiPos)
 {
     std::cout <<"start create loadplayer" <<std::endl;
@@ -249,6 +263,7 @@ void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCap
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
     _em->Assign<UIPos>(id, uiPos);
+    createUIPowerIconsForPlayer(skill, uiPos, {(character <= 1 ? false : true)});
     _em->Assign<UiContinue>(id, {(character <= 1 ? false : true)});
     _em->Assign<Velocity>(id, {0.08,0.08});
     _em->Assign<Input>(id, Input{NONE});
@@ -277,6 +292,7 @@ void Bomberman::createAILoadGame(Pos pos, Skillset skill, int score, BombCapacit
     _em->Assign<Pos>(id, pos);
     _em->Assign<UIPos>(id, uiPos);
     _em->Assign<UiContinue>(id, {(character <= 1 ? false : true)});
+    createUIPowerIconsForPlayer(skill, uiPos, {(character <= 1 ? false : true)});
     _em->Assign<Velocity>(id, {0.04,0.04});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, {std::size_t(score)});
