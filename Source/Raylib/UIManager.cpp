@@ -71,17 +71,21 @@ void UIManager::createWallPass(UIPos uiPos) {
 }
 
 void UIManager::createCoin(UIPos uiPos, int amount, bool continueToRight) {
-    if (continueToRight)
-        uiPos.x += ((amount % 5) - 1) * offset;
-    else
-        uiPos.x -= ((amount % 5) - 1) * offset;
-
-    if (amount >= 15)
+    int sub = 0;
+    if (amount > 15) {
         uiPos.y += 1 * offset;
-    else if (amount >= 10)
+        sub = 15;
+    } else if (amount > 10) {
         uiPos.y += 2 * offset;
-    else if (amount >= 5)
+        sub = 10;
+    } else if (amount > 5) {
         uiPos.y += 2 * offset;
+        sub = 5;
+    }
+    if (continueToRight)
+        uiPos.x += (amount - sub - 1) * offset;
+    else
+        uiPos.x -= (amount - sub - 1) * offset;
     RL::Drawable2D *coin = makeDrawable2DPointer(*_allIcons[4], uiPos);
     _window->queueDrawable(coin);
 }
