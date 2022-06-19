@@ -64,7 +64,7 @@ bool Bomberman::createExplosion(Pos pos, EntityID bombOwner, float time)
     }
     if (stop)
         return false;
-    // _soundManager->playSpecificSoundFx("Wallsbreak");
+    //_soundManager->playSpecificSoundFx("Wallsbreak");
     return true;
 }
 

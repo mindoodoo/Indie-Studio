@@ -41,7 +41,8 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     
     //this is respndible for the music being played then shuffle enabled, comment out to cancel
     //_soundManager->playRandomMusic();
-    //_soundManager->enableDisableShuffle();
+    _soundManager->playSpecificMusic("BackgroundMusicOne");
+    _soundManager->enableDisableShuffle();
 
     std::vector<Pos>playerStartPositions;
     playerStartPositions.push_back({13, 11, 1});
