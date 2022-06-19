@@ -33,6 +33,7 @@
 #define GAME_SCREEN 6
 #define PAUSE_SCREEN 7
 #define END_SCREEN 8
+#define INTRO 9
 
 class Core {
     public:
