@@ -27,6 +27,9 @@ namespace Win {
 
             int openCharSelect(int mode);
             void drawCharSelect();
+            PlayerChoice fillOutPlayerChoice(std::size_t Character, bool CPU, std::size_t playerOrder);
+            void buttonStateUpdate(std::size_t index, int mode);
+            std::vector<PlayerChoice> _playerChoice;
 
         private:
             std::shared_ptr<RL::Window> _window;

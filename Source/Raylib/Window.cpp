@@ -16,8 +16,8 @@ RL::Window::Window(std::string title, Vector2i dimensions, bool initLater)
         this->_windowOpen = true;
         SetTargetFPS(60);
     }
-    this->_camera.setPosition((Vector3f){ 0.0f, 15.0f, 8.0f });  // Camera position
-    this->_camera.setTarget((Vector3f){ 0.0f, 0.0f, 0.0f });      // Camera looking at point
+    this->_camera.setPosition((Vector3f){ 0.0f, 20.0f, 10.0f });  // Camera position
+    this->_camera.setTarget((Vector3f){ 0.0f, 0.0f, -1.0f });      // Camera looking at point
     this->_camera.setRotation((Vector3f){ 0.0f, 1.0f, 0.0f });          // Camera up vector (rotation towards target)
     this->_windowFont = LoadFontEx(".RaylibTesting/Assets/Fonts/Game_Of_Squids.ttf", 20, 0, 250);
     this->_headFont = LoadFontEx(".RaylibTesting/Assets/Fonts/Game_Of_Squids.ttf", 100, 0, 250);
@@ -91,6 +91,11 @@ void RL::Window::removeDrawable(IDrawable *drawable)
         this->_displayQueue3D.erase(std::remove(this->_displayQueue3D.begin(), this->_displayQueue3D.end(), drawable), this->_displayQueue3D.end());
     if (type == RL::DrawableType::Type2D)
         this->_displayQueue2D.erase(std::remove(this->_displayQueue2D.begin(), this->_displayQueue2D.end(), drawable), this->_displayQueue2D.end());
+}
+
+void RL::Window::displayDrawable2D(RL::Drawable2D drawable)
+{
+    DrawTexture(drawable.getTexture(), drawable.getPosition().x, drawable.getPosition().y, drawable.getTint());
 }
 
 void RL::Window::clearDrawables()
@@ -192,3 +197,4 @@ Font RL::Window::getTxtFont()
 {
     return this->_txtFont;
 }
+

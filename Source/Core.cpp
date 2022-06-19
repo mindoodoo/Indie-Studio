@@ -17,7 +17,7 @@ Core::Core()
     _soundManager = std::make_shared<RL::SoundManager>();
 
 
-    RL::Vector3f cameraPos(0, 15, 8);
+    RL::Vector3f cameraPos(0, 19, 7.5);
     _window->_camera.setPosition(cameraPos);
     _window->_camera.setRotation({0.0f, 1.0f, 0.0f });
     _game = NULL;
@@ -196,6 +196,28 @@ void Core::startLoop()
     }
 }
 
+void sortPlayerChoices(Win::CharacterSelect *_charSelec)
+{
+    PlayerChoice temp;
+    if (_charSelec->_playerChoice.size() > 1) {
+        if (_charSelec->_playerChoice[0].playerOrder > _charSelec->_playerChoice[1].playerOrder) {
+            temp = _charSelec->_playerChoice[0];
+            _charSelec->_playerChoice[0] = _charSelec->_playerChoice[1];
+            _charSelec->_playerChoice[1] = temp;
+        }
+    }
+    int checked = 0;
+    for(int i = 0; i < 4; i++) {
+        for (int j = 0; j <_charSelec->_playerChoice.size(); j++) {
+            if (_charSelec->_playerChoice[j].Character == i)
+                checked = 1;                               
+        }
+        if (checked == 0) 
+            _charSelec->_playerChoice.push_back(_charSelec->fillOutPlayerChoice(i, true, _charSelec->_playerChoice.size() + 1));
+        checked = 0;
+    }
+}
+
 void Core::restartGame()
 {
     if (_game)
@@ -204,11 +226,12 @@ void Core::restartGame()
         _map.reset();
     _window->clearDrawables();
     _map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png", _saveManager->getLoading());
-    _game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager);
+    _game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager, _charSelec->_playerChoice);
 }
 
 void Core::startGame()
 {
+    sortPlayerChoices(_charSelec);
     _map = std::make_shared<RL::Map>(_saveManager->getMappath(), "./RaylibTesting/Assets/Maps/TestMap/TEST_WALL.png", "./RaylibTesting/Assets/Maps/TestMap/Floor.png", "./RaylibTesting/Assets/Maps/TestMap/crate.png", _saveManager->getLoading());
-    _game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager);
+    _game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager, _charSelec->_playerChoice);
 }

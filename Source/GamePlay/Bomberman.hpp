@@ -18,25 +18,27 @@
 #include "Timer.hpp"
 #include "../GameEngine/CollisionManager.hpp"
 #include "../Raylib/Drawables/Drawable3D.hpp"
+#include "../Raylib/Drawables/Drawable2D.hpp"
 #include "../Raylib/InputManager.hpp"
 #include "../GameEngine/Map.hpp"
 #include "../Raylib/Window.hpp"
 #include "SoundManager.hpp"
 #include "Timer.hpp"
+#include "RaylibTypeEncaps.hpp"
 #include "../Savegame/SaveManager.hpp"
 
 class Bomberman {
     public:
-        Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager);
+        Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager, std::vector<PlayerChoice> playerChoices);
         ~Bomberman();
         std::shared_ptr<EntityManager> getEm();
 
+        void createPlayer(Pos pos, int character, UIPos uiPos);
+        void createAI(Pos pos, int character, UIPos uiPos);
 
         void generateItems(int wallPassAmount);
         void generateItemsLoadGame(Pos pos, Skillset skill);
-        void createPlayer(Pos pos);
         void createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCapacity capa);
-        void createAI(Pos pos);
         void createAILoadGame(Pos pos, Skillset skill, int score, BombCapacity capa);
         void createSpeedUpItem(Pos pos, bool hidden);
         void createBombUpItem(Pos pos, bool hidden);
@@ -79,6 +81,10 @@ class Bomberman {
         std::vector<EntityID> _aiBombLaying;
         std::shared_ptr<EntityManager> _em;
         std::vector<RL::Drawable3D> _allModels;
+        std::vector<RL::Drawable2D *> _allIcons;
+        RL::Drawable2D _background;
+        RL::Drawable2D _layout;
+
         Timer _gameTimer;
         Timer _deltaTimer;
         bool _gamePaused;

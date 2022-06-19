@@ -34,10 +34,13 @@ std::deque<coordinates_t> returnPath(Node currentNode, std::vector<std::vector<g
         path.push_front(currentNode.position);
         currentNode = *currentNode.parent;
     }
-    coordinates_t end = {path.back().first, path.back().second};
-    for (int blockingTile : _blockingTiles)
-        if (map[end.first][end.second].tile == blockingTile)
-            path.pop_back();
+    
+    if(!path.empty()) {
+        coordinates_t end = {path.back().first, path.back().second};
+        for (int blockingTile : _blockingTiles)
+            if (map[end.first][end.second].tile == blockingTile)
+                path.pop_back();
+    }
 
     return path;
 }

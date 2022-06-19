@@ -7,9 +7,11 @@
 
 #include "Bomberman.hpp"
 
-Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager)
-    : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager), _saveManager(SaveManager)
+Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager, std::vector<PlayerChoice> playerChoices)
+    : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager), _background("./RaylibTesting/Assets/Background/background1.png"), _layout("./Source/PowerUps/Layout.png"), _saveManager(SaveManager)
 {
+    _background.resize(_window->getDimensions());
+    _layout.resize({_window->getDimensions().x, 200});
     _em = std::make_shared<EntityManager>();
 
     // Take care with system order when adding to vector
@@ -20,12 +22,32 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/3d_models/Skull/Skull.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Explosion/textures/fire.png", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", RL::MODEL, 3));
+
+    _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconOne.png"));
+    _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconTwo.png"));
+    _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconThree.png"));
+    _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconFour.png"));
+
+    float windowPercentageShift = _window->getDimensions().x * 23 / 100;
+    float windowPercentageOffset = _window->getDimensions().x * 6 / 100;
+
+    for ( int i = 0; i < _allIcons.size(); i++ ){
+        _allIcons[playerChoices[i].Character]->resize({60,60});
+        _allIcons[playerChoices[i].Character]->setPosition((i * windowPercentageShift) + (windowPercentageOffset), 0, 0);
+        _window->queueDrawable(_allIcons[i]);
+    }
+
     
     //this is respndible for the music being played then shuffle enabled, comment out to cancel
-    //_soundManager->playSpecificMusic("MiraiKaraKitaShonen");
     //_soundManager->playRandomMusic();
     //_soundManager->enableDisableShuffle();
-    
+
+    std::vector<Pos>playerStartPositions;
+    playerStartPositions.push_back({13, 11, 1});
+    playerStartPositions.push_back({1, 1, 1});
+    playerStartPositions.push_back({13, 1, 1});
+    playerStartPositions.push_back({1, 11, 1});
+
     //Check if loading game or not
     if (!_saveManager->getLoading()) {
 
@@ -54,10 +76,18 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
 
     } else {
         std::cout << "NEW GAME" << std::endl << std::endl;
-        createPlayer({13, 11, 1});
-        createPlayer({1, 1, 1});
-        createAI({13, 1, 1});
-        createAI({1, 11, 1});
+        for (int i = 0 ; i < playerChoices.size(); i++) {
+            std::cout << "choices: " << playerChoices[i].CPU << std::endl;
+            UIPos uiPos = {(i * windowPercentageShift) + (windowPercentageOffset) + 65, 0};
+            if (playerChoices[i].CPU == false) 
+                createPlayer(playerStartPositions[i], playerChoices[i].Character, uiPos);
+            else {
+                if (i == 1)
+                    _player.push_back(INVALID_ENTITY);
+                createAI(playerStartPositions[i], playerChoices[i].Character, uiPos);
+
+            }
+        }
         generateItems(1);
         _gamePaused = false;
         _gameTimer.startTimer();
@@ -127,15 +157,44 @@ float translateFigureCoordinates(float pos, int borderSize)
     return newpos;
 }
 
-void Bomberman::createPlayer(Pos pos)
+
+//little function to fetch paths of characters
+std::vector<std::string> findCharPaths(int character)
+{
+    std::vector<std::string> charPaths;
+    if (character == 0) {
+        charPaths.push_back("./RaylibTesting/Assets/3d_models/Players/PlayerOne.png");
+        charPaths.push_back("./RaylibTesting/Assets/3d_models/Players/playerOne.iqm");
+    }
+    if (character == 1) {
+        charPaths.push_back("./RaylibTesting/Assets/3d_models/Players/PlayerTwo.png");
+        charPaths.push_back("./RaylibTesting/Assets/3d_models/Players/playerTwo.iqm");
+    }
+    if (character == 2) {
+        charPaths.push_back("./RaylibTesting/Assets/3d_models/Players/PlayerThree.png");
+        charPaths.push_back("./RaylibTesting/Assets/3d_models/Players/playerThree.iqm");
+    }
+    if (character == 3) {
+        charPaths.push_back("./RaylibTesting/Assets/3d_models/Players/PlayerFour.png");
+        charPaths.push_back("./RaylibTesting/Assets/3d_models/Players/playerFour.iqm");
+    }
+    return charPaths;
+}
+
+
+
+void Bomberman::createPlayer(Pos pos, int character, UIPos uiPos) // extra argument
 {
     EntityID id = _em->CreateNewEntity();
-    std::string playtex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
-    std::string playermod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
-    std::string playeranim = playermod;
+    // std::string playtex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
+    // std::string playermod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
+    // std::string playeranim = playermod;
+
+    std::vector<std::string> paths = findCharPaths(character);
 
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
+    _em->Assign<UIPos>(id, uiPos);
     _em->Assign<Velocity>(id, {0.08,0.08});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, Score{0});
@@ -144,7 +203,7 @@ void Bomberman::createPlayer(Pos pos)
     _em->Assign<BombCapacity>(id, BombCapacity{3, 3});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{PLAYER});
 
-    RL::Drawable3D *Player = new RL::Drawable3D(playtex, playermod, playeranim, RL::MODEL, 0.25);
+    RL::Drawable3D *Player = new RL::Drawable3D(paths[0], paths[1], paths[1], RL::MODEL, 0.25);
     Player->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
         0.5f,
@@ -162,6 +221,7 @@ void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCap
     std::string playeranim = playermod;
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
+    _em->Assign<UIPos>(id, {0, 0}); // TODO: replace default values by saved stuff
     _em->Assign<Velocity>(id, {0.08,0.08});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, {std::size_t (score)});
@@ -187,6 +247,7 @@ void Bomberman::createAILoadGame(Pos pos, Skillset skill, int score, BombCapacit
     std::string aimod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
+    _em->Assign<UIPos>(id, {0, 0}); // TODO: replace default values by saved stuff
     _em->Assign<Velocity>(id, {0.04,0.04});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, {std::size_t(score)});
@@ -209,15 +270,18 @@ void Bomberman::createAILoadGame(Pos pos, Skillset skill, int score, BombCapacit
 
 }
 
-void Bomberman::createAI(Pos pos)
+void Bomberman::createAI(Pos pos, int character, UIPos uiPos)
 {
     EntityID id = _em->CreateNewEntity();
-    std::string aitex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
-    std::string aimod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
+    // std::string aitex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
+    // std::string aimod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
+
+    std::vector<std::string> paths = findCharPaths(character);
 
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
-    _em->Assign<Velocity>(id, {0.04,0.04});
+    _em->Assign<UIPos>(id, uiPos);
+    _em->Assign<Velocity>(id, {0.08,0.08});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, Score{0});
     _em->Assign<Health>(id, Health{100});
@@ -228,7 +292,7 @@ void Bomberman::createAI(Pos pos)
     AIData data = {false, {0, 0, 0}, RANDOM, 5, {}, {1, 2}};
     _em->Assign<AIData>(id, data);
 
-    RL::Drawable3D *AI = new RL::Drawable3D(aitex, aimod, aimod, RL::MODEL, 0.25);
+    RL::Drawable3D *AI = new RL::Drawable3D(paths[0], paths[1], paths[1], RL::MODEL, 0.25);
     AI->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
         0.5f,
@@ -463,6 +527,8 @@ int Bomberman::runFrame()
 
 void Bomberman::startDrawScene()
 {
+    _window->displayDrawable2D(_background);
+    _window->displayDrawable2D(_layout);
     _window->displayDrawables(*_map.get());
     _window->clearWindow(BLACK);
 }
