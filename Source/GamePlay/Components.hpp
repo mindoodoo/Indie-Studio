@@ -96,6 +96,11 @@ struct BombOwner {
     EntityID id;
 };
 
+struct UIPos {
+    int x;
+    int y;
+};
+
 struct Pos {
     float x;
     float y;

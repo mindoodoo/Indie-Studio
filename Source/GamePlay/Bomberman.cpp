@@ -8,9 +8,10 @@
 #include "Bomberman.hpp"
 
 Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::vector<PlayerChoice> playerChoices)
-    : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager), _background("./RaylibTesting/Assets/Background/background1.png")
+    : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager), _background("./RaylibTesting/Assets/Background/background1.png"), _layout("./Source/PowerUps/Layout.png")
 {
     _background.resize(_window->getDimensions());
+    _layout.resize({_window->getDimensions().x, 200});
     _em = std::make_shared<EntityManager>();
     // take care with system order when adding to vector
     _systems.push_back(std::make_shared<CollisionSystem>(_em, _window, _soundManager, _map));
@@ -25,36 +26,20 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconThree.png"));
     _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconFour.png"));
 
-    //assume we receve our vector of player orders typedef INFO { int (1 or 2 or 3 or 4), bool player}
-    // for (i  in ....) {
-    //_allIcons[vector[i].int].setPosition( SET THE PoSiTION)
-    //_window queueDrawable(_allicons[vector[i].int])
-    //
-    //}
+    float windowPercentageShift = _window->getDimensions().x * 23 / 100;
+    float windowPercentageOffset = _window->getDimensions().x * 6 / 100;
 
     for ( int i = 0; i < _allIcons.size(); i++ ){
         _allIcons[playerChoices[i].Character]->resize({60,60});
-        _allIcons[playerChoices[i].Character]->setPosition((i * _window->getDimensions().x * 20 / 100) + (_window->getDimensions().x / 100 * 13), 0, 0);
+        _allIcons[playerChoices[i].Character]->setPosition((i * windowPercentageShift) + (windowPercentageOffset), 0, 0);
         _window->queueDrawable(_allIcons[i]);
     }
-    // _window->queueDrawable(_allIcons[0]);
-    // _window->queueDrawable(_allIcons[1]);
-    // _window->queueDrawable(_allIcons[2]);
-    // _window->queueDrawable(_allIcons[3]);
-
-
-
-
-    //erase the begigining
-    //_allIcons.erase(_allIcons.begin());
 
     
     //this is respndible for the music being played then shuffle enabled, comment out to cancel
     //_soundManager->playRandomMusic();
     //_soundManager->enableDisableShuffle();
-    
-    // if only one player, fill _player[1] with INVALID_ENTITY
-    // TODO: make pos dependant from map size
+
     std::vector<Pos>playerStartPositions;
     playerStartPositions.push_back({13, 11, 1});
     playerStartPositions.push_back({1, 1, 1});
@@ -65,34 +50,17 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     
     for (int i = 0 ; i < playerChoices.size(); i++) {
         std::cout << "choices: " << playerChoices[i].CPU << std::endl;
+        UIPos uiPos = {(i * windowPercentageShift) + (windowPercentageOffset) + 65, 0};
         if (playerChoices[i].CPU == false) 
-            createPlayer(playerStartPositions[i], playerChoices[i].Character);
+            createPlayer(playerStartPositions[i], playerChoices[i].Character, uiPos);
         else {
             if (i == 1)
                 _player.push_back(INVALID_ENTITY);
-            createAI(playerStartPositions[i], playerChoices[i].Character);
+            createAI(playerStartPositions[i], playerChoices[i].Character, uiPos);
 
         }
     }
-
-
-    // createPlayer({13, 11, 1});
-    // createPlayer({1, 1, 1});
-    // createAI({13, 1, 1});
-    // createAI({1, 11, 1});
     generateItems();
-    // createSpeedUpItem({10, 10, 1});
-    // createSpeedUpItem({4, 3, 1});
-    // createBombUpItem({8, 5, 1});
-    // createBombUpItem({9, 5, 1});
-    // createFireUpItem({10, 5, 1});
-    // createWallPassItem({2, 3, 1});
-    // createBomb({5, 5, 1}, _player.back());
-    // createMonster({5, 5, 1});
-
-
-    // HERE ADD CORRESPONDING 2DMODELS TO THE ENTITIES IN GAME
-    // 1 2 3 4 == 1 2 3 4
     _gamePaused = false;
     _gameTimer.startTimer();
     _deltaTimer.startTimer();
@@ -169,7 +137,7 @@ std::vector<std::string> findCharPaths(int character)
 
 
 
-void Bomberman::createPlayer(Pos pos, int character) // extra argument
+void Bomberman::createPlayer(Pos pos, int character, UIPos uiPos) // extra argument
 {
     EntityID id = _em->CreateNewEntity();
     // std::string playtex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
@@ -185,6 +153,7 @@ void Bomberman::createPlayer(Pos pos, int character) // extra argument
     
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
+    _em->Assign<UIPos>(id, uiPos);
     _em->Assign<Velocity>(id, {0.08,0.08});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, Score{0});
@@ -203,7 +172,7 @@ void Bomberman::createPlayer(Pos pos, int character) // extra argument
     _window->queueDrawable(Player);
 }
 
-void Bomberman::createAI(Pos pos, int character)
+void Bomberman::createAI(Pos pos, int character, UIPos uiPos)
 {
     EntityID id = _em->CreateNewEntity();
     // std::string aitex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
@@ -213,7 +182,8 @@ void Bomberman::createAI(Pos pos, int character)
 
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
-    _em->Assign<Velocity>(id, {0.04,0.04});
+    _em->Assign<UIPos>(id, uiPos);
+    _em->Assign<Velocity>(id, {0.08,0.08});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, Score{0});
     _em->Assign<Health>(id, Health{100});
@@ -448,6 +418,7 @@ bool Bomberman::runFrame()
 void Bomberman::startDrawScene()
 {
     _window->displayDrawable2D(_background);
+    _window->displayDrawable2D(_layout);
     _window->displayDrawables(*_map.get());
     _window->clearWindow(BLACK);
     // _drawer->beginDrawing();

@@ -12,6 +12,12 @@ RL::Drawable2D::Drawable2D(std::string assetPath)
     this->loadImage(assetPath);
 }
 
+RL::Drawable2D::Drawable2D(Texture2D texture, int x, int y)
+{
+    this->_texture = texture;
+    setPosition(x, y, 0);
+}
+
 RL::Drawable2D::~Drawable2D()
 {
     //this->unloadAll();

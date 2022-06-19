@@ -31,8 +31,8 @@ class Bomberman {
         ~Bomberman();
 
         void generateItems();
-        void createPlayer(Pos pos, int character);
-        void createAI(Pos pos, int character);
+        void createPlayer(Pos pos, int character, UIPos uiPos);
+        void createAI(Pos pos, int character, UIPos uiPos);
         void createSpeedUpItem(Pos pos);
         void createBombUpItem(Pos pos);
         void createFireUpItem(Pos pos);
@@ -72,6 +72,7 @@ class Bomberman {
         std::vector<RL::Drawable3D> _allModels;
         std::vector<RL::Drawable2D *> _allIcons;
         RL::Drawable2D _background;
+        RL::Drawable2D _layout;
 
         Timer _gameTimer;
         Timer _deltaTimer;
