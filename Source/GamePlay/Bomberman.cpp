@@ -21,7 +21,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _systems.push_back(std::make_shared<AISystem>(_em, _map));
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
     
-    _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Bomb/bombTexture.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));
+    _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Bomb/bombModified.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Explosion/textures/fire.png", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", RL::MODEL, 3));
 
     _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconOne.png"));
