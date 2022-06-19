@@ -30,7 +30,7 @@
 
 class Bomberman {
     public:
-        Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager, std::vector<PlayerChoice> playerChoices);
+        Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager, std::vector<PlayerChoice> playerChoices, bool coinMode = false);
         ~Bomberman();
         std::shared_ptr<EntityManager> getEm();
 
@@ -46,6 +46,8 @@ class Bomberman {
         void createFireUpItem(Pos pos, bool hidden);
         void createWallPassItem(Pos pos, bool hidden);
         void createMonster(Pos pos);
+        void createCoin(Pos pos);
+        void generateCoins();
         void layBomb(EntityID playerid);
         void checkBombalive();
         bool createBomb(Pos pos, EntityID bombOwner, Skillset skillset, float time);
@@ -64,7 +66,7 @@ class Bomberman {
         bool createExplosion(Pos pos, EntityID bombOwner, float time);
         void checkExplosionalive();
         void smoothBombResize(RL::Drawable3D *BombModel);
-        RL::Drawable3D* makeDrawable3DPointer(RL::Drawable3D Model);
+        RL::Drawable3D* makeDrawable3DPointer(RL::Drawable3D Model, RL::ModelType type = RL::MODEL);
         bool isGameEnd();
         void pauseBombCounters();
         void resumeBombCounters();
@@ -92,6 +94,8 @@ class Bomberman {
         Timer _deltaTimer;
         bool _gamePaused;
         bool _pauseGame;
+        bool _coinMode;
+        int _maxCoins;
 };
 
 float translateFigureCoordinates(float pos, int borderSize);

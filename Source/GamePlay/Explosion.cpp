@@ -51,15 +51,25 @@ bool Bomberman::createExplosion(Pos pos, EntityID bombOwner, float time)
     if (_map->getParsedMap()[pos.y][pos.x].tile == 2)
         stop = true;
     _map->removeCrate({(int)pos.x, (int)pos.y});
-    for (EntityID ent: EntityViewer<CollisionObjectType, ItemType, Pos, Sprite>(*_em.get())) {
-        CollisionObjectType *objectType = _em->Get<CollisionObjectType>(ent);
-        ItemType *itemType = _em->Get<ItemType>(ent);
-        Pos *itemPos = _em->Get<Pos>(ent);
-        Sprite *itemAsset = _em->Get<Sprite>(ent);
-        if (*objectType == ITEM && itemPos->x == pos.x && itemPos->y == pos.y) {
-            itemAsset->model->setHidden(false);
-            std::cout << "set item visual" << std::endl;
-            _map->addItem({(int)itemPos->x, (int)itemPos->y}, *itemType);
+    if (_coinMode) {
+        for (EntityID ent: EntityViewer<CollisionObjectType, Score, Pos, Sprite>(*_em.get())) {
+            CollisionObjectType *objectType = _em->Get<CollisionObjectType>(ent);
+            Pos *itemPos = _em->Get<Pos>(ent);
+            Sprite *itemAsset = _em->Get<Sprite>(ent);
+            if (*objectType == ITEM && itemPos->x == pos.x && itemPos->y == pos.y) {
+                itemAsset->model->setHidden(false);
+            }
+        }
+    } else {
+        for (EntityID ent: EntityViewer<CollisionObjectType, ItemType, Pos, Sprite>(*_em.get())) {
+            CollisionObjectType *objectType = _em->Get<CollisionObjectType>(ent);
+            ItemType *itemType = _em->Get<ItemType>(ent);
+            Pos *itemPos = _em->Get<Pos>(ent);
+            Sprite *itemAsset = _em->Get<Sprite>(ent);
+            if (*objectType == ITEM && itemPos->x == pos.x && itemPos->y == pos.y) {
+                itemAsset->model->setHidden(false);
+                _map->addItem({(int)itemPos->x, (int)itemPos->y}, *itemType);
+            }
         }
     }
     if (stop)

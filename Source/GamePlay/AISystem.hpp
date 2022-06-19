@@ -36,7 +36,7 @@ class AISystem : public ISystem {
         };
         ~AISystem() {};
 
-        void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying) {
+        void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying, int &maxCoins) {
             for (EntityID ent : EntityViewer<Pos, Sprite, CollisionObjectType, AIData>(*_em.get())) {
                 _ent = ent;
                 _foundTarget = false;

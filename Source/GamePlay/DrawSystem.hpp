@@ -19,7 +19,7 @@ class DrawSystem : public ISystem {
         }
         ~DrawSystem() {};
 
-        void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying) override {
+        void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying, int &maxCoins) override {
             borderWidth = _map->getMapWidth() / 2;
             borderDepth = _map->getMapDepth() / 2;
             widthEven = (_map->getMapWidth() % 2 == 0);

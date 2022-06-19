@@ -17,7 +17,8 @@ namespace RL {
         CRATE,
         MODEL,
         FLOOR,
-        POWER
+        POWER,
+        COIN
     };
 
 
@@ -32,6 +33,7 @@ namespace RL {
             // IDrawable methods
             void draw();
             void drawPower();
+            void drawCoin();
 
             //------------- Image Loading / Manipulation methods -------------//
 

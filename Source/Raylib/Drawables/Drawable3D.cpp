@@ -49,6 +49,9 @@ void RL::Drawable3D::draw()
     }
     if (this->_modelType == RL::POWER)
         drawPower();  //here we implement the movement and rotation of the poweup and bouncy etc etc and smaller size etc etc
+    
+    if (this->_modelType == RL::COIN)
+        drawCoin();
     //EndDrawing();
 }
 
@@ -72,6 +75,14 @@ void RL::Drawable3D::drawPower()
 
 }
 
+void RL::Drawable3D::drawCoin()
+{
+    this->_rotationAngle += 3;
+    if (this->_rotationAngle >= 360)
+        this->_rotationAngle = 0;
+    DrawModelEx(this->_model, this->_position, {0, 1, 0}, this->_rotationAngle, (Vector3f) {this->_scale,this->_scale,this->_scale} , WHITE);
+}
+
 void RL::Drawable3D::load3DModel(std::string texturePath, std::string modelPath, std::string animationPath)
 {
     struct stat sb;
@@ -86,7 +97,7 @@ void RL::Drawable3D::load3DModel(std::string texturePath, std::string modelPath,
         this->_img = LoadImage(texturePath.c_str());
         this->_texture = LoadTextureFromImage(this->_img);
     // }
-    if (this->_modelType == RL::MODEL) {
+    if (this->_modelType == RL::MODEL || this->_modelType == RL::COIN) {
         this->_model = LoadModel(modelPath.c_str());
         SetMaterialTexture(&this->_model.materials[0], MATERIAL_MAP_DIFFUSE, this->_texture);
         //HERE ADD LOAD ANIMATION, 
@@ -173,7 +184,7 @@ int RL::Drawable3D::getCurrentAnim() const
 
 void RL::Drawable3D::setBoundingBox()
 {
-    if (this->_modelType == RL::MODEL)
+    if (this->_modelType == RL::MODEL || this->_modelType == RL::COIN)
         this->_boundingBox.max.x = this->_position.x - 0.5f;
         this->_boundingBox.max.y = this->_position.y - 0.5f;
         this->_boundingBox.max.z = this->_position.z - 0.5f;

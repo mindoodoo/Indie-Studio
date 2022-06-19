@@ -13,11 +13,13 @@ UIManager::UIManager(std::shared_ptr<RL::Window> window) : _window(window)
     RL::Drawable2D *fireUp = new RL::Drawable2D("./Source/PowerUps/PowerUp.png");
     RL::Drawable2D *speedUp = new RL::Drawable2D("./Source/PowerUps/Speed.png");
     RL::Drawable2D *wallPass = new RL::Drawable2D("./Source/PowerUps/WallsWalkable.png");
+    RL::Drawable2D *coin = new RL::Drawable2D("./Source/PowerUps/icon.png");
 
     _allIcons.push_back(bombUp);
     _allIcons.push_back(fireUp);
     _allIcons.push_back(speedUp);
     _allIcons.push_back(wallPass);
+    _allIcons.push_back(coin);
     for (RL::Drawable2D *powerUp : _allIcons)
         powerUp->resize({20, 20});
     offset = 23;
@@ -66,4 +68,20 @@ void UIManager::createWallPass(UIPos uiPos) {
     uiPos.y += 3 * offset;
     RL::Drawable2D *wallPass = makeDrawable2DPointer(*_allIcons[3], uiPos);
     _window->queueDrawable(wallPass);
+}
+
+void UIManager::createCoin(UIPos uiPos, int amount, bool continueToRight) {
+    if (continueToRight)
+        uiPos.x += ((amount % 5) - 1) * offset;
+    else
+        uiPos.x -= ((amount % 5) - 1) * offset;
+
+    if (amount >= 15)
+        uiPos.y += 1 * offset;
+    else if (amount >= 10)
+        uiPos.y += 2 * offset;
+    else if (amount >= 5)
+        uiPos.y += 2 * offset;
+    RL::Drawable2D *coin = makeDrawable2DPointer(*_allIcons[4], uiPos);
+    _window->queueDrawable(coin);
 }

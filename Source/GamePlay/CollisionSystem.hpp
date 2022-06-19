@@ -20,14 +20,15 @@
 
 class CollisionSystem : public ISystem {
     public:
-        CollisionSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Window> window, std::shared_ptr<RL::SoundManager> sM, std::shared_ptr<RL::Map> map)
+        CollisionSystem(std::shared_ptr<EntityManager> em, std::shared_ptr<RL::Window> window, std::shared_ptr<RL::SoundManager> sM, std::shared_ptr<RL::Map> map, bool coinMode)
          : _window(window), _soundManager(sM), _map(map), _uiManager(window)
         {
             _em = em;
+            _coinMode = coinMode;
         };
         ~CollisionSystem() {};
 
-        void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying) override {
+        void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying, int &maxCoins) override {
             _destroyQueue.clear();
             for (EntityID ent : EntityViewer<Pos, Sprite, CollisionObjectType>(*_em.get())) {
                 for (EntityID other : EntityViewer<Pos, Sprite, CollisionObjectType>(*_em.get())) {
@@ -40,7 +41,7 @@ class CollisionSystem : public ISystem {
                     if (*type1 == ITEM)
                         pos = entModel->model->getPosition();
                     if (ent != other) {
-                        _destroyQueue.push_back(checkCollisionType(ent, other, _colManager.collisionsWithModels(*entModel->model, *otherModel->model)));
+                        _destroyQueue.push_back(checkCollisionType(ent, other, _colManager.collisionsWithModels(*entModel->model, *otherModel->model), maxCoins));
                     }
                 }
             }
@@ -67,22 +68,22 @@ class CollisionSystem : public ISystem {
             return false;
         }
 
-        EntityID checkCollisionType(EntityID ent, EntityID other, bool collide) {
+        EntityID checkCollisionType(EntityID ent, EntityID other, bool collide, int &maxCoins) {
             CollisionObjectType* type1 = _em->Get<CollisionObjectType>(ent);
             CollisionObjectType* type2 = _em->Get<CollisionObjectType>(other);
 
             if (*type1 == *type2)
                 return INVALID_ENTITY;
             if (*type1 < *type2)
-                return callCollisionHandler(ent, type1, other, type2, collide);
+                return callCollisionHandler(ent, type1, other, type2, collide, maxCoins);
             else
-                return callCollisionHandler(other, type2, ent, type1, collide);
+                return callCollisionHandler(other, type2, ent, type1, collide, maxCoins);
         };
 
-        EntityID callCollisionHandler(EntityID lowEnt, CollisionObjectType* low, EntityID highEnt, CollisionObjectType* high, bool collide) {
+        EntityID callCollisionHandler(EntityID lowEnt, CollisionObjectType* low, EntityID highEnt, CollisionObjectType* high, bool collide, int &maxCoins) {
             switch (*low) {
                 case ITEM:
-                    return handleItemCollision(lowEnt, low, highEnt, high, collide);
+                    return handleItemCollision(lowEnt, low, highEnt, high, collide, maxCoins);
                 case BREAKABLE_BLOCK:
                 case PLAYER:
                 case AI:
@@ -92,9 +93,31 @@ class CollisionSystem : public ISystem {
             return INVALID_ENTITY;
         };
 
-        EntityID handleItemCollision(EntityID itemEnt, CollisionObjectType* item, EntityID highEnt, CollisionObjectType* high, bool collide) {
+        EntityID handleCoinCollision(EntityID itemEnt, CollisionObjectType* item, EntityID highEnt, CollisionObjectType* high, int &maxCoins) {
+            if ((*high == PLAYER || *high == AI) && !checkIfVectorContains(_destroyQueue, itemEnt)) {
+                Sprite* itemSprite = _em->Get<Sprite>(itemEnt);
+                if (itemSprite->model->isHidden())
+                    return INVALID_ENTITY;
+                Score* playerScore = _em->Get<Score>(highEnt);
+                UIPos* playerBasePos = _em->Get<UIPos>(highEnt);
+                UiContinue* playerContinue = _em->Get<UiContinue>(highEnt);
+                Score* scoreIncrease = _em->Get<Score>(itemEnt);
+                Pos* itemPos = _em->Get<Pos>(itemEnt);
+                playerScore->score += scoreIncrease->score;
+                _uiManager.createCoin(*playerBasePos, playerScore->score, playerContinue->continueToRight);
+                _soundManager->playSpecificSoundFx("Item1");
+                maxCoins--;
+                _map->removeItem({(int)itemPos->x, (int)itemPos->y});
+                return itemEnt;
+            }
+            return INVALID_ENTITY;
+        };
+
+        EntityID handleItemCollision(EntityID itemEnt, CollisionObjectType* item, EntityID highEnt, CollisionObjectType* high, bool collide, int maxCoins) {
             if (!collide)
                 return INVALID_ENTITY;
+            if (_coinMode)
+                return handleCoinCollision(itemEnt, item, highEnt, high, maxCoins);
             if ((*high == PLAYER || *high == AI) && !checkIfVectorContains(_destroyQueue, itemEnt)) {
                 Sprite* itemSprite = _em->Get<Sprite>(itemEnt);
                 if (itemSprite->model->isHidden())
@@ -162,6 +185,7 @@ class CollisionSystem : public ISystem {
         UIManager _uiManager;
         std::vector<EntityID> _destroyQueue;
         std::shared_ptr<RL::SoundManager> _soundManager;
+        bool _coinMode;
 };
 
 #endif /* !COLLISIONSYSTEM_HPP_ */

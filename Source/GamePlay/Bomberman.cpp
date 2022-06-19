@@ -7,22 +7,25 @@
 
 #include "Bomberman.hpp"
 
-Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager, std::vector<PlayerChoice> playerChoices)
+Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager, std::vector<PlayerChoice> playerChoices, bool coinMode)
     : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager), _background("./RaylibTesting/Assets/Background/background1.png"), _layout("./Source/PowerUps/Layout_Small.png"), _saveManager(SaveManager)
 {
     _background.resize(_window->getDimensions());
     _layout.resize({_window->getDimensions().x, 150});
     _em = std::make_shared<EntityManager>();
     _maxGameTime = 180;
+    _coinMode = coinMode;
+    _maxCoins = 0;
 
     // Take care with system order when adding to vector
-    _systems.push_back(std::make_shared<CollisionSystem>(_em, _window, _soundManager, _map));
+    _systems.push_back(std::make_shared<CollisionSystem>(_em, _window, _soundManager, _map, coinMode));
     _systems.push_back(std::make_shared<MovementSystem>(_em, _map, _inputManager));
     _systems.push_back(std::make_shared<AISystem>(_em, _map));
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
     
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Bomb/bombModified.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Explosion/textures/fire.png", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", RL::MODEL, 3));
+    _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Coin/coin.png", "./RaylibTesting/Assets/Coin/coin.obj", "", RL::COIN, 1));
 
     _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconOne.png"));
     _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconTwo.png"));
@@ -47,7 +50,6 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
         _window->queueDrawable(_allIcons[i]);
     }
 
-    
     //this is respndible for the music being played then shuffle enabled, comment out to cancel
     //_soundManager->playRandomMusic();
     _soundManager->playSpecificMusic("BackgroundMusicOne");
@@ -101,7 +103,10 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
 
             }
         }
-        generateItems(1);
+        if (coinMode)
+            generateCoins();
+        else
+            generateItems(1);
         _gamePaused = false;
         _gameTimer.startTimer();
         _deltaTimer.startTimer();
@@ -162,6 +167,23 @@ void Bomberman::generateItems(int wallPassAmount)
     }
 }
 
+void Bomberman::generateCoins()
+{
+    int placeItem;
+
+    for (int i = 0; i < _map->getMapDepth(); i++) {
+        for (int j = 0; j < _map->getMapWidth(); j++) {
+            if (_map->getParsedMap()[i][j].tile == 2) {
+                placeItem = rand() % 100;
+                if (placeItem > 77) {
+                    createCoin({(float)j, (float)i, 1});
+                    _maxCoins++;
+                }
+            }
+        }
+    }
+}
+
 float translateFigureCoordinates(float pos, int borderSize)
 {
     float newpos = pos - (borderSize / 2);
@@ -194,7 +216,24 @@ std::vector<std::string> findCharPaths(int character)
     return charPaths;
 }
 
-
+void Bomberman::createCoin(Pos pos)
+{
+    EntityID id = _em->CreateNewEntity();
+    _em->Assign<Pos>(id, pos);
+    _em->Assign<Score>(id, Score{1});
+    _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
+    RL::Drawable3D *coin = makeDrawable3DPointer(_allModels[2], RL::COIN);
+    coin->setRotation(90);
+    coin->resize(0.3);
+    coin->setPosition((RL::Vector3f){
+        translateFigureCoordinates(pos.x, _map->getMapWidth()),
+        1.0f,
+        translateFigureCoordinates(pos.y, _map->getMapDepth())
+    });
+    coin->setHidden(true);
+    _em->Assign<Sprite>(id, Sprite{coin});
+    _window->queueDrawable(coin);
+}
 
 void Bomberman::createPlayer(Pos pos, int character, UIPos uiPos) // extra argument
 {
@@ -530,7 +569,7 @@ int Bomberman::runFrame()
     checkBombalive();
     checkExplosionalive();
     for (std::shared_ptr<ISystem> system : _systems)
-        system->update(_deltaTimer.returnTime(), _player, _aiBombLaying);
+        system->update(_deltaTimer.returnTime(), _player, _aiBombLaying, _maxCoins);
     for (EntityID id : _aiBombLaying) {
         if (checkIfVectorContain(_player, id))
             layBomb(id);
@@ -571,6 +610,8 @@ void Bomberman::stopDrawScene()
 bool Bomberman::isGameEnd()
 {
     if (_maxGameTime - _gameTimer.returnTime() < 0)
+        return true;
+    if (_coinMode && !_maxCoins)
         return true;
     int playerCount = 0;
     int aiCount = 0;

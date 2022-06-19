@@ -22,6 +22,7 @@ class UIManager {
         void createFireUp(UIPos uiPos, int amount, bool continueToRight);
         void createSpeedUp(UIPos uiPos, int amount, bool continueToRight);
         void createWallPass(UIPos uiPos);
+        void createCoin(UIPos uiPos, int amount, bool continueToRight);
 
     private:
         std::shared_ptr<RL::Window> _window;

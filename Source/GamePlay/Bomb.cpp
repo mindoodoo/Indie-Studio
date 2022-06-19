@@ -8,9 +8,9 @@
 #include "Bomberman.hpp"
 #include <math.h>
 
-RL::Drawable3D* Bomberman::makeDrawable3DPointer(RL::Drawable3D Model)
+RL::Drawable3D* Bomberman::makeDrawable3DPointer(RL::Drawable3D Model, RL::ModelType type)
 {
-    RL::Drawable3D *ModelPointer = new RL::Drawable3D(RL::MODEL, 2.0f);
+    RL::Drawable3D *ModelPointer = new RL::Drawable3D(type, 2.0f);
 
     ModelPointer->setModel(Model.getModel());
     ModelPointer->setModelAnimation(Model.getModelAnimation());
@@ -65,7 +65,7 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset, float
             blocking.blockingForPlayer.push_back({ent, false});
         else
             blocking.blockingForPlayer.push_back({ent, true});
-        std::cout << "Is blocking:" << blocking.blockingForPlayer.back().isBlocking << std::endl;
+        // std::cout << "Is blocking:" << blocking.blockingForPlayer.back().isBlocking << std::endl;
     }
     _em->Assign<BombProperty>(id, blocking);
     _window->queueDrawable(Bomb);
