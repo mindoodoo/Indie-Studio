@@ -52,6 +52,7 @@ namespace Win {
             std::vector<std::string> _text;
             RL::Drawable2D *_bg = nullptr;
             std::vector<RL::Button> _btn;
+            int _selected;
     };
 }
 
