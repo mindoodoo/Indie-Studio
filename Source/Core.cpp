@@ -27,7 +27,7 @@ Core::Core()
     _mapSelect = new Win::MapSelect(_window, _inputManager, _soundManager, _saveManager);
     _prevS = 0;
     _prevM = 0;
-    _screen = 0;
+    _screen = -1;
 }
 
 Core::~Core()
@@ -142,8 +142,10 @@ void Core::startLoop() {
                     //  std::cout <<"test2" << std::endl;
                     _screen = 4;
                 }
-                if (_screen == 8)
+                if (_screen == 8) {
+                    _allDeadPlayers = _game->getDeadPlayers();
                     this->killGame();
+                }
                 break;
             case PAUSE_SCREEN:
                 _screen = _pauseMenu->openPauseMenu();
@@ -157,7 +159,7 @@ void Core::startLoop() {
                 _prevS = PAUSE_SCREEN;
                 break;
             case END_SCREEN:
-                _screen = this->_endMenu->openEndMenu();
+                _screen = this->_endMenu->openEndMenu(_allDeadPlayers);
                 break;
             case INTRO:
                 _screen = this->_startMenu->starIntro();

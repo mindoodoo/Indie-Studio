@@ -63,6 +63,7 @@ class Core {
         int _prevS;
         int _prevM;
         int _screen;
+        std::vector<std::size_t> _allDeadPlayers;
 };
 
 #endif /* !CORE_HPP_ */

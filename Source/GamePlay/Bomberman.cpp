@@ -543,7 +543,7 @@ int Bomberman::runFrame()
     checkBombalive();
     checkExplosionalive();
     for (std::shared_ptr<ISystem> system : _systems)
-        system->update(_deltaTimer.returnTime(), _player, _aiBombLaying);
+        system->update(_deltaTimer.returnTime(), _player, _aiBombLaying, _deadPlayers);
     for (EntityID id : _aiBombLaying) {
         if (checkIfVectorContain(_player, id))
             layBomb(id);
@@ -586,6 +586,22 @@ void Bomberman::stopDrawScene()
 {
 }
 
+std::vector<std::size_t> Bomberman::getDeadPlayers()
+{
+    std::cout << _deadPlayers.size() << std::endl;
+    return _deadPlayers;
+}
+
+void Bomberman::addRemainingPlayer()
+{
+    for(int i = 0; i < _player.size(); i++) {
+        if (_player[i] != INVALID_ENTITY) {
+            std::cout << std::to_string(i) + " " + std::to_string(_player[i]) + " " + std::to_string(GetEntityIndex(_player[i])) << std::endl;
+            _deadPlayers.push_back(GetEntityIndex(_player[i]));
+        }
+    }
+}
+
 bool Bomberman::isGameEnd()
 {
     if (_maxGameTime - _gameTimer.returnTime() < 0)
@@ -600,10 +616,14 @@ bool Bomberman::isGameEnd()
             playerCount++;
 
     }
-    if (playerCount == 0)
+    if (playerCount == 0) {
+        addRemainingPlayer();
         return true;
-    if (aiCount == 0 && playerCount <= 1)
+    }
+    if (aiCount == 0 && playerCount <= 1) {
+        addRemainingPlayer();
         return true;
+    }
     return false;
 }
 

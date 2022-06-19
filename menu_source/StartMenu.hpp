@@ -18,6 +18,8 @@
 #include "Button.hpp"
 #include "SoundManager.hpp"
 #include "../Source/Savegame/SaveManager.hpp"
+#include <chrono>
+#include <thread>
 
 namespace Win {
     class StartMenu {

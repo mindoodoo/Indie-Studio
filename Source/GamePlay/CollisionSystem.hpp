@@ -27,7 +27,7 @@ class CollisionSystem : public ISystem {
         };
         ~CollisionSystem() {};
 
-        void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying) override {
+        void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying, std::vector<std::size_t> &deadPlayers) override {
             _destroyQueue.clear();
             for (EntityID ent : EntityViewer<Pos, Sprite, CollisionObjectType>(*_em.get())) {
                 for (EntityID other : EntityViewer<Pos, Sprite, CollisionObjectType>(*_em.get())) {
@@ -44,10 +44,10 @@ class CollisionSystem : public ISystem {
                     }
                 }
             }
-            destroyEntities(_destroyQueue, playerIds);
+            destroyEntities(_destroyQueue, playerIds, deadPlayers);
         };
 
-        void destroyEntities(std::vector<EntityID> _destroyQueue, std::vector<EntityID> &playerIds) {
+        void destroyEntities(std::vector<EntityID> _destroyQueue, std::vector<EntityID> &playerIds, std::vector<std::size_t> &deadPlayers) {
             for (EntityID id : _destroyQueue) {
                 if (id != INVALID_ENTITY) {
                     Sprite *entModel = _em->Get<Sprite>(id);
@@ -55,6 +55,7 @@ class CollisionSystem : public ISystem {
                     _window->removeDrawable(entModel->model);
                     if (checkIfVectorContains(playerIds, id)) {
                         _soundManager->playSpecificSoundFx("hitSound");
+                        deadPlayers.push_back(getPlayerDead(playerIds, id));
                         std::replace(playerIds.begin(), playerIds.end(), id, INVALID_ENTITY);
                     }
                 }
@@ -153,6 +154,14 @@ class CollisionSystem : public ISystem {
                 return lowEnt;
             }
             return INVALID_ENTITY;
+        };
+
+        std::size_t getPlayerDead(std::vector<EntityID> vector, EntityID id) {
+            for (std::size_t i = 0; i < vector.size(); i++) {
+                if (id == vector[i])
+                    return i+1;
+            }
+            return -1;
         };
 
     private:
