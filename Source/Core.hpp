@@ -34,6 +34,7 @@
 #define PAUSE_SCREEN 7
 #define END_SCREEN 8
 #define INTRO 9
+#define LOAD 10
 
 class Core {
     public:
