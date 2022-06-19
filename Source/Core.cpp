@@ -217,6 +217,6 @@ void Core::startGame()
     sortPlayerChoices(_charSelec);
     _window->clearDrawables();
     _map = std::make_shared<RL::Map>(_saveManager->getMappath(), _saveManager->getWallTexture(), _saveManager->getFloorTexture(), _saveManager->getCrateTexture(), _saveManager->getLoading());
-    _game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager, _charSelec->_playerChoice);
+    _game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager, _charSelec->_playerChoice, _saveManager->ifCoinMode());
     std::cout << "Game started" << std::endl;
 }
