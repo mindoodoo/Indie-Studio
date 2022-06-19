@@ -100,6 +100,7 @@ void Core::saveGame() {
             x++;
         }
     }
+    _saveManager->saveTime(_game->getTimeasInt());
     _saveManager->writeEntitys();
     std::cout << "Finished saving" << _screen << std::endl;
     _screen = PAUSE_SCREEN;

@@ -58,6 +58,7 @@ namespace RL {
         Skillset getSkillsetBomb(int index);
         int getScorePlayer(int index);
         int getScoreAI(int index);
+        int getTime();
         float getBombTime(int index);
         float getExploTime(int index);
         std::vector<std::string> getPlayers();
@@ -84,6 +85,7 @@ namespace RL {
         void saveItem(EntityID id, Pos position, Skillset skill);
         void saveAis(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score, int choice);
         void saveExplosion(EntityID id, Pos position, BombOwner owner, float time);
+        void saveTime(int time);
     };
 }
 

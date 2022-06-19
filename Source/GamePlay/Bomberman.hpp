@@ -68,6 +68,7 @@ class Bomberman {
         bool isGameEnd();
         void pauseBombCounters();
         void resumeBombCounters();
+        int getTimeasInt();
 
     protected:
     private:

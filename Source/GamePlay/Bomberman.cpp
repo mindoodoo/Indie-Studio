@@ -13,7 +13,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _background.resize(_window->getDimensions());
     _layout.resize({_window->getDimensions().x, 150});
     _em = std::make_shared<EntityManager>();
-    _maxGameTime = 180;
+
 
     // Take care with system order when adding to vector
     _systems.push_back(std::make_shared<CollisionSystem>(_em, _window, _soundManager, _map));
@@ -61,6 +61,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
 
     //Check if loading game or not
     if (!_saveManager->getLoading()) {
+        _maxGameTime = _saveManager->getTime();
         std::cout << "TRY TO LOAD GAME" << std::endl;
         int count = 0;
         UIPos uiPos;
@@ -99,6 +100,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
 
     } else {
         std::cout << "NEW GAME" << std::endl << std::endl;
+        _maxGameTime = 180;
         for (int i = 0 ; i < playerChoices.size(); i++) {
             std::cout << "choices: " << playerChoices[i].CPU << std::endl;
             UIPos uiPos = {int((i * windowPercentageShift) + (windowPercentageOffsetPowerUp[i]) + 65), 5};
@@ -551,6 +553,11 @@ int Bomberman::runFrame()
     startDrawScene();
     _deltaTimer.restartTimer();
     return 6;
+}
+
+int Bomberman::getTimeasInt()
+{
+    return _maxGameTime - _gameTimer.returnTime();
 }
 
 std::string Bomberman::getGameTime()

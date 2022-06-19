@@ -529,6 +529,11 @@ void RL::SaveManager::saveMap(std::vector<std::vector<gfx_tile_t>> map)
     writeMap();
 }
 
+void RL::SaveManager::saveTime(int time)
+{
+    _playerssave[0] += ";TIME=" + std::to_string(time);
+}
+
 
 void RL::SaveManager::writeMap()
 {
@@ -614,6 +619,12 @@ void RL::SaveManager::clearBeforeSafe()
     _itemssave.clear();
     //clearEntityFile();
 
+}
+
+int RL::SaveManager::getTime()
+{
+    std::vector<std::string> tmp = seperateLine(_playerssave[0],';');
+    return std::stoi(seperateLine(tmp[7],'=')[1]);
 }
 
 int RL::SaveManager::getPlayerChoice(int index)
