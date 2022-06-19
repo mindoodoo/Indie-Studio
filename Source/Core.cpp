@@ -49,8 +49,6 @@ Core::~Core()
         delete _mapSelect;
 }
 
-
-
 int check_choices(PlayerChoice pc, int index)
 {
     if (!pc.CPU) {

@@ -26,6 +26,7 @@
 #include "SoundManager.hpp"
 #include "Timer.hpp"
 #include "RaylibTypeEncaps.hpp"
+#include "../Raylib/UIManager.hpp"
 #include "../Savegame/SaveManager.hpp"
 
 class Bomberman {
@@ -45,6 +46,7 @@ class Bomberman {
         void createBombUpItem(Pos pos, bool hidden);
         void createFireUpItem(Pos pos, bool hidden);
         void createWallPassItem(Pos pos, bool hidden);
+        void createUIPowerIconsForPlayer(Skillset skill, UIPos uiPos, bool continueToRight);
         void createMonster(Pos pos);
         void layBomb(EntityID playerid);
         void checkBombalive();
@@ -75,6 +77,7 @@ class Bomberman {
         std::shared_ptr<RL::Window> _window;
         std::shared_ptr<RL::InputManager> _inputManager;
         std::shared_ptr<RL::SoundManager> _soundManager;
+        UIManager _uiManager;
         std::shared_ptr<RL::Map> _map;
         RL::CollisionManager _colManager;
         std::shared_ptr<RL::SaveManager> _saveManager;

@@ -13,7 +13,6 @@ UIManager::UIManager(std::shared_ptr<RL::Window> window) : _window(window)
     RL::Drawable2D *fireUp = new RL::Drawable2D("./Source/PowerUps/PowerUp.png");
     RL::Drawable2D *speedUp = new RL::Drawable2D("./Source/PowerUps/Speed.png");
     RL::Drawable2D *wallPass = new RL::Drawable2D("./Source/PowerUps/WallsWalkable.png");
-
     _allIcons.push_back(bombUp);
     _allIcons.push_back(fireUp);
     _allIcons.push_back(speedUp);
