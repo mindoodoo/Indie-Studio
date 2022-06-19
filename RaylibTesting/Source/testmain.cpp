@@ -33,7 +33,7 @@ int main(void)
 
     RL::SoundManager SoundManager;
 
-    RL::Map Map("./Maps/TestMap/test.csv", "./Maps/TestMap/TEST_WALL.png", "./Maps/TestMap/Floor.png", "./Maps/TestMap/crate.png" );
+    RL::Map Map("./Maps/Stage2/test.csv", "./Maps/Stage2/TEST_WALL.png", "./Maps/Stage2/Floor.png", "./Maps/Stage2/crate.png" );
 
     RL::CollisionManager ColMan;
 

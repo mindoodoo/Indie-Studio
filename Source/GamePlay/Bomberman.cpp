@@ -79,7 +79,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
         std::cout << "NEW GAME" << std::endl << std::endl;
         for (int i = 0 ; i < playerChoices.size(); i++) {
             std::cout << "choices: " << playerChoices[i].CPU << std::endl;
-            UIPos uiPos = {(i * windowPercentageShift) + (windowPercentageOffset[i]) + 65, 3};
+            UIPos uiPos = {int((i * windowPercentageShift) + (windowPercentageOffset) + 65), 0};
             if (playerChoices[i].CPU == false) 
                 createPlayer(playerStartPositions[i], playerChoices[i].Character, uiPos);
             else {
@@ -503,7 +503,7 @@ int Bomberman::runFrame()
     _inputManager->recordInputs();
     _event = _inputManager->getInputs();
     _aiBombLaying.clear();
-  
+
     checkInput();
     if (this->_gamePaused && !this->_pauseGame) {
         this->_pauseGame = true;

@@ -70,6 +70,14 @@ PlayerChoice Win::CharacterSelect::fillOutPlayerChoice(std::size_t Character, bo
     return newPlayer;    
 }
 
+void Win::CharacterSelect::clearCharSelected()
+{
+    if (_playerChoice.size() != 0) {
+        _playerChoice.clear();
+        std::cout << "cleared" << std::endl;
+    }
+}
+
 void Win::CharacterSelect::buttonStateUpdate(std::size_t index, int mode)
 {
     if (_btn[index].getBtnAction() == true) {
