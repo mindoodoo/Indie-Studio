@@ -106,6 +106,10 @@ void Core::startLoop()
                 _screen = _charSelec->openCharSelect(_screen);
                 _prevM = CHAR_SCREEN;
                 break;
+            case CHAR_SELEC_TWO:
+                _screen = _charSelec->openCharSelect(_screen);
+                _prevM = CHAR_SELEC_TWO;
+                break;
             case SETTINGS_SCREEN:
                 _screen = _settings->openSettings(_prevS);
                 break;

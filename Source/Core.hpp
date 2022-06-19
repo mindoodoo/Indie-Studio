@@ -27,6 +27,7 @@
 // // Macros for screen switch
 #define START_SCREEN 0
 #define CHAR_SCREEN 1
+#define CHAR_SELEC_TWO 2
 #define SETTINGS_SCREEN 3
 #define CLOSE 4
 #define MAP_SCREEN 5
