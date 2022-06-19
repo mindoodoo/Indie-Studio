@@ -140,11 +140,11 @@ void Core::startLoop()
             case INTRO:
                 _screen = this->_startMenu->starIntro();
                 break;
-            // case 8:
-            //     //TODO INSERT LOAD here!
-            //     _saveManager->updateMap(-1);
-            //     _screen = 6;
-            //     break;
+            case LOAD:
+                //TODO INSERT LOAD here!
+                _saveManager->updateMap(-1);
+                _screen = 6;
+                break;
             default:
                 _screen = INTRO;
                 break;
