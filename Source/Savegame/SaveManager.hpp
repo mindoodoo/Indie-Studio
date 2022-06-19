@@ -29,6 +29,7 @@ namespace RL {
         std::string _cratePath;
         std::string _savefilename;
         bool _running;
+        bool _coinmode;
         std::vector<std::string> _playerssave;
         std::vector<std::string> _aissave;
         std::vector<std::string> _itemssave;
@@ -38,12 +39,14 @@ namespace RL {
         SaveManager();
         //Getter
         std::vector<std::string> getMenu();
+        bool ifCoinMode();
         std::string getMappath();
         std::string getMapName(int mapid);
         std::string getWallTexture();
         std::string getFloorTexture();
         std::string getCrateTexture();
         bool getLoading();
+        int getPlayerChoice(int index);
         Pos getPlayerPos(int index);
         Pos getAIPos(int index);
         Pos getItemPos(int index);
@@ -57,6 +60,7 @@ namespace RL {
         Skillset getSkillsetBomb(int index);
         int getScorePlayer(int index);
         int getScoreAI(int index);
+        int getTime();
         float getBombTime(int index);
         float getExploTime(int index);
         std::vector<std::string> getPlayers();
@@ -78,11 +82,12 @@ namespace RL {
         void writeEntitys();
         //Save --> write in file
         void saveMap(std::vector<std::vector<gfx_tile_t>> map);
-        void savePlayer(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score);
+        void savePlayer(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score, int choice);
         void saveBomb(EntityID id, Pos position, Skillset skill, BombOwner owner, float time);
         void saveItem(EntityID id, Pos position, Skillset skill);
-        void saveAis(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score);
+        void saveAis(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score, int choice);
         void saveExplosion(EntityID id, Pos position, BombOwner owner, float time);
+        void saveTime(int time);
     };
 }
 

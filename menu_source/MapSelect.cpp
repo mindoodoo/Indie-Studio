@@ -17,12 +17,11 @@ Win::MapSelect::MapSelect(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL
     _bg->resize({_win_x, _win_y});
     _text.push_back("Select Map");
     _text.push_back("BACK");
-    _text.push_back("QUIT");
     std::vector<int> num = {1, 2, 3, 4, 5, 6};
     float x = _win_x / 2 - 350;
     float y = _win_y / 10;
     int z = 1;
-    for (int i = 0; i < num.size() + 2; i++) {
+    for (int i = 0; i < num.size() + 1; i++) {
         if (i > 0)
             x = _win_x / 2 + 50;
         if (i % 2 == 0) {
@@ -30,11 +29,7 @@ Win::MapSelect::MapSelect(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL
             y = y + 150;
         }
         if (i == num.size()) {
-            x = _win_x / 2 - 350;
-            y = _win_y - 150;
-        }
-        if (i == num.size() + 1) {
-            x = _win_x / 2 + 50;
+            x = _win_x / 2 - 150;
             y = _win_y - 150;
         }
         RL::Vector3f tmpV = {x, y, 0};
@@ -86,13 +81,9 @@ int Win::MapSelect::openMapMenu(int prev) {
             return 6;
             // choose map
         }
-        if (_btn[_btn.size() - 2].getBtnAction() == true) {
-            _btn[_btn.size() - 2].setBtnAction(false);
-            return prev;
-        }
         if (_btn[_btn.size() - 1].getBtnAction() == true) {
             _btn[_btn.size() - 1].setBtnAction(false);
-            return 4;
+            return prev;
         }
     }
     return 5;

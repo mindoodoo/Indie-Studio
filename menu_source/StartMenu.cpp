@@ -104,5 +104,6 @@ int Win::StartMenu::starIntro()
     _window->clearWindow(WHITE);
     _intro->draw();
     EndDrawing();
+    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
     return 0;
 }

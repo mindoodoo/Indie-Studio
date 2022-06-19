@@ -36,7 +36,7 @@ class AISystem : public ISystem {
         };
         ~AISystem() {};
 
-        void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying, int &maxCoins) {
+        void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying, std::vector<std::size_t> &deadPlayers, int &maxCoins) {
             for (EntityID ent : EntityViewer<Pos, Sprite, CollisionObjectType, AIData>(*_em.get())) {
                 _ent = ent;
                 _foundTarget = false;
@@ -293,7 +293,6 @@ class AISystem : public ISystem {
                     for (int x = startX; x <= endX; x++) {
                         for (Pos curPos : bombPos) {
                             if (!_detectedBomb && round(curPos.x) == x && round(curPos.y) == y) {
-                                // std::cout << "found BOMB" << std::endl;
                                 _target = {(float)x, (float)y, 1};
                                 _bombPos.push_back(_target);
                                 _detectedBomb = true;

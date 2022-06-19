@@ -19,11 +19,12 @@ Win::Settings::Settings(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::
     _text.push_back("EFFECT VOLUME");
     _text.push_back("MUSIC VOLUME");
     _text.push_back("MUTE");
-    _text.push_back("+");
     _text.push_back("-");
     _text.push_back("+");
     _text.push_back("-");
+    _text.push_back("+");
     _text.push_back("BACK");
+    _selected = 0;
     float x = _win_x / 2 - 350;
     float y = _win_y / 3;
     for (int i = 0; i < 6; i++) {
@@ -69,34 +70,57 @@ int Win::Settings::openSettings(int prev)
     _mousePt = _inputManager->getMousePosition();
     drawSettings();
     for (int i = 0; i < _btn.size(); i++) {
-        _btn[i].setBtnState(0);
+        if (_btn[i].getBtnSelected() == false || i != 0)
+            _btn[i].setBtnState(0);
         if (CheckCollisionPointRec(_mousePt, _btn[i].getBtnBounds())) {
-            _btn[i].setBtnState(1);
+            if (_btn[i].getBtnSelected() == false || i != 0)
+                _btn[i].setBtnState(1);
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                _btn[i].setBtnState(2);
-                _btn[i].setBtnAction(true);
+                if (i == 0) {
+                    if (_btn[i].getBtnSelected() == false) {
+                        _selected++;
+                        _btn[i].setBtnState(2);
+                        _btn[i].setBtnAction(true);
+                        _btn[i].setBtnSelected(true);
+                    } else {
+                        _selected--;
+                        _btn[i].setBtnState(2);
+                        _btn[i].setBtnAction(true);
+                        _btn[i].setBtnSelected(false);
+                    }
+                } else {
+                    _btn[i].setBtnState(2);
+                    _btn[i].setBtnAction(true);
+                }
             }
         }
+        //_soundManager->updateMusicStream();
     }
     if (_btn[0].getBtnAction() == true) {
         _btn[0].setBtnAction(false);
+        _soundManager->muteGame();
         //mute game
     }
     if (_btn[1].getBtnAction() == true) {
         _btn[1].setBtnAction(false);
-        _soundManager->increaseSoundEffectVolume();
+        _soundManager->decreaseSoundEffectVolume();
+        _soundManager->playSpecificSoundFx("Item1");
     }
     if (_btn[2].getBtnAction() == true) {
         _btn[2].setBtnAction(false);
-        _soundManager->decreaseSoundEffectVolume();
+        _soundManager->increaseSoundEffectVolume();
+        _soundManager->playSpecificSoundFx("Item1");
     }
     if (_btn[3].getBtnAction() == true) {
         _btn[3].setBtnAction(false);
-        _soundManager->increaseMusicVolume();
+        _soundManager->decreaseMusicVolume();
+        //_soundManager->playSpecificMusic("Explosion1");
     }
     if (_btn[4].getBtnAction() == true) {
         _btn[4].setBtnAction(false);
-        _soundManager->decreaseMusicVolume();
+        _soundManager->increaseMusicVolume();
+        //_soundManager->playSpecificMusic("Explosion1");
+
     }
     if (_btn[5].getBtnAction() == true) {
         _btn[5].setBtnAction(false);

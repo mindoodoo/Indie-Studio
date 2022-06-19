@@ -124,6 +124,7 @@ void RL::SoundManager::updateMusicStream()
     UpdateMusicStream(this->_songs[_currentSongPlaying]._song);
     this->_songTimePlayed = GetMusicTimePlayed(this->_songs[_currentSongPlaying]._song) /
     GetMusicTimeLength(this->_songs[_currentSongPlaying]._song) * 400;
+    SetMusicVolume(this->_songs[_currentSongPlaying]._song, this->_musicVolume);
     if (this->_songTimePlayed > 399) {
         StopMusicStream(this->_songs[_currentSongPlaying]._song);
         this->_currentSongPlaying = -1;
@@ -224,14 +225,18 @@ void RL::SoundManager::increaseSoundEffectVolume()
 {
     if (this->_soundEffectVolume >= 1.0f)
         return;
-    this->_soundEffectVolume += 0.1f;  
+    this->_soundEffectVolume += 0.1f;
+    std::cout << "Sound Volume: " << this->_soundEffectVolume << std::endl;
+
 }
 
 void RL::SoundManager::decreaseSoundEffectVolume()
 {
-    if (this->_soundEffectVolume <= 1.0f)
+    if (this->_soundEffectVolume <= 0)
         return;
-    this->_soundEffectVolume -= 0.1f;    
+    this->_soundEffectVolume -= 0.1f;
+    std::cout << "Sound Volume: " << this->_soundEffectVolume << std::endl;
+
 }
 
 //getters
@@ -259,4 +264,15 @@ float RL::SoundManager::getMusicVolume()
 float RL::SoundManager::getSoundEffectVolume()
 {
     return this->_soundEffectVolume;
+}
+
+void RL::SoundManager::muteGame()
+{
+    if (_soundEffectVolume == 0 || _musicVolume == 0) {
+        _soundEffectVolume = 0.5f;
+        _musicVolume = 0.5f;
+    } else {
+        _soundEffectVolume = 0;
+        _musicVolume = 0;
+    }
 }

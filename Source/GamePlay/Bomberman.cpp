@@ -8,7 +8,7 @@
 #include "Bomberman.hpp"
 
 Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager, std::vector<PlayerChoice> playerChoices, bool coinMode)
-    : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager), _background("./RaylibTesting/Assets/Background/background1.png"), _layout("./Source/PowerUps/Layout_Small.png"), _saveManager(SaveManager)
+    : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager), _background("./RaylibTesting/Assets/Background/background1.png"), _layout("./Source/PowerUps/Layout_Small.png"), _saveManager(SaveManager), _uiManager(Window)
 {
     _background.resize(_window->getDimensions());
     _layout.resize({_window->getDimensions().x, 150});
@@ -22,7 +22,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _systems.push_back(std::make_shared<MovementSystem>(_em, _map, _inputManager));
     _systems.push_back(std::make_shared<AISystem>(_em, _map));
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
-    
+
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Bomb/bombModified.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Explosion/textures/fire.png", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", RL::MODEL, 3));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Coin/coin.png", "./RaylibTesting/Assets/Coin/coin.obj", "", RL::COIN, 1));
@@ -63,24 +63,31 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
 
     //Check if loading game or not
     if (!_saveManager->getLoading()) {
-        std::cout << "TRY TO LOAD GAME" << std::endl;
-        for (int x = 0; x < _saveManager->getPlayers().size(); x++)
-            createPlayerLoadGame(_saveManager->getPlayerPos(x), _saveManager->getSkillsetPlayer(x), _saveManager->getScorePlayer(x), _saveManager->getBombcapPlayer(x));
+        _maxGameTime = _saveManager->getTime();
+        int count = 0;
+        UIPos uiPos;
+        for (int x = 0; x < _saveManager->getPlayers().size(); x++) {
+            uiPos = {int((x * windowPercentageShift) + (windowPercentageOffsetPowerUp[x]) + 65), 5};
+            createPlayerLoadGame(_saveManager->getPlayerPos(x), _saveManager->getSkillsetPlayer(x),
+                                 _saveManager->getScorePlayer(x), _saveManager->getBombcapPlayer(x), playerChoices[x].Character, uiPos);
+            count++;
+        }
         if (_saveManager->getPlayers().size() >= 1) {
             _player.push_back(INVALID_ENTITY);
         }
-        for (int x = 0; x < _saveManager->getAIs().size(); x++)
-            createAILoadGame(_saveManager->getAIPos(x), _saveManager->getSkillsetAI(x),_saveManager->getScoreAI(x) ,_saveManager->getBombcapAI(x));
+        for (int x = 0; x < _saveManager->getAIs().size(); x++) {
+            uiPos = {int((count * windowPercentageShift) + (windowPercentageOffsetPowerUp[count]) + 65), 5};
+            createAILoadGame(_saveManager->getAIPos(x), _saveManager->getSkillsetAI(x), _saveManager->getScoreAI(x),
+                             _saveManager->getBombcapAI(x), playerChoices[count].Character, uiPos);
+            count++;
+        }
 
         for (int x = 0; x < _saveManager->getItems().size(); x++)
             generateItemsLoadGame(_saveManager->getItemPos(x), _saveManager->getSkillsetItem(x));
 
         generateItems(0);
-
-        //TODO change id system
         for (int x = 0; x < _saveManager->getBombs().size(); x++)
             createBomb(_saveManager->getBombPos(x), {EntityID(x)},_saveManager->getSkillsetBomb(x), _saveManager->getBombTime(x));
-
 
         for (int x = 0; x < _saveManager->getExplosions().size(); x++)
             createExplosion(_saveManager->getExploPos(x), {EntityID(x)}, _saveManager->getExploTime(x));
@@ -90,9 +97,8 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
         _deltaTimer.startTimer();
 
     } else {
-        std::cout << "NEW GAME" << std::endl << std::endl;
+        _maxGameTime = 180;
         for (int i = 0 ; i < playerChoices.size(); i++) {
-            std::cout << "choices: " << playerChoices[i].CPU << std::endl;
             UIPos uiPos = {int((i * windowPercentageShift) + (windowPercentageOffsetPowerUp[i]) + 65), 5};
             if (playerChoices[i].CPU == false) 
                 createPlayer(playerStartPositions[i], playerChoices[i].Character, uiPos);
@@ -111,7 +117,6 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
         _gameTimer.startTimer();
         _deltaTimer.startTimer();
     }
-    std::cout << "Start game" << std::endl;
     _gamePaused = false;
     this->_pauseGame = false;
 }
@@ -265,17 +270,33 @@ void Bomberman::createPlayer(Pos pos, int character, UIPos uiPos) // extra argum
     _em->Assign<Sprite>(id, Sprite{Player});
     _window->queueDrawable(Player);
 }
-void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCapacity capa)
+
+void Bomberman::createUIPowerIconsForPlayer(Skillset skill, UIPos uiPos, bool continueToRight)
 {
-    std::cout <<"start create loadplayer" <<std::endl;
+    for (int i = 1; i <= skill.bombUp; i++)
+        _uiManager.createBombUp(uiPos, i, continueToRight);
+
+    for (int i = 1; i <= skill.speedUp; i++)
+        _uiManager.createSpeedUp(uiPos, i, continueToRight);
+
+    for (int i = 2; i <= skill.fireUp; i++)
+        _uiManager.createFireUp(uiPos, i, continueToRight);
+
+    if (skill.wallPass)
+        _uiManager.createWallPass(uiPos);
+}
+
+
+void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCapacity capa, int character, UIPos uiPos)
+{
+    std::vector<std::string> paths = findCharPaths(character);
+
     EntityID id = _em->CreateNewEntity();
-    std::string playtex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
-    std::string playermod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
-    std::string playeranim = playermod;
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
-    _em->Assign<UIPos>(id, {0, 0}); // TODO: replace default values by saved stuff
-    _em->Assign<UiContinue>(id, {false}); //((*if is first or second player/ai) ? false : true));
+    _em->Assign<UIPos>(id, uiPos);
+    createUIPowerIconsForPlayer(skill, uiPos, {(character <= 1 ? false : true)});
+    _em->Assign<UiContinue>(id, {(character <= 1 ? false : true)});
     _em->Assign<Velocity>(id, {0.08,0.08});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, {std::size_t (score)});
@@ -284,7 +305,7 @@ void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCap
     _em->Assign<BombCapacity>(id, capa);
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{PLAYER});
 
-    RL::Drawable3D *Player = new RL::Drawable3D(playtex, playermod, playeranim, RL::MODEL, 0.25);
+    RL::Drawable3D *Player = new RL::Drawable3D(paths[0], paths[1], paths[1], RL::MODEL, 0.25);
     Player->setPosition((RL::Vector3f){
             translateFigureCoordinates(pos.x, _map->getMapWidth()),
             0.5f,
@@ -294,15 +315,16 @@ void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCap
     _window->queueDrawable(Player);
 }
 
-void Bomberman::createAILoadGame(Pos pos, Skillset skill, int score, BombCapacity capa)
+void Bomberman::createAILoadGame(Pos pos, Skillset skill, int score, BombCapacity capa, int character, UIPos uiPos)
 {
     EntityID id = _em->CreateNewEntity();
-    std::string aitex = "./RaylibTesting/Assets/3d_models/Players/PlayerFour.png";
-    std::string aimod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
+    std::vector<std::string> paths = findCharPaths(character);
+
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
-    _em->Assign<UIPos>(id, {0, 0}); // TODO: replace default values by saved stuff
-    _em->Assign<UiContinue>(id, {true}); //((*if is first or second player/ai) ? false : true));
+    _em->Assign<UIPos>(id, uiPos);
+    _em->Assign<UiContinue>(id, {(character <= 1 ? false : true)});
+    createUIPowerIconsForPlayer(skill, uiPos, {(character <= 1 ? false : true)});
     _em->Assign<Velocity>(id, {0.04,0.04});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, {std::size_t(score)});
@@ -314,7 +336,7 @@ void Bomberman::createAILoadGame(Pos pos, Skillset skill, int score, BombCapacit
     AIData data = {false, {0, 0, 0}, RANDOM, 5, {}, {1, 2}};
     _em->Assign<AIData>(id, data);
 
-    RL::Drawable3D *AI = new RL::Drawable3D(aitex, aimod, aimod, RL::MODEL, 0.25);
+    RL::Drawable3D *AI = new RL::Drawable3D(paths[0], paths[1], paths[1], RL::MODEL, 0.25);
     AI->setPosition((RL::Vector3f){
             translateFigureCoordinates(pos.x, _map->getMapWidth()),
             0.5f,
@@ -569,7 +591,7 @@ int Bomberman::runFrame()
     checkBombalive();
     checkExplosionalive();
     for (std::shared_ptr<ISystem> system : _systems)
-        system->update(_deltaTimer.returnTime(), _player, _aiBombLaying, _maxCoins);
+        system->update(_deltaTimer.returnTime(), _player, _aiBombLaying, _deadPlayers, _maxCoins);
     for (EntityID id : _aiBombLaying) {
         if (checkIfVectorContain(_player, id))
             layBomb(id);
@@ -579,6 +601,11 @@ int Bomberman::runFrame()
     startDrawScene();
     _deltaTimer.restartTimer();
     return 6;
+}
+
+int Bomberman::getTimeasInt()
+{
+    return _maxGameTime - _gameTimer.returnTime();
 }
 
 std::string Bomberman::getGameTime()
@@ -607,6 +634,20 @@ void Bomberman::stopDrawScene()
 {
 }
 
+std::vector<std::size_t> Bomberman::getDeadPlayers()
+{
+    return _deadPlayers;
+}
+
+void Bomberman::addRemainingPlayer()
+{
+    for(int i = 0; i < _player.size(); i++) {
+        if (_player[i] != INVALID_ENTITY) {
+            _deadPlayers.push_back(GetEntityIndex(_player[i]));
+        }
+    }
+}
+
 bool Bomberman::isGameEnd()
 {
     if (_maxGameTime - _gameTimer.returnTime() < 0)
@@ -623,10 +664,14 @@ bool Bomberman::isGameEnd()
             playerCount++;
 
     }
-    if (playerCount == 0)
+    if (playerCount == 0) {
+        addRemainingPlayer();
         return true;
-    if (aiCount == 0 && playerCount <= 1)
+    }
+    if (aiCount == 0 && playerCount <= 1) {
+        addRemainingPlayer();
         return true;
+    }
     return false;
 }
 

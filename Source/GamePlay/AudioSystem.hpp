@@ -22,7 +22,7 @@ class AudioSystem : public ISystem {
         }
         ~AudioSystem();
 
-        void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying, int &maxCoins) override {
+        void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying, std::vector<std::size_t> &deadPlayers, int &maxCoins) override {
             _soundManager->updateMusicStream();
         }
 

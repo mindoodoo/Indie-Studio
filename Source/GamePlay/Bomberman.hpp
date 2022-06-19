@@ -26,6 +26,7 @@
 #include "SoundManager.hpp"
 #include "Timer.hpp"
 #include "RaylibTypeEncaps.hpp"
+#include "../Raylib/UIManager.hpp"
 #include "../Savegame/SaveManager.hpp"
 
 class Bomberman {
@@ -39,12 +40,13 @@ class Bomberman {
 
         void generateItems(int wallPassAmount);
         void generateItemsLoadGame(Pos pos, Skillset skill);
-        void createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCapacity capa);
-        void createAILoadGame(Pos pos, Skillset skill, int score, BombCapacity capa);
+        void createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCapacity capa, int character, UIPos uiPos);
+        void createAILoadGame(Pos pos, Skillset skill, int score, BombCapacity capa, int character, UIPos uiPos);
         void createSpeedUpItem(Pos pos, bool hidden);
         void createBombUpItem(Pos pos, bool hidden);
         void createFireUpItem(Pos pos, bool hidden);
         void createWallPassItem(Pos pos, bool hidden);
+        void createUIPowerIconsForPlayer(Skillset skill, UIPos uiPos, bool continueToRight);
         void createMonster(Pos pos);
         void createCoin(Pos pos);
         void generateCoins();
@@ -70,12 +72,16 @@ class Bomberman {
         bool isGameEnd();
         void pauseBombCounters();
         void resumeBombCounters();
+        int getTimeasInt();
+        std::vector<std::size_t> getDeadPlayers();
+        void addRemainingPlayer();
 
     protected:
     private:
         std::shared_ptr<RL::Window> _window;
         std::shared_ptr<RL::InputManager> _inputManager;
         std::shared_ptr<RL::SoundManager> _soundManager;
+        UIManager _uiManager;
         std::shared_ptr<RL::Map> _map;
         RL::CollisionManager _colManager;
         std::shared_ptr<RL::SaveManager> _saveManager;
@@ -88,6 +94,7 @@ class Bomberman {
         std::vector<RL::Drawable2D *> _allIcons;
         RL::Drawable2D _background;
         RL::Drawable2D _layout;
+        std::vector<std::size_t> _deadPlayers;
 
         Timer _gameTimer;
         int _maxGameTime;

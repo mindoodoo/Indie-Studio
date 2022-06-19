@@ -67,6 +67,8 @@ namespace RL {
             void increaseSoundEffectVolume();
             void decreaseSoundEffectVolume();
 
+            void muteGame();
+
             void enableDisableShuffle();
 
         private:

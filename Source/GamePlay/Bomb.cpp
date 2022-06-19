@@ -65,7 +65,6 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset, float
             blocking.blockingForPlayer.push_back({ent, false});
         else
             blocking.blockingForPlayer.push_back({ent, true});
-        // std::cout << "Is blocking:" << blocking.blockingForPlayer.back().isBlocking << std::endl;
     }
     _em->Assign<BombProperty>(id, blocking);
     _window->queueDrawable(Bomb);
