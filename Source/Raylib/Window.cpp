@@ -96,7 +96,12 @@ void RL::Window::removeDrawable(IDrawable *drawable)
 void RL::Window::displayDrawable2D(RL::Drawable2D drawable)
 {
     DrawTexture(drawable.getTexture(), drawable.getPosition().x, drawable.getPosition().y, drawable.getTint());
+}
 
+void RL::Window::clearDrawables()
+{
+    this->_displayQueue2D.clear();
+    this->_displayQueue3D.clear();
 }
 
 void RL::Window::displayDrawables(Map map)

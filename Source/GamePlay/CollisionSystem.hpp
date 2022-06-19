@@ -39,8 +39,8 @@ class CollisionSystem : public ISystem {
                     CollisionObjectType* type2 = _em->Get<CollisionObjectType>(other);
                     if (*type1 == ITEM)
                         pos = entModel->model->getPosition();
-                    if (ent != other && _colManager.collisionsWithModels(*entModel->model, *otherModel->model)) {
-                        _destroyQueue.push_back(checkCollisionType(ent, other));
+                    if (ent != other) {
+                        _destroyQueue.push_back(checkCollisionType(ent, other, _colManager.collisionsWithModels(*entModel->model, *otherModel->model)));
                     }
                 }
             }
@@ -67,32 +67,34 @@ class CollisionSystem : public ISystem {
             return false;
         }
 
-        EntityID checkCollisionType(EntityID ent, EntityID other) {
+        EntityID checkCollisionType(EntityID ent, EntityID other, bool collide) {
             CollisionObjectType* type1 = _em->Get<CollisionObjectType>(ent);
             CollisionObjectType* type2 = _em->Get<CollisionObjectType>(other);
 
             if (*type1 == *type2)
                 return INVALID_ENTITY;
             if (*type1 < *type2)
-                return callCollisionHandler(ent, type1, other, type2);
+                return callCollisionHandler(ent, type1, other, type2, collide);
             else
-                return callCollisionHandler(other, type2, ent, type1);
+                return callCollisionHandler(other, type2, ent, type1, collide);
         };
 
-        EntityID callCollisionHandler(EntityID lowEnt, CollisionObjectType* low, EntityID highEnt, CollisionObjectType* high) {
+        EntityID callCollisionHandler(EntityID lowEnt, CollisionObjectType* low, EntityID highEnt, CollisionObjectType* high, bool collide) {
             switch (*low) {
                 case ITEM:
-                    return handleItemCollision(lowEnt, low, highEnt, high);
+                    return handleItemCollision(lowEnt, low, highEnt, high, collide);
                 case BREAKABLE_BLOCK:
                 case PLAYER:
                 case AI:
                 case MONSTER:
-                    return handleBombCollision(lowEnt, low, highEnt, high);
+                    return handleBombCollision(lowEnt, low, highEnt, high, collide);
             }
             return INVALID_ENTITY;
         };
 
-        EntityID handleItemCollision(EntityID itemEnt, CollisionObjectType* item, EntityID highEnt, CollisionObjectType* high) {
+        EntityID handleItemCollision(EntityID itemEnt, CollisionObjectType* item, EntityID highEnt, CollisionObjectType* high, bool collide) {
+            if (!collide)
+                return INVALID_ENTITY;
             if ((*high == PLAYER || *high == AI) && !checkIfVectorContains(_destroyQueue, itemEnt)) {
                 Sprite* itemSprite = _em->Get<Sprite>(itemEnt);
                 if (itemSprite->model->isHidden())
@@ -124,15 +126,29 @@ class CollisionSystem : public ISystem {
             return INVALID_ENTITY;
         };
 
-        EntityID handleBombCollision(EntityID lowEnt, CollisionObjectType* low, EntityID highEnt, CollisionObjectType* high) {
+        EntityID handleBombCollision(EntityID lowEnt, CollisionObjectType* low, EntityID highEnt, CollisionObjectType* high, bool collide) {
+            if (*high == BOMB && (*low == PLAYER || *low == AI)) {
+                BombProperty* bombProperty = _em->Get<BombProperty>(highEnt);
+                BombOwner* bombOwner = _em->Get<BombOwner>(highEnt);
+                Sprite* bomb = _em->Get<Sprite>(highEnt);
+                Pos* bombPos = _em->Get<Pos>(highEnt);
+                Sprite* player = _em->Get<Sprite>(lowEnt);
+                Pos* playerPos = _em->Get<Pos>(lowEnt);
+                for (int i = 0; i < bombProperty->blockingForPlayer.size(); i++) {
+                    if (bombProperty->blockingForPlayer[i].id == lowEnt) {
+                        if (!bombProperty->blockingForPlayer[i].isBlocking && !collide)
+                            bombProperty->blockingForPlayer[i].isBlocking = true;
+                    }
+                }
+            }
+            if (!collide)
+                return INVALID_ENTITY;
             if (*high == EXPLOSION && *low == MONSTER && !checkIfVectorContains(_destroyQueue, lowEnt)) {
                 BombOwner* player = _em->Get<BombOwner>(highEnt);
                 Score* scoreIncrease = _em->Get<Score>(lowEnt);
                 _em->Get<Score>(player->id)->score += scoreIncrease->score;
-                std::cout << "bomb killed monster, score increase by " << scoreIncrease->score << std::endl;
                 return lowEnt;
             } else if (*high == EXPLOSION && !checkIfVectorContains(_destroyQueue, lowEnt)) {
-                std::cout << "bomb killed player or breakable block " << std::endl;
                 return lowEnt;
             }
             return INVALID_ENTITY;

@@ -30,6 +30,7 @@ class MovementSystem : public ISystem {
 
         void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying) override {
             for (EntityID ent : EntityViewer<Pos, Velocity, Input, Sprite, CollisionObjectType>(*_em.get())) {
+                _ent = ent;
                 Pos* playerPos = _em->Get<Pos>(ent);
                 Velocity* playerVel = _em->Get<Velocity>(ent);
                 Input* playerMovement = _em->Get<Input>(ent);
@@ -99,6 +100,19 @@ class MovementSystem : public ISystem {
                 return false;
             if (!wallPass && _colManager.collisionsWithCrates((RL::Vector3f){pos.x, pos.y, pos.z}, *_map.get()))
                 return false;
+            Sprite *player = _em->Get<Sprite>(_ent);
+            Pos *playerPos = _em->Get<Pos>(_ent);
+            for (EntityID ent : EntityViewer<Pos, Sprite, BombProperty, BombOwner>(*_em.get())) {
+                Sprite *bomb = _em->Get<Sprite>(ent);
+                Pos *bombPos = _em->Get<Pos>(ent); //remove again
+                BombProperty *bombProperty = _em->Get<BombProperty>(ent);
+                if (_colManager.collisionsWithModels((RL::Vector3f){pos.x, pos.y, pos.z}, *bomb->model)) {
+                    for (Blocking blocking : bombProperty->blockingForPlayer) {
+                        if (blocking.id == _ent && blocking.isBlocking)
+                            return false;
+                    }
+                }
+            }
             return true;
         }
 
@@ -151,7 +165,7 @@ class MovementSystem : public ISystem {
             float z = translatePosCoordinates(pos->y, _map->getMapDepth());
             if (pos->x >= vel.x && checkMovable({
                 translatePosCoordinates(pos->x - vel.x, _map->getMapWidth()),
-                0.5f + (z * 0.01f),
+                0.5f,
                 z,
             }, wallPass)) {
                 pos->x -= vel.x;
@@ -195,7 +209,7 @@ class MovementSystem : public ISystem {
             float z = translatePosCoordinates(pos->y - vel.y, _map->getMapDepth());
             if (pos->y >= vel.y && checkMovable({
                 translatePosCoordinates(pos->x, _map->getMapWidth()),
-                0.5f + (z * 0.01f),
+                0.5f,
                 z,
             }, wallPass)) {
                 pos->y -= vel.y;
@@ -219,7 +233,7 @@ class MovementSystem : public ISystem {
             float z = translatePosCoordinates(pos->y + vel.y, _map->getMapDepth());
             if (pos->y + vel.y < _map->getParsedMap().size() && checkMovable({
                 translatePosCoordinates(pos->x, _map->getMapWidth()),
-                0.5f + (z * 0.01f),
+                0.5f,
                 z,
             }, wallPass)) {
                 pos->y += vel.y;
@@ -233,7 +247,7 @@ class MovementSystem : public ISystem {
             float z = translatePosCoordinates(pos->y - (vel.y / 2), _map->getMapDepth());
             if (pos->x >= vel.x && pos->y >= vel.y && checkMovable({
                 translatePosCoordinates(pos->x - (vel.x / 2), _map->getMapWidth()),
-                0.5f + (z * 0.01f),
+                0.5f,
                 z,
             }, wallPass)) {
                 pos->x -= vel.x / 2;
@@ -248,7 +262,7 @@ class MovementSystem : public ISystem {
             float z = translatePosCoordinates(pos->y - (vel.y / 2), _map->getMapDepth());
             if (pos->x + vel.x < _map->getParsedMap()[pos->y].size() && pos->y >= vel.y && checkMovable({
                 translatePosCoordinates(pos->x + (vel.x / 2), _map->getMapWidth()),
-                0.5f + (z * 0.01f),
+                0.5f,
                 z,
             }, wallPass)) {
                 pos->x += vel.x / 2;
@@ -263,7 +277,7 @@ class MovementSystem : public ISystem {
             float z = translatePosCoordinates(pos->y + (vel.y / 2), _map->getMapDepth());
             if (pos->x >= vel.x && pos->y + vel.y < _map->getParsedMap().size() && checkMovable({
                 translatePosCoordinates(pos->x - (vel.x / 2), _map->getMapWidth()),
-                0.5f + (z * 0.01f),
+                0.5f,
                 z,
             }, wallPass)) {
                 pos->x -= vel.x / 2;
@@ -278,7 +292,7 @@ class MovementSystem : public ISystem {
             float z = translatePosCoordinates(pos->y + (vel.y / 2), _map->getMapDepth());
             if (pos->x + vel.x < _map->getParsedMap()[pos->y].size() && pos->y + vel.y < _map->getParsedMap().size() && checkMovable({
                 translatePosCoordinates(pos->x + (vel.x / 2), _map->getMapWidth()),
-                0.5f + (z * 0.01f),
+                0.5f,
                 z,
             }, wallPass)) {
                 pos->x += vel.x / 2;
@@ -293,6 +307,7 @@ class MovementSystem : public ISystem {
         std::shared_ptr<RL::InputManager> _inputManager;
         RL::CollisionManager _colManager;
         PlayerType _type = Other;
+        EntityID _ent;
 };
 
 #endif /* !MOVEMENTSYSTEM_HPP_ */

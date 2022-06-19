@@ -16,6 +16,7 @@
 #include "AISystem.hpp"
 #include "AudioSystem.hpp"
 #include "Timer.hpp"
+#include "../GameEngine/CollisionManager.hpp"
 #include "../Raylib/Drawables/Drawable3D.hpp"
 #include "../Raylib/Drawables/Drawable2D.hpp"
 #include "../Raylib/InputManager.hpp"
@@ -24,39 +25,47 @@
 #include "SoundManager.hpp"
 #include "Timer.hpp"
 #include "RaylibTypeEncaps.hpp"
+#include "../Savegame/SaveManager.hpp"
 
 class Bomberman {
     public:
-        Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager , std::vector<PlayerChoice> playerChoices);
+        Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::shared_ptr<RL::SaveManager> SaveManager, std::vector<PlayerChoice> playerChoices);
         ~Bomberman();
+        std::shared_ptr<EntityManager> getEm();
 
-        void generateItems();
         void createPlayer(Pos pos, int character, UIPos uiPos);
         void createAI(Pos pos, int character, UIPos uiPos);
-        void createSpeedUpItem(Pos pos);
-        void createBombUpItem(Pos pos);
-        void createFireUpItem(Pos pos);
-        void createWallPassItem(Pos pos);
+
+        void generateItems(int wallPassAmount);
+        void generateItemsLoadGame(Pos pos, Skillset skill);
+        void createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCapacity capa);
+        void createAILoadGame(Pos pos, Skillset skill, int score, BombCapacity capa);
+        void createSpeedUpItem(Pos pos, bool hidden);
+        void createBombUpItem(Pos pos, bool hidden);
+        void createFireUpItem(Pos pos, bool hidden);
+        void createWallPassItem(Pos pos, bool hidden);
         void createMonster(Pos pos);
         void layBomb(EntityID playerid);
         void checkBombalive();
-        bool createBomb(Pos pos, EntityID bombOwner, Skillset skillset);
+        bool createBomb(Pos pos, EntityID bombOwner, Skillset skillset, float time);
         void checkInput();
         void getFirstPlayerInput();
         void getSecondPlayerInput();
         void startGameTimers();
         void stopGameTimers();
-        bool runFrame();
+        int runFrame();
         bool checkIfVectorContain(std::vector<EntityID> vector, EntityID id);
         void startDrawScene();
         void stopDrawScene();
         void checkGameEnd();
         void createBombExplosions(EntityID ent);
-        bool createExplosion(Pos pos, EntityID bombOwner);
+        bool createExplosion(Pos pos, EntityID bombOwner, float time);
         void checkExplosionalive();
         void smoothBombResize(RL::Drawable3D *BombModel);
         RL::Drawable3D* makeDrawable3DPointer(RL::Drawable3D Model);
         bool isGameEnd();
+        void pauseBombCounters();
+        void resumeBombCounters();
 
     protected:
     private:
@@ -64,6 +73,8 @@ class Bomberman {
         std::shared_ptr<RL::InputManager> _inputManager;
         std::shared_ptr<RL::SoundManager> _soundManager;
         std::shared_ptr<RL::Map> _map;
+        RL::CollisionManager _colManager;
+        std::shared_ptr<RL::SaveManager> _saveManager;
         std::vector<int> _event;
         std::vector<std::shared_ptr<ISystem>> _systems;
         std::vector<EntityID> _player;
@@ -77,6 +88,7 @@ class Bomberman {
         Timer _gameTimer;
         Timer _deltaTimer;
         bool _gamePaused;
+        bool _pauseGame;
 };
 
 float translateFigureCoordinates(float pos, int borderSize);

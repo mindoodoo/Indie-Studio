@@ -52,6 +52,7 @@ namespace RL {
 
         //Draw a 2Ddrawable by passing it as argument to
         void displayDrawable2D(RL::Drawable2D drawable);
+        void clearDrawables();
         
         // Display all 2D and 3D Drawables in queue
         void displayDrawables(Map map);

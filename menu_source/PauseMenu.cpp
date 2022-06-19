@@ -67,21 +67,24 @@ int Win::PauseMenu::openPauseMenu()
             }
         }
     }
+    // Save button
     if (_btn[0].getBtnAction() == true) {
         _btn[0].setBtnAction(false);
-        return 0;
+        return 99; // Do nothing for the time being
     }
+
     if (_btn[1].getBtnAction() == true) {
         _btn[1].setBtnAction(false);
-        return 6;
+        return 0;
     }
     if (_btn[2].getBtnAction() == true) {
         _btn[2].setBtnAction(false);
-        return 3;
+        return 6;
     }
+    // Settings
     if (_btn[3].getBtnAction() == true) {
         _btn[3].setBtnAction(false);
-        return 4;
+        return 3;
     }
-    return 5;
+    return 7;
 }

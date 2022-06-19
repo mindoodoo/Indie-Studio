@@ -29,7 +29,8 @@ enum UserInput {
     LEFT2 = 97,
     DOWN2 = 115,
     RIGHT2 = 100,
-    NONE = -7
+    NONE = -7,
+    ESCAPE = -8
 };
 
 enum MapTranslation {
@@ -99,6 +100,15 @@ struct BombOwner {
 struct UIPos {
     int x;
     int y;
+};
+
+struct Blocking {
+    EntityID id;
+    bool isBlocking;
+};
+
+struct BombProperty {
+    std::vector<Blocking> blockingForPlayer;
 };
 
 struct Pos {

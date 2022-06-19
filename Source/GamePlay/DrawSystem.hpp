@@ -20,34 +20,42 @@ class DrawSystem : public ISystem {
         ~DrawSystem() {};
 
         void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying) override {
+            borderWidth = _map->getMapWidth() / 2;
+            borderDepth = _map->getMapDepth() / 2;
+            widthEven = (_map->getMapWidth() % 2 == 0);
+            depthEven = (_map->getMapDepth() % 2 == 0);
             // _map->draw_map();
             for (EntityID ent : EntityViewer<Pos, Sprite, CollisionObjectType>(*_em.get())) {
                 Pos *objectPos = _em->Get<Pos>(ent);
                 Sprite *objectSprite = _em->Get<Sprite>(ent);
-                CollisionObjectType *objectType = _em->Get<CollisionObjectType>(ent);
-                float z = translateObjectCoordinates(objectPos->y, _map->getMapDepth());
-                if (*objectType != ITEM) {
+                CollisionObjectType type = *_em->Get<CollisionObjectType>(ent);
+                if (type != ITEM) {
                     objectSprite->model->setPosition((RL::Vector3f){
-                        translateObjectCoordinates(objectPos->x, _map->getMapWidth()),
-                        0.5f + (z * 0.01f),
-                        z
+                        translateObjectCoordinates(objectPos->x, borderWidth, widthEven),
+                        0.5f,
+                        translateObjectCoordinates(objectPos->y, borderDepth, depthEven)
                     });
+                }
+                if (type == PLAYER || type == AI || type == EXPLOSION)            
                     objectSprite->model->updateModelsAnimation();
-                }                
                 // objectSprite->model.draw();
             }
         }
 
-        float translateObjectCoordinates(float pos, int borderSize)
+        float translateObjectCoordinates(float pos, int borderSize, bool even)
         {
-            float newpos = pos - (borderSize / 2);
-            if (borderSize % 2 == 0)
+            float newpos = pos - (borderSize);
+            if (even)
                 newpos += 0.5;
             return newpos;
         }
 
     private:
         std::shared_ptr<RL::Map> _map;
+        int borderWidth;
+        int borderDepth;
+        bool widthEven;
+        bool depthEven;
 };
 
 #endif /* !DRAWSYSTEM_HPP_ */

@@ -97,3 +97,10 @@ bool RL::CollisionManager::collisionsWithModels(RL::Drawable3D Model1, RL::Drawa
     
     return collision;
 }
+
+bool RL::CollisionManager::collisionsWithModels(RL::Vector3f ModelPos, RL::Drawable3D Model2)
+{
+    float model2radius = 0.30f;
+    bool collision = CheckCollisionSpheres(ModelPos, 0.3f, Model2.getPosition(), model2radius);    
+    return collision;
+}

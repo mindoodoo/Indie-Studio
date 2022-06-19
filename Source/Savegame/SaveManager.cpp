@@ -23,6 +23,29 @@ std::vector<std::string> seperateLine(std::string line, char sep)
     return result;
 }
 
+Skillset readSkillset(std::string line)
+{
+    Skillset result;
+    std::vector<std::string> tmp;
+    for (int x = 0; x < line.size(); x++) {
+        if (line[x] == '[') {
+            tmp = seperateLine(line, '[');
+            tmp = seperateLine(tmp[1], ']');
+            break;
+        }
+    }
+    tmp = seperateLine(tmp[0], ',');
+    result.bombUp = stoi(tmp[0]);
+    result.speedUp = stoi(tmp[1]);
+    result.fireUp = stoi(tmp[2]);
+    if (stoi(tmp[3]) == 1)
+        result.wallPass = true;
+    else
+        result.wallPass = false;
+    return result;
+}
+
+
 std::vector<std::string> loadFile(std::string path)
 {
     std::fstream file;
@@ -35,22 +58,16 @@ std::vector<std::string> loadFile(std::string path)
             content.push_back(tmp);
         }
     else
-        std::cout << "Can't open SaveMap" << std::endl;
+        std::cout << "Can't open File" << std::endl;
     file.close();
     return content;
 }
 
 RL::SaveManager::SaveManager()
 {
-    _running = false;
-    std::cout << std::endl<< std::endl<< std::endl<< std::endl<< std::endl<< std::endl;
-    loadMenu();
-    if (_running) {
-        checkEntitys(seperateLine(_menu.front(), '=')[2]);
-        _mapPath = _directory + ".saveMAP.csv";
-    }
-
-    std::cout << std::endl<< std::endl<< std::endl<< std::endl<< std::endl<< std::endl;
+    //_running = false;
+     _mapPath = _directory + ".saveMAP.csv";
+    _filepath = _directory +".saveEntitys";
 }
 
 void RL::SaveManager::loadMenu()
@@ -62,7 +79,6 @@ void RL::SaveManager::loadMenu()
         for (int y = 0; y < tmp.size(); y++) {
             checkRunning(tmp, y);
         }
-        std::cout << _menu[x] << std::endl;
     }
 
 
@@ -83,21 +99,22 @@ void RL::SaveManager::checkEntitys(std::string filename)
 {
     std::vector<std::string> file;
     std::vector<std::string> tmp;
-    std::cout << "Load Entitys in file: " << filename << std::endl;
-    file = loadFile(_directory+filename);
+    std::cout << "Load Entitys from file: " << filename << std::endl;
+    file = loadFile(filename);
 
     for (int x = 0; x < file.size(); x++) {
         tmp = seperateLine(file[x], ';');
         for (int y = 0; y < tmp.size(); y++) {
             if (tmp[y] == "PLAYER")
-                loadEntity(file[x]);
+                _playerssave.push_back(file[x]);
             if (tmp[y] == "AI")
-                loadEntity(file[x]);
+                _aissave.push_back(file[x]);
             if (tmp[y] == "BOMB")
-                loadEntity(file[x]);
+                _bombssave.push_back(file[x]);
             if (tmp[y] == "ITEM")
-                loadEntity(file[x]);
-            std::cout << "TEST " << tmp[y] << std::endl;
+                _itemssave.push_back(file[x]);
+            if (tmp[y] == "EXPLOSION")
+                _explosionssave.push_back(file[x]);
         }
     }
 }
@@ -116,7 +133,15 @@ std::vector <std::string> RL::SaveManager::getMenu()
 
 std::string RL::SaveManager::getMappath()
 {
+    std::cout << "You get the following mapPath: " << _mapPath << std::endl;
     return _mapPath;
+}
+
+bool RL::SaveManager::getLoading()
+{
+    if (_mapPath == _directory+".saveMAP.csv")
+        return false;
+    return true;
 }
 
 void RL::SaveManager::updateMap(int map)
@@ -130,6 +155,9 @@ void RL::SaveManager::updateMap(int map)
             break;
         case -1:
             _mapPath = _directory + ".saveMAP.csv";
+            _running = true;
+            checkEntitys(_filepath);
+            //clearEntityFile();
             break;
     }
 }
@@ -164,21 +192,18 @@ Pos readPos(std::string line)
         }
     }
     tmp = seperateLine(tmp[0], ',');
-    result.x = stoi(tmp[0]);
-    result.y = stoi(tmp[1]);
-    result.z = stoi(tmp[2]);
+    result.x = stof(tmp[0]);
+    result.y = stof(tmp[1]);
+    result.z = stof(tmp[2]);
 
     return result;
 }
 
 Pos RL::SaveManager::getPlayerPos(int index)
 {
-    std::vector<std::string> tmp = seperateLine(_entitys[index],';');
+    std::vector<std::string> tmp = seperateLine(_playerssave[index],';');
     for (int x = 0; x < tmp.size(); x++) {
         if (tmp[x] == "PLAYER") {
-            return readPos(tmp[2]);
-        } else if (tmp[x] == "AI") {
-            tmp = seperateLine(tmp[5], '=');
             return readPos(tmp[2]);
         }
     }
@@ -186,14 +211,79 @@ Pos RL::SaveManager::getPlayerPos(int index)
     return Pos{-1,-1,-99};
 }
 
-BombCapacity RL::SaveManager::getBombcap(int index)
+Pos RL::SaveManager::getAIPos(int index)
 {
-    std::vector<std::string> tmp = seperateLine(_entitys[index],';');
+    std::vector<std::string> tmp = seperateLine(_aissave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+       if (tmp[x] == "AI") {
+           return readPos(tmp[2]);
+        }
+    }
+    std::cerr << "Unable to load AI position" << std::endl;
+    return Pos{-1,-1,-99};
+}
+
+
+Pos RL::SaveManager::getBombPos(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_bombssave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "BOMB") {
+            return readPos(tmp[2]);
+        }
+    }
+    std::cerr << "Unable to load Bomb position" << std::endl;
+    return Pos{-1,-1,-99};
+}
+
+Pos RL::SaveManager::getItemPos(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_itemssave[index],';');
+    for (int x = 0; x < tmp.size(); x++)
+        if (tmp[x] == "ITEM")
+            return readPos(tmp[2]);
+    std::cerr << "Unable to load Item position" << std::endl;
+    return Pos{-1, -1, -99};
+}
+
+float RL::SaveManager::getBombTime(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_bombssave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "BOMB")
+            return std::stof(seperateLine(tmp[5], '=')[1]);
+    }
+    std::cerr << "Unable to load Bomb time" << std::endl;
+    return -99;
+}
+
+float RL::SaveManager::getExploTime(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_explosionssave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "EXPLOSION")
+            return std::stof(seperateLine(tmp[5], '=')[1]);
+    }
+    std::cerr << "Unable to load Bomb time" << std::endl;
+    return -99;
+}
+
+Skillset RL::SaveManager::getSkillsetBomb(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_bombssave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "BOMB")
+            return readSkillset(tmp[3]);
+    }
+    std::cerr << "Unable to load skillset" << std::endl;
+    return Skillset{99,99,99, false};
+}
+
+BombCapacity RL::SaveManager::getBombcapPlayer(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_playerssave[index],';');
     for (int x = 0; x < tmp.size(); x++) {
         if (tmp[x] == "PLAYER") {
-            return readBomb(tmp[4]);
-        } else if (tmp[x] == "AI") {
-            tmp = seperateLine(tmp[5], '=');
             return readBomb(tmp[4]);
         }
     }
@@ -201,36 +291,36 @@ BombCapacity RL::SaveManager::getBombcap(int index)
     return BombCapacity{111,111};
 }
 
-Skillset readSkillset(std::string line)
+BombCapacity RL::SaveManager::getBombcapAI(int index)
 {
-    Skillset result;
-    std::vector<std::string> tmp;
-    for (int x = 0; x < line.size(); x++) {
-        if (line[x] == '[') {
-            tmp = seperateLine(line, '[');
-            tmp = seperateLine(tmp[1], ']');
-            break;
+    std::vector<std::string> tmp = seperateLine(_aissave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "AI") {
+            return readBomb(tmp[4]);
         }
     }
-    tmp = seperateLine(tmp[0], ',');
-    result.bombUp = stoi(tmp[0]);
-    result.speedUp = stoi(tmp[1]);
-    result.fireUp = stoi(tmp[2]);
-    if (stoi(tmp[3]) == 1)
-        result.wallPass = true;
-    else
-        result.wallPass = false;
-    return result;
+    std::cerr << "Unable to load bombcapacizy" << std::endl;
+    return BombCapacity{111,111};
 }
 
-Skillset RL::SaveManager::getSkillset(int index)
+//from player
+Skillset RL::SaveManager::getSkillsetPlayer(int index)
 {
-    std::vector<std::string> tmp = seperateLine(_entitys[index],';');
+
+    std::vector<std::string> tmp = seperateLine(_playerssave[index],';');
     for (int x = 0; x < tmp.size(); x++) {
-        if (tmp[x] == "PLAYER") {
+        if (tmp[x] == "PLAYER")
             return readSkillset(tmp[3]);
-        }else if (tmp[x] == "AI") {
-            tmp = seperateLine(tmp[5], '=');
+    }
+    std::cerr << "Unable to load skillset" << std::endl;
+    return Skillset{99,99,99, false};
+}
+
+Skillset RL::SaveManager::getSkillsetAI(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_aissave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "AI") {
             return readSkillset(tmp[3]);
         }
     }
@@ -238,45 +328,103 @@ Skillset RL::SaveManager::getSkillset(int index)
     return Skillset{99,99,99, false};
 }
 
-int RL::SaveManager::getScore(int index)
+Skillset RL::SaveManager::getSkillsetItem(int index)
 {
-    std::vector<std::string> tmp = seperateLine(_entitys[index],';');
+    std::vector<std::string> tmp = seperateLine(_itemssave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "ITEM") {
+            return readSkillset(tmp[3]);
+        }
+    }
+    std::cerr << "Unable to load skillset" << std::endl;
+    return Skillset{99,99,99, false};
+}
+
+int RL::SaveManager::getScorePlayer(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_playerssave[index],';');
     for (int x = 0; x < tmp.size(); x++) {
         if (tmp[x] == "PLAYER") {
             tmp = seperateLine(tmp[5], '=');
             return stoi(tmp[1]);
-        } else if (tmp[x] == "AI") {
+        }
+    }
+    std::cerr << "Unable to load player score" << std::endl;
+    return -1;
+}
+
+Pos RL::SaveManager::getExploPos(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_explosionssave[index],';');
+    for (int x = 0; x < tmp.size(); x++)
+        if (tmp[x] == "EXPLOSION")
+            return readPos(tmp[2]);
+    std::cerr << "Unable to load EXPLO position" << std::endl;
+    return Pos{-1, -1, -99};
+
+}
+
+int RL::SaveManager::getScoreAI(int index)
+{
+    std::vector<std::string> tmp = seperateLine(_aissave[index],';');
+    for (int x = 0; x < tmp.size(); x++) {
+        if (tmp[x] == "AI") {
             tmp = seperateLine(tmp[5], '=');
             return stoi(tmp[1]);
         }
     }
-    std::cerr << "Unable to load playerscore" << std::endl;
+    std::cerr << "Unable to load AI Score" << std::endl;
     return -1;
 }
 
-void RL::SaveManager::savePlayer(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, int score)
+std::vector <std::string> RL::SaveManager::getPlayers()
+{
+    return _playerssave;
+}
+
+std::vector <std::string> RL::SaveManager::getAIs()
+{
+    return _aissave;
+}
+
+std::vector <std::string> RL::SaveManager::getBombs()
+{
+    return _bombssave;
+}
+
+std::vector <std::string> RL::SaveManager::getExplosions()
+{
+    return _explosionssave;
+}
+
+std::vector <std::string> RL::SaveManager::getItems()
+{
+    return _itemssave;
+}
+
+void RL::SaveManager::savePlayer(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score)
 {
     std::string newplayer= "PLAYER;ID="+ std::to_string(id) +";"+ "POS[" + std::to_string(position.x) + "," + std::to_string(position.y) + "," + std::to_string(position.z) +\
     "];SKILL["+ std::to_string(skill.bombUp) + "," + std::to_string(skill.speedUp) +\
     "," + std::to_string(skill.fireUp) + "," + std::to_string(skill.wallPass) + "];BOMB[" + std::to_string(bombcapa.totalAmount) + "," +\
-    std::to_string(bombcapa.curCapacity) +"];SCORE="+ std::to_string(score);
+    std::to_string(bombcapa.curCapacity) +"];SCORE="+ std::to_string(int(score.score));
     _playerssave.push_back(newplayer);
 }
 
-void RL::SaveManager::saveAis(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, int score)
+void RL::SaveManager::saveAis(EntityID id, Pos position, Skillset skill, BombCapacity bombcapa, Score score)
 {
     std::string newai= "AI;ID="+ std::to_string(id) +";"+ "POS[" + std::to_string(position.x) + "," + std::to_string(position.y) + "," + std::to_string(position.z) +\
     "];SKILL["+ std::to_string(skill.bombUp) + "," + std::to_string(skill.speedUp) +\
     "," + std::to_string(skill.fireUp) + "," + std::to_string(skill.wallPass) + "];BOMB[" + std::to_string(bombcapa.totalAmount) + "," +\
-    std::to_string(bombcapa.curCapacity) +"];SCORE="+ std::to_string(score);
+    std::to_string(bombcapa.curCapacity) +"];SCORE="+ std::to_string(int(score.score));
     _aissave.push_back(newai);
 }
 
-void RL::SaveManager::saveBomb(EntityID id, Pos position, Skillset skill, BombOwner owner)
+void RL::SaveManager::saveBomb(EntityID id, Pos position, Skillset skill, BombOwner owner, float time)
 {
     std::string newbomb= "BOMB;ID="+ std::to_string(id) +";"+ "POS[" + std::to_string(position.x) + "," + std::to_string(position.y) + "," + std::to_string(position.z) +\
     "];SKILL["+ std::to_string(skill.bombUp) + "," + std::to_string(skill.speedUp) +\
-    "," + std::to_string(skill.fireUp) + "," + std::to_string(skill.wallPass) + "];OWNER="+ std::to_string(owner.id);
+    "," + std::to_string(skill.fireUp) + "," + std::to_string(skill.wallPass) + "];OWNER="+ std::to_string(owner.id)+";TIME="+std::to_string(time);
     _bombssave.push_back(newbomb);
 }
 
@@ -288,9 +436,18 @@ void RL::SaveManager::saveItem(EntityID id, Pos position, Skillset skill)
     _itemssave.push_back(newitem);
 }
 
+void RL::SaveManager::saveExplosion(EntityID id, Pos position, BombOwner owner, float time)
+{
+    std::string newitem= "EXPLOSION;ID="+ std::to_string(id) +";"+ "POS[" + std::to_string(position.x) + "," + std::to_string(position.y) + "," + std::to_string(position.z) +\
+    "];OWNER=" + std::to_string(owner.id)+";TIME="+std::to_string(time);
+            _explosionssave.push_back(newitem);
+
+}
+
 void RL::SaveManager::saveMap(std::vector<std::vector<gfx_tile_t>> map)
 {
     _parsedMap = map;
+    _mapPath = _directory + ".saveMAP.csv";
     writeMap();
 }
 
@@ -339,7 +496,7 @@ void RL::SaveManager::writeMenu()
         file << seperateLine(seperateLine(_explosionssave[x], ';')[1], '=')[1]+ ';';
 
     file.close();
-    writeEntitys();
+    //writeEntitys();
 }
 
 void RL::SaveManager::writeEntitys()
@@ -361,4 +518,22 @@ void RL::SaveManager::writeEntitys()
     for (int x = 0; x < _explosionssave.size(); x++)
         file << _explosionssave[x] << std::endl;
     file.close();
+}
+
+void RL::SaveManager::clearEntityFile()
+{
+    std::ofstream file;
+    file.open(_filepath, std::ofstream::out | std::ofstream::trunc);
+    file.close();
+}
+
+void RL::SaveManager::clearBeforeSafe()
+{
+    _playerssave.clear();
+    _aissave.clear();
+    _bombssave.clear();
+    _explosionssave.clear();
+    _itemssave.clear();
+    clearEntityFile();
+
 }

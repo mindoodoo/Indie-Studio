@@ -38,8 +38,10 @@ class AISystem : public ISystem {
 
         void update(float deltaTime, std::vector<EntityID> &playerIds, std::vector<EntityID> &aiBombLaying) {
             for (EntityID ent : EntityViewer<Pos, Sprite, CollisionObjectType, AIData>(*_em.get())) {
+                _ent = ent;
                 _foundTarget = false;
                 _bombPos.clear();
+                _bombMap.clear();
                 _possibleTargets.clear();
                 Pos* pos = _em->Get<Pos>(ent);
                 Skillset* skills = _em->Get<Skillset>(ent);
@@ -51,6 +53,7 @@ class AISystem : public ISystem {
                 bool saveDetectedBomb = _detectedBomb;
                 _detectedBomb = false;
                 scanForBombs(pos);
+                initBombMap();
                 if (_detectedBomb && !saveDetectedBomb)
                     escapeBombRadius(pos);
                 if (_path.empty()) {
@@ -75,6 +78,40 @@ class AISystem : public ISystem {
                 updateAIData(data);
             }
         };
+
+        bool isInMap(int x, int y) {
+            if (x <= 0 || y <= 0) 
+                return false;
+            if (x + 1 >= _map->getMapWidth() || y + 1 >= _map->getMapDepth())
+                return false;
+            return true;
+        }
+
+        void initBombMap() {
+            for (std::vector<gfx_tile_t> line : _map->getParsedMap())
+                _bombMap.push_back(line);
+            for (EntityID ent : EntityViewer<Pos, BombOwner, BombProperty, CollisionObjectType>(*_em.get())) {
+                CollisionObjectType type = *_em->Get<CollisionObjectType>(ent);
+                BombProperty blockable = *_em->Get<BombProperty>(ent);
+                BombOwner bombOwner = *_em->Get<BombOwner>(ent);
+                if (type == BOMB) {
+                    for (Blocking blocking : blockable.blockingForPlayer) {
+                        if (blocking.id == _ent && blocking.isBlocking) {
+                            Pos pos = *_em->Get<Pos>(ent);
+                            _bombMap[pos.y][pos.x].tile = 1;
+                            if (isInMap(pos.x + 1, pos.y))
+                                _bombMap[pos.y][pos.x + 1].tile = 1;
+                            if (isInMap(pos.x - 1, pos.y))
+                                _bombMap[pos.y][pos.x - 1].tile = 1;
+                            if (isInMap(pos.x, pos.y + 1))
+                                _bombMap[pos.y + 1][pos.x].tile = 1;
+                            if (isInMap(pos.x, pos.y - 1))
+                                _bombMap[pos.y - 1][pos.x].tile = 1;
+                        }
+                    }
+                }
+            }
+        }
 
         void initValues(AIData *data, Skillset skills) {
             _target = data->target;
@@ -166,6 +203,7 @@ class AISystem : public ISystem {
             if (_possibleTargets.empty() && !_detectedBomb)
                 setRandomTarget(pos);
             if (!_possibleTargets.empty()) {
+                // delete a few crates to make player + items more relevant
                 int chosenIndex = rand() % _possibleTargets.size();
                 _target = _possibleTargets[chosenIndex].pos;
                 _targetType = _possibleTargets[chosenIndex].type;
@@ -191,7 +229,7 @@ class AISystem : public ISystem {
 
             if (AIPos == targetPosition)
                 return;
-            _path = calculateAStar(AIPos, targetPosition, _map->getParsedMap(), _blockingTiles);
+            _path = calculateAStar(AIPos, targetPosition, _bombMap, _blockingTiles);
 
             for (int i = 0; i < _path.size(); i++) {
                 // check that all paths are out of bomb radius
@@ -211,7 +249,7 @@ class AISystem : public ISystem {
             coordinates_t AIPos = roundPos(pos->x, pos->y);
             coordinates_t bombPosition = {_target.x, _target.y};
 
-            _path = avoidBomb(AIPos, bombPosition, _bombScanRadius - 2, _map->getParsedMap(), _blockingTiles);
+            _path = avoidBomb(AIPos, bombPosition, _bombScanRadius - 2, _bombMap, _blockingTiles);
 
             if (_path.empty()) {
                 _foundTarget = false;
@@ -222,7 +260,7 @@ class AISystem : public ISystem {
         bool canEscapeBomb(Pos *pos) {
             coordinates_t AIPos = roundPos(pos->x, pos->y);
             coordinates_t bombPosition = roundPos(pos->x, pos->y);
-            std::deque<coordinates_t> path = avoidBomb(AIPos, bombPosition, _bombScanRadius - 2, _map->getParsedMap(), _blockingTiles);
+            std::deque<coordinates_t> path = avoidBomb(AIPos, bombPosition, _bombScanRadius - 2, _bombMap, _blockingTiles);
 
             for (int i = 0; i < path.size(); i++) {
                 if (!isOutOfBombReach({(float)path[i].second, (float)path[i].first, 1}))
@@ -300,7 +338,6 @@ class AISystem : public ISystem {
                     if (!_foundTarget)
                         continue;
                     _possibleTargets.push_back({_target, PLAYER_TARGET, _path});
-                    std::cout << "found PLAYER at " << x << " " << y << std::endl;
                 }
             }
         }
@@ -315,7 +352,6 @@ class AISystem : public ISystem {
                 if (!_foundTarget)
                     return;
                 _possibleTargets.push_back({_target, ITEM_TARGET, _path});
-                std::cout << "found ITEM at " << x << " " << y << std::endl;
             }
         };
 
@@ -327,7 +363,6 @@ class AISystem : public ISystem {
                 if (!_foundTarget)
                     return;
                 _possibleTargets.push_back({_target, CRATE_TARGET, _path});
-                std::cout << "found CRATE at " << x << " " << y << std::endl;
             }
         };
 
@@ -336,7 +371,6 @@ class AISystem : public ISystem {
             while (!_foundTarget && iterations < 10) {
                 int randX = rand() % (_map->getMapWidth() - 1);
                 int randY = rand() % (_map->getMapDepth() - 1);
-                std::cout << "RANDOM VALS: " << randX << ", " << randY << std::endl;
                 float x = randX + 1;
                 float y = randY + 1;
                 _target = {x, y, 1};
@@ -351,6 +385,7 @@ class AISystem : public ISystem {
 
     private:
         std::shared_ptr<RL::Map> _map;
+        std::vector<std::vector<gfx_tile_t>> _bombMap;
         RL::CollisionManager _colManager;
         bool _detectedBomb; // as AI component
         bool _foundTarget;
@@ -359,6 +394,7 @@ class AISystem : public ISystem {
         int _scanRadius; // as AI component
         int _bombScanRadius;
         std::vector<Target> _possibleTargets;
+        EntityID _ent;
 
         //AStar implementation test
         std::deque<coordinates_t> _path; // as AI component

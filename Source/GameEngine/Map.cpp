@@ -7,13 +7,14 @@
 
 #include "Map.hpp"
 
-RL::Map::Map(std::string mapCSVPath, std::string wallTexturePath, std::string floorTexturePath, std::string crateTexturePath)
+RL::Map::Map(std::string mapCSVPath, std::string wallTexturePath, std::string floorTexturePath, std::string crateTexturePath, bool newGame)
 :_wallModel(Drawable3D(wallTexturePath, "", "", RL::WALL)), _floorModel(RL::Drawable3D(floorTexturePath, "","", RL::FLOOR)), _crateModel(RL::Drawable3D(crateTexturePath, "", "", RL::CRATE))
 {
     this->_parsedMap = parseMap(mapCSVPath);
     this->mapDepth = _parsedMap.size();
     this->mapWidth = _parsedMap[0].size();
-    generate_all_crates();
+    if (newGame)
+        generate_all_crates();
     this->_wallTexturepath = wallTexturePath;
 }
 

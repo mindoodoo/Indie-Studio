@@ -17,11 +17,12 @@ RL::Drawable3D* Bomberman::makeDrawable3DPointer(RL::Drawable3D Model)
     return ModelPointer;
 }
 
-bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset)
+bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset, float time)
 {
     pos = {round(pos.x),
            round(pos.y),
            round(pos.z)};
+
     for (EntityID id : EntityViewer<BombOwner, Pos>(*_em.get())) {
         if (pos == *_em->Get<Pos>(id))
             return false;
@@ -31,9 +32,17 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset)
     _em->Assign<BombOwner>(id, BombOwner{bombOwner});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{BOMB});
     _em->Assign<Skillset>(id, {skillset});
-    Timer timer = Timer();
-    timer.startTimer();
-    _em->Assign<Timer>(id, timer);
+    if (time != 0) {
+        Timer timer = Timer();
+        timer.startTimer();
+        timer.setBombtime(time);
+        _em->Assign<Timer>(id, timer);
+    }
+    else {
+        Timer timer = Timer();
+        timer.startTimer();
+        _em->Assign<Timer>(id, timer);
+    }
     float scale = 2;
     // std::string bombtex = "./RaylibTesting/Assets/3d_models/Skull/Skull.png";
     // std::string bombmod = "./RaylibTesting/Assets/3d_models/Skull/Bomb.obj";
@@ -43,11 +52,22 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset)
     RL::Drawable3D *Bomb = makeDrawable3DPointer(_allModels[0]);
     Bomb->setPosition((RL::Vector3f){
             translateFigureCoordinates(pos.x, _map->getMapWidth()),
-            pos.y,
+            0.5f,
             translateFigureCoordinates(pos.y, _map->getMapDepth())
     });
     Bomb->id = id;
     _em->Assign<Sprite>(id, Sprite{Bomb});
+    BombProperty blocking;
+    blocking.blockingForPlayer.push_back({bombOwner, false});
+    for (EntityID ent : _player) {
+        if (ent == INVALID_ENTITY || ent == bombOwner)
+            continue;
+        if (_colManager.collisionsWithModels(*Bomb, *_em->Get<Sprite>(ent)->model))
+            blocking.blockingForPlayer.push_back({ent, false});
+        else
+            blocking.blockingForPlayer.push_back({ent, true});
+    }
+    _em->Assign<BombProperty>(id, blocking);
     _window->queueDrawable(Bomb);
     _soundManager->playSpecificSoundFx("layBomb");
     return true;
@@ -56,10 +76,9 @@ bool Bomberman::createBomb(Pos pos, EntityID bombOwner, Skillset skillset)
 
 void Bomberman::layBomb(EntityID playerid)
 {
-    std::cout << "LAYING bomb from player ID : " << playerid << std::endl;
     _em->Get<Sprite>(playerid)->model->setCurrentAnim(2);
     if (_em->Get<BombCapacity>(playerid)->curCapacity >= 1) {
-        if (createBomb(*_em->Get<Pos>(playerid), playerid,*_em->Get<Skillset>(playerid)))
+        if (createBomb(*_em->Get<Pos>(playerid), playerid,*_em->Get<Skillset>(playerid),0))
             _em->Get<BombCapacity>(playerid)->curCapacity -= 1;
     }
 }
@@ -89,25 +108,26 @@ void Bomberman::createBombExplosions(EntityID ent)
     bool fifth = true;
     for (int x = 1; x <=  fireup; x++) {
         if (first)
-            first = createExplosion(mypos , _em->Get<BombOwner>(ent)->id);
+            first = createExplosion(mypos , _em->Get<BombOwner>(ent)->id, 0);
         if (second)
             second = createExplosion({mypos.x+x,
                             mypos.y,
-                            1}, _em->Get<BombOwner>(ent)->id);
+                            1}, _em->Get<BombOwner>(ent)->id, 0);
         if (third)
             third = createExplosion({mypos.x-x,
                             mypos.y,
-                            1}, _em->Get<BombOwner>(ent)->id);
+                            1}, _em->Get<BombOwner>(ent)->id, 0);
         if (fourth)
             fourth = createExplosion({mypos.x,
                             mypos.y+x,
-                            1}, _em->Get<BombOwner>(ent)->id);
+                            1}, _em->Get<BombOwner>(ent)->id, 0);
         if (fifth)
             fifth = createExplosion({mypos.x,
                             mypos.y-x,
-                            1}, _em->Get<BombOwner>(ent)->id);
+                            1}, _em->Get<BombOwner>(ent)->id, 0);
     }
 }
+
 
 void Bomberman::checkBombalive() {
     for (EntityID ent: EntityViewer<CollisionObjectType, Timer, Sprite, Skillset, BombOwner>(*_em.get())) {
@@ -116,7 +136,6 @@ void Bomberman::checkBombalive() {
             if (_em->Get<Timer>(ent)->returnTime() <= 3)
                 smoothBombResize(_em->Get<Sprite>(ent)->model);
             if (_em->Get<Timer>(ent)->returnTime() >= 2) {
-                std::cout << "BOOOM" << std::endl;
                 //I DONT KNOW IF WE WANT TO LEAVE THIS LIKE THIS
                 _soundManager->playSpecificSoundFx("ExplosionTest");
                 if (checkIfVectorContain(_player, _em->Get<BombOwner>(ent)->id))
@@ -130,7 +149,6 @@ void Bomberman::checkBombalive() {
                         _em->Remove<Sprite>(ent);
                         _window->removeElemtfrom3Dqueue(i);
                         _em->DestroyEntity(ent);
-
                     }
                 }
             }
@@ -139,3 +157,20 @@ void Bomberman::checkBombalive() {
     }
 }
 
+void Bomberman::pauseBombCounters()
+{
+    for (EntityID ent: EntityViewer<CollisionObjectType, Timer>(*_em.get())) {
+        CollisionObjectType type = *_em->Get<CollisionObjectType>(ent);
+        if (type == BOMB || type == EXPLOSION)
+            _em->Get<Timer>(ent)->startPause();
+    }
+}
+
+void Bomberman::resumeBombCounters()
+{
+    for (EntityID ent: EntityViewer<CollisionObjectType, Timer>(*_em.get())) {
+        CollisionObjectType type = *_em->Get<CollisionObjectType>(ent);
+        if (type == BOMB || type == EXPLOSION)
+            _em->Get<Timer>(ent)->stopPause();
+    }
+}

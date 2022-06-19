@@ -24,12 +24,28 @@
 #include "../menu_source/MapSelect.hpp"
 #include "../Source/Savegame/SaveManager.hpp"
 
+// // Macros for screen switch
+#define START_SCREEN 0
+#define CHAR_SCREEN 1
+#define CHAR_SELEC_TWO 2
+#define SETTINGS_SCREEN 3
+#define CLOSE 4
+#define MAP_SCREEN 5
+#define GAME_SCREEN 6
+#define PAUSE_SCREEN 7
+#define END_SCREEN 8
+#define INTRO 9
+#define LOAD 10
+
 class Core {
     public:
         Core();
         ~Core();
 
         void startLoop();
+        void restartGame();
+        void saveGame();
+
         void startGame();
     private:
         std::shared_ptr<RL::Window> _window;
