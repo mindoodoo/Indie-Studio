@@ -68,6 +68,7 @@ RL::SaveManager::SaveManager()
     //_running = false;
      _mapPath = _directory + ".saveMAP.csv";
     _filepath = _directory +".saveEntitys";
+    _mapselect = -1;
 }
 
 void RL::SaveManager::loadMenu()
@@ -137,6 +138,26 @@ std::string RL::SaveManager::getMappath()
     return _mapPath;
 }
 
+std::string RL::SaveManager::getMapName(int mapid)
+{
+    switch (mapid) {
+        case 5:
+            return "SaveGame";
+        case 0:
+            return  "Stage 1";
+        case 1:
+            return "Stage 2";
+        case 2:
+            return "Stage 3";
+        case 3:
+            return "Stage 4";
+        case 4:
+            return "Stage 5";
+        default:
+            return "ERROR";
+    }
+}
+
 bool RL::SaveManager::getLoading()
 {
     if (_mapPath == _directory+".saveMAP.csv")
@@ -149,13 +170,16 @@ void RL::SaveManager::updateMap(int map)
     switch (map) {
         case 0:
             _mapPath = "RaylibTesting/Assets/Maps/TestMap/test.csv";
+            _mapselect = map;
             break;
         case 1:
             _mapPath = "RaylibTesting/Assets/Maps/TestMap1/test.csv";
+            _mapselect = map;
             break;
         case -1:
             _mapPath = _directory + ".saveMAP.csv";
             _running = true;
+            _mapselect = map;
             checkEntitys(_filepath);
             //clearEntityFile();
             break;

@@ -22,6 +22,7 @@ namespace RL {
         std::vector<std::vector<gfx_tile_t>> _parsedMap;
         std::string _mapPath;
         std::string _directory = "Source/Savegame/SaveFiles/";
+        int _mapselect;
         std::string _filepath;
         std::string _savefilename;
         bool _running;
@@ -35,6 +36,7 @@ namespace RL {
         //Getter
         std::vector<std::string> getMenu();
         std::string getMappath();
+        std::string getMapName(int mapid);
         bool getLoading();
         Pos getPlayerPos(int index);
         Pos getAIPos(int index);

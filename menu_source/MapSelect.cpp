@@ -39,7 +39,7 @@ Win::MapSelect::MapSelect(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL
         }
         RL::Vector3f tmpV = {x, y, 0};
         if (i < num.size()) {
-            RL::Button tmp(std::to_string(num[i]), tmpV, "./menu_source/assets/btn2smol.png", "./menu_source/assets/btn2hover.png", "./menu_source/assets/btn2pressed.png", 50, _window);
+            RL::Button tmp(_saveManager->getMapName(i), tmpV, "./menu_source/assets/btn2smol.png", "./menu_source/assets/btn2hover.png", "./menu_source/assets/btn2pressed.png", 50, _window);
             _btn.push_back(tmp);
         } else {
             RL::Button tmp(_text[z], tmpV, "./menu_source/assets/btn2smol.png", "./menu_source/assets/btn2hover.png", "./menu_source/assets/btn2pressed.png", 50, _window);
