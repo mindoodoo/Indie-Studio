@@ -91,3 +91,8 @@ bool RL::Drawable2D::isHidden() const
 {
     return _hidden;
 }
+
+Color RL::Drawable2D::getTint()
+{
+    return _tint;
+}

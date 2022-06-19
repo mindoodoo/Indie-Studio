@@ -93,6 +93,12 @@ void RL::Window::removeDrawable(IDrawable *drawable)
         this->_displayQueue2D.erase(std::remove(this->_displayQueue2D.begin(), this->_displayQueue2D.end(), drawable), this->_displayQueue2D.end());
 }
 
+void RL::Window::displayDrawable2D(RL::Drawable2D drawable)
+{
+    DrawTexture(drawable.getTexture(), drawable.getPosition().x, drawable.getPosition().y, drawable.getTint());
+
+}
+
 void RL::Window::displayDrawables(Map map)
 {
     BeginDrawing();
@@ -186,3 +192,4 @@ Font RL::Window::getTxtFont()
 {
     return this->_txtFont;
 }
+

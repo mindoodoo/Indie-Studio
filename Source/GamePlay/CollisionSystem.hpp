@@ -103,7 +103,6 @@ class CollisionSystem : public ISystem {
                     BombCapacity* playerBombCapacity = _em->Get<BombCapacity>(highEnt);
                     playerBombCapacity->curCapacity += skillIncrease->bombUp;
                     playerBombCapacity->totalAmount += skillIncrease->bombUp;
-                    std::cout << "updated bomb capacity to " << playerBombCapacity->totalAmount << std::endl;
                 }
                 if (skillIncrease->fireUp)
                 // add fire up icon to specific player UI location relative to window size

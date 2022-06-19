@@ -17,6 +17,7 @@
 #include "Camera.hpp"
 #include "Raylib/Drawables/IDrawable.hpp"
 #include "Drawables/Drawable3D.hpp"
+#include "Drawables/Drawable2D.hpp"
 #include "RaylibTypeEncaps.hpp"
 
 typedef struct PlayerChoice {
@@ -48,6 +49,9 @@ namespace RL {
         // Add drawable to queue to be displayed when displayDrawables() is called
         void queueDrawable(IDrawable *drawable);
         void removeDrawable(IDrawable *drawable);
+
+        //Draw a 2Ddrawable by passing it as argument to
+        void displayDrawable2D(RL::Drawable2D drawable);
         
         // Display all 2D and 3D Drawables in queue
         void displayDrawables(Map map);

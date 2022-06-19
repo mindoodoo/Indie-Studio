@@ -37,6 +37,7 @@ namespace RL {
 
             Vector3f getPosition();
             Texture2D getTexture();
+            Color getTint();
 
             DrawableType getType() const;
             bool isHidden() const override;

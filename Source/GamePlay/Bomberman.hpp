@@ -71,6 +71,7 @@ class Bomberman {
         std::shared_ptr<EntityManager> _em;
         std::vector<RL::Drawable3D> _allModels;
         std::vector<RL::Drawable2D *> _allIcons;
+        RL::Drawable2D _background;
 
         Timer _gameTimer;
         Timer _deltaTimer;

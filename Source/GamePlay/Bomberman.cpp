@@ -8,8 +8,9 @@
 #include "Bomberman.hpp"
 
 Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::InputManager> InputManager, std::shared_ptr<RL::Map> Map, std::shared_ptr<RL::SoundManager> SoundManager, std::vector<PlayerChoice> playerChoices)
-    : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager)
+    : _window(Window), _map(Map), _inputManager(InputManager), _soundManager(SoundManager), _background("./RaylibTesting/Assets/Background/background1.png")
 {
+    _background.resize(_window->getDimensions());
     _em = std::make_shared<EntityManager>();
     // take care with system order when adding to vector
     _systems.push_back(std::make_shared<CollisionSystem>(_em, _window, _soundManager, _map));
@@ -49,7 +50,6 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
 
     
     //this is respndible for the music being played then shuffle enabled, comment out to cancel
-    //_soundManager->playSpecificMusic("MiraiKaraKitaShonen");
     //_soundManager->playRandomMusic();
     //_soundManager->enableDisableShuffle();
     
@@ -447,6 +447,7 @@ bool Bomberman::runFrame()
 
 void Bomberman::startDrawScene()
 {
+    _window->displayDrawable2D(_background);
     _window->displayDrawables(*_map.get());
     _window->clearWindow(BLACK);
     // _drawer->beginDrawing();
