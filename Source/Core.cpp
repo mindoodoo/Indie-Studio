@@ -49,6 +49,18 @@ Core::~Core()
         delete _mapSelect;
 }
 
+
+
+int check_choices(PlayerChoice pc, int index)
+{
+    if (!pc.CPU) {
+        std::cout << pc.Character << std::endl;
+        return pc.Character;
+    }
+    std::cout << "CPU KEIN SPIELER" << std::endl;
+    return pc.Character;
+}
+
 void Core::saveGame() {
     std::cout << "Will save the game:" << _screen << std::endl;
     _saveManager->clearBeforeSafe();
@@ -74,16 +86,18 @@ void Core::saveGame() {
         }
     }
 
-    //save Player
+    int x = 0;
     for (EntityID ent: EntityViewer<CollisionObjectType, BombCapacity, Skillset, Pos, Score>(*_game->getEm().get())) {
         if (*_game->getEm()->Get<CollisionObjectType>(ent) == PLAYER) {
-            _saveManager->savePlayer(ent, *_game->getEm()->Get<Pos>(ent), *_game->getEm()->Get<Skillset>(ent), *_game->getEm()->Get<BombCapacity>(ent), *_game->getEm()->Get<Score>(ent));
+            _saveManager->savePlayer(ent, *_game->getEm()->Get<Pos>(ent), *_game->getEm()->Get<Skillset>(ent), *_game->getEm()->Get<BombCapacity>(ent), *_game->getEm()->Get<Score>(ent), check_choices(_charSelec->_playerChoice[x], x));
+            x++;
         }
     }
 
     for (EntityID ent: EntityViewer<CollisionObjectType, BombCapacity, Skillset, Pos, Score>(*_game->getEm().get())) {
         if (*_game->getEm()->Get<CollisionObjectType>(ent) == AI) {
-            _saveManager->saveAis(ent, *_game->getEm()->Get<Pos>(ent), *_game->getEm()->Get<Skillset>(ent), *_game->getEm()->Get<BombCapacity>(ent), *_game->getEm()->Get<Score>(ent));
+            _saveManager->saveAis(ent, *_game->getEm()->Get<Pos>(ent), *_game->getEm()->Get<Skillset>(ent), *_game->getEm()->Get<BombCapacity>(ent), *_game->getEm()->Get<Score>(ent),check_choices(_charSelec->_playerChoice[x], x));
+            x++;
         }
     }
     _saveManager->writeEntitys();
@@ -96,7 +110,6 @@ void Core::startLoop() {
     while (_window->isWindowOpen()) {
         switch (_screen) {
             case START_SCREEN:
-                //_charSelec->clearCharSelected();
                 _screen = _startMenu->openStartMenu();
                 _prevS = START_SCREEN;
                 break;
@@ -150,6 +163,12 @@ void Core::startLoop() {
                 break;
             case LOAD:
                 _saveManager->updateMap(-1);
+                for (int x = 0; x < _saveManager->getPlayers().size(); x++) {
+                    std::cout << "TESTPLAYERCHOUCE" << _saveManager->getPlayerChoice(0) << std::endl;
+                    _charSelec->_playerChoice.push_back(_charSelec->fillOutPlayerChoice(_saveManager->getPlayerChoice(x),
+                                                                                        false,x));
+                }
+                // selectplayer = _saveManger()
                 _screen = 6;
                 break;
             default:
@@ -199,6 +218,7 @@ void Core::startGame()
 {
     std::cout << "START" << std::endl;
     sortPlayerChoices(_charSelec);
+    std::cout << "STAR11111T" << std::endl;
     _window->clearDrawables();
     _map = std::make_shared<RL::Map>(_saveManager->getMappath(), _saveManager->getWallTexture(), _saveManager->getFloorTexture(), _saveManager->getCrateTexture(), _saveManager->getLoading());
     _game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager, _charSelec->_playerChoice);

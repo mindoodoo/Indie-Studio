@@ -39,8 +39,8 @@ class Bomberman {
 
         void generateItems(int wallPassAmount);
         void generateItemsLoadGame(Pos pos, Skillset skill);
-        void createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCapacity capa);
-        void createAILoadGame(Pos pos, Skillset skill, int score, BombCapacity capa);
+        void createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCapacity capa, int character, UIPos uiPos);
+        void createAILoadGame(Pos pos, Skillset skill, int score, BombCapacity capa, int character, UIPos uiPos);
         void createSpeedUpItem(Pos pos, bool hidden);
         void createBombUpItem(Pos pos, bool hidden);
         void createFireUpItem(Pos pos, bool hidden);
