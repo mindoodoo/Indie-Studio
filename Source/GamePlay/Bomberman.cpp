@@ -473,15 +473,20 @@ void Bomberman::stopDrawScene()
 
 bool Bomberman::isGameEnd()
 {
-    int count = 0;
+    int playerCount = 0;
+    int aiCount = 0;
     
-    for (EntityID id : _player)
-        if (id != INVALID_ENTITY)
-            count++;
+    for (EntityID ent : EntityViewer<CollisionObjectType>(*_em.get())) {
+        if (*_em->Get<CollisionObjectType>(ent) == AI)
+            aiCount++;
+        if (*_em->Get<CollisionObjectType>(ent) == PLAYER)
+            playerCount++;
 
-    if (count <= 1)
+    }
+    if (playerCount == 0)
         return true;
-
+    if (aiCount == 0 && playerCount <= 1)
+        return true;
     return false;
 }
 
