@@ -54,7 +54,7 @@ class CollisionSystem : public ISystem {
                     _em->DestroyEntity(id);
                     _window->removeDrawable(entModel->model);
                     if (checkIfVectorContains(playerIds, id)) {
-                        _soundManager->playSpecificSoundFx("hurt");
+                        _soundManager->playSpecificSoundFx("hitSound");
                         std::replace(playerIds.begin(), playerIds.end(), id, INVALID_ENTITY);
                     }
                 }

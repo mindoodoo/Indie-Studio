@@ -21,7 +21,7 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     _systems.push_back(std::make_shared<AISystem>(_em, _map));
     _systems.push_back(std::make_shared<DrawSystem>(_em, _map));
     
-    _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/3d_models/Skull/Skull.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));
+    _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Bomb/bombTexture.png", "./RaylibTesting/Assets/Bomb/Bomb.obj", "", RL::MODEL, 2));
     _allModels.push_back(RL::Drawable3D("./RaylibTesting/Assets/Explosion/textures/fire.png", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", "./RaylibTesting/Assets/Explosion/textures/fire.iqm", RL::MODEL, 3));
 
     _allIcons.push_back(new RL::Drawable2D("./RaylibTesting/Assets/2d_models/iconOne.png"));
@@ -50,7 +50,8 @@ Bomberman::Bomberman(std::shared_ptr<RL::Window> Window, std::shared_ptr<RL::Inp
     
     //this is respndible for the music being played then shuffle enabled, comment out to cancel
     //_soundManager->playRandomMusic();
-    //_soundManager->enableDisableShuffle();
+    _soundManager->playSpecificMusic("BackgroundMusicOne");
+    _soundManager->enableDisableShuffle();
 
     std::vector<Pos>playerStartPositions;
     playerStartPositions.push_back({13, 11, 1});
@@ -323,7 +324,7 @@ void Bomberman::createSpeedUpItem(Pos pos, bool hidden)
     _em->Assign<Skillset>(id, Skillset{0, 1, 0, false});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
     _em->Assign<ItemType>(id, ItemType{SPEED_UP});
-    std::string speedUpPath = "./Source/PowerUps/Speed.png";
+    std::string speedUpPath = "./Source/PowerUps/SpeedFlipped.png";
     RL::Drawable3D *speedUp = new RL::Drawable3D(speedUpPath, "", "", RL::POWER);
     speedUp->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
@@ -342,7 +343,7 @@ void Bomberman::createBombUpItem(Pos pos, bool hidden)
     _em->Assign<Skillset>(id, Skillset{1, 0, 0, false});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
     _em->Assign<ItemType>(id, ItemType{BOMB_UP});
-    std::string bombUpPath = "./Source/PowerUps/BombUp.png";
+    std::string bombUpPath = "./Source/PowerUps/BombUpFlipped.png";
     RL::Drawable3D *bombUp = new RL::Drawable3D(bombUpPath, "", "", RL::POWER);
     bombUp->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
@@ -361,7 +362,7 @@ void Bomberman::createFireUpItem(Pos pos, bool hidden)
     _em->Assign<Skillset>(id, Skillset{0, 0, 1, false});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
     _em->Assign<ItemType>(id, ItemType{FIRE_UP});
-    std::string fireUpPath = "./Source/PowerUps/PowerUp.png";
+    std::string fireUpPath = "./Source/PowerUps/PowerUpFlipped.png";
     RL::Drawable3D *fireUp = new RL::Drawable3D(fireUpPath, "", "", RL::POWER);
     fireUp->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
@@ -380,7 +381,7 @@ void Bomberman::createWallPassItem(Pos pos, bool hidden)
     _em->Assign<Skillset>(id, Skillset{0, 0, 0, true});
     _em->Assign<CollisionObjectType>(id, CollisionObjectType{ITEM});
     _em->Assign<ItemType>(id, ItemType{WALLPASS});
-    std::string wallPassPath = "./Source/PowerUps/WallsWalkable.png";
+    std::string wallPassPath = "./Source/PowerUps/WallsWalkableFlipped.png";
     RL::Drawable3D *wallPass = new RL::Drawable3D(wallPassPath, "", "", RL::POWER);
     wallPass->setPosition((RL::Vector3f){
         translateFigureCoordinates(pos.x, _map->getMapWidth()),
