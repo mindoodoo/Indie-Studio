@@ -64,25 +64,25 @@ void Win::EndMenu::drawEndMenu(std::vector<std::size_t> deadPlayers)
     }
     if (_win == 1) {
         _bgTxt->setPosition( ((_win_x / 2) - MeasureTextEx(_window->getHeadFont(), _text[1].c_str(), _window->getHeadFont().baseSize* 10, 0).x / 2) - 25, _win_y / 2 - 25, 0);
-        _bgTxt->resize({MeasureTextEx(_window->getHeadFont(), _text[1].c_str(), _window->getHeadFont().baseSize* 10, 0).x + 50, 150});
+        _bgTxt->resize({(int)MeasureTextEx(_window->getHeadFont(), _text[1].c_str(), _window->getHeadFont().baseSize* 10, 0).x + 50, 150});
         _bgTxt->draw(); 
         _window->draw_text(_text[1], BLACK,  ((_win_x / 2) - MeasureTextEx(_window->getHeadFont(), _text[1].c_str(), _window->getHeadFont().baseSize* 10, 0).x / 2), _win_y / 2, _window->getTxtFont(), 100);
     }
     if (_win == 2) {
         _bgTxt->setPosition( ((_win_x / 2) - MeasureTextEx(_window->getHeadFont(), _text[2].c_str(), _window->getHeadFont().baseSize* 10, 0).x / 2) - 25, _win_y / 2 - 25, 0);
-        _bgTxt->resize({MeasureTextEx(_window->getHeadFont(), _text[2].c_str(), _window->getHeadFont().baseSize* 10, 0).x + 50, 150});
+        _bgTxt->resize({(int)MeasureTextEx(_window->getHeadFont(), _text[2].c_str(), _window->getHeadFont().baseSize* 10, 0).x + 50, 150});
         _bgTxt->draw(); 
         _window->draw_text(_text[2], BLACK,  ((_win_x / 2) - MeasureTextEx(_window->getHeadFont(), _text[2].c_str(), _window->getHeadFont().baseSize* 10, 0).x / 2),  _win_y / 2, _window->getTxtFont(), 100);
     }
     if (_win == 3) {
         _bgTxt->setPosition( ((_win_x / 2) - MeasureTextEx(_window->getHeadFont(), _text[3].c_str(), _window->getHeadFont().baseSize* 10, 0).x / 2) - 25, _win_y / 2 - 25, 0);
-        _bgTxt->resize({MeasureTextEx(_window->getHeadFont(), _text[3].c_str(), _window->getHeadFont().baseSize* 10, 0).x + 50, 150});
+        _bgTxt->resize({(int)MeasureTextEx(_window->getHeadFont(), _text[3].c_str(), _window->getHeadFont().baseSize* 10, 0).x + 50, 150});
         _bgTxt->draw(); 
         _window->draw_text(_text[3], BLACK,  ((_win_x / 2) - MeasureTextEx(_window->getHeadFont(), _text[3].c_str(), _window->getHeadFont().baseSize* 10, 0).x / 2),  _win_y / 2, _window->getTxtFont(), 100);
     }
     if (_win == 4) {
         _bgTxt->setPosition( ((_win_x / 2) - MeasureTextEx(_window->getHeadFont(), _text[4].c_str(), _window->getHeadFont().baseSize* 10, 0).x / 2) - 25, _win_y / 2 - 25, 0);
-        _bgTxt->resize({MeasureTextEx(_window->getHeadFont(), _text[4].c_str(), _window->getHeadFont().baseSize* 10, 0).x + 50, 150});
+        _bgTxt->resize({(int)MeasureTextEx(_window->getHeadFont(), _text[4].c_str(), _window->getHeadFont().baseSize* 10, 0).x + 50, 150});
         _bgTxt->draw(); 
         _window->draw_text(_text[3], BLACK,  ((_win_x / 2) - MeasureTextEx(_window->getHeadFont(), _text[3].c_str(), _window->getHeadFont().baseSize* 10, 0).x / 2),  _win_y / 2, _window->getTxtFont(), 100);
     }
