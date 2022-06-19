@@ -221,6 +221,7 @@ void Bomberman::createPlayerLoadGame(Pos pos, Skillset skill, int score, BombCap
     std::string playeranim = playermod;
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
+    _em->Assign<UIPos>(id, {0, 0}); // TODO: replace default values by saved stuff
     _em->Assign<Velocity>(id, {0.08,0.08});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, {std::size_t (score)});
@@ -246,6 +247,7 @@ void Bomberman::createAILoadGame(Pos pos, Skillset skill, int score, BombCapacit
     std::string aimod = "./RaylibTesting/Assets/3d_models/Players/playerFour.iqm";
     _player.push_back(id);
     _em->Assign<Pos>(id, pos);
+    _em->Assign<UIPos>(id, {0, 0}); // TODO: replace default values by saved stuff
     _em->Assign<Velocity>(id, {0.04,0.04});
     _em->Assign<Input>(id, Input{NONE});
     _em->Assign<Score>(id, {std::size_t(score)});
