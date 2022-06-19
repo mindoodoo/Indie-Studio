@@ -169,11 +169,11 @@ void RL::SaveManager::updateMap(int map)
 {
     switch (map) {
         case 0:
-            _mapPath = "RaylibTesting/Assets/Maps/TestMap/test.csv";
+            _mapPath = "./Source/Assets/Maps/TestMap/test.csv";
             _mapselect = map;
             break;
         case 1:
-            _mapPath = "RaylibTesting/Assets/Maps/TestMap1/test.csv";
+            _mapPath = "./Source/Assets/Maps/TestMap1/test.csv";
             _mapselect = map;
             break;
         case -1:
