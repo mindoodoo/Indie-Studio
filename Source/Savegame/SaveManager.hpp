@@ -37,6 +37,8 @@ namespace RL {
         std::vector<std::string> getMenu();
         std::string getMappath();
         std::string getMapName(int mapid);
+        std::string getWallTexture(int mapid);
+        std::string getFloorTexture(int mapid);
         bool getLoading();
         Pos getPlayerPos(int index);
         Pos getAIPos(int index);
