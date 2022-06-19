@@ -29,6 +29,7 @@ namespace RL {
         std::string _cratePath;
         std::string _savefilename;
         bool _running;
+        bool _coinmode;
         std::vector<std::string> _playerssave;
         std::vector<std::string> _aissave;
         std::vector<std::string> _itemssave;
@@ -38,6 +39,7 @@ namespace RL {
         SaveManager();
         //Getter
         std::vector<std::string> getMenu();
+        bool ifCoinMode();
         std::string getMappath();
         std::string getMapName(int mapid);
         std::string getWallTexture();

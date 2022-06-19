@@ -55,12 +55,14 @@ int check_choices(PlayerChoice pc, int index)
         std::cout << pc.Character << std::endl;
         return pc.Character;
     }
-    std::cout << "CPU KEIN SPIELER" << std::endl;
     return pc.Character;
 }
 
 void Core::saveGame() {
-    std::cout << "Will save the game:" << _screen << std::endl;
+    if (_saveManager->ifCoinMode()) {
+        _screen = PAUSE_SCREEN;
+        return;
+    }
     _saveManager->clearBeforeSafe();
     _saveManager->saveMap(_map->getParsedMap());
     //save Items
@@ -132,12 +134,10 @@ void Core::startLoop() {
                 break;
             case 6:
                 if (!_game) {
-                    std::cout << "HAVE TO START A NEW GAME" << std::endl;
                     this->startGame();
                     break;
                 }
                 if (!(_screen = _game->runFrame())) {
-                    //  std::cout <<"test2" << std::endl;
                     _screen = 4;
                 }
                 if (_screen == 8) {
@@ -165,11 +165,9 @@ void Core::startLoop() {
             case LOAD:
                 _saveManager->updateMap(-1);
                 for (int x = 0; x < _saveManager->getPlayers().size(); x++) {
-                    std::cout << "TESTPLAYERCHOUCE" << _saveManager->getPlayerChoice(0) << std::endl;
                     _charSelec->_playerChoice.push_back(_charSelec->fillOutPlayerChoice(_saveManager->getPlayerChoice(x),
                                                                                         false,x));
                 }
-                // selectplayer = _saveManger()
                 _screen = 6;
                 break;
             default:
@@ -205,7 +203,6 @@ void sortPlayerChoices(Win::CharacterSelect *_charSelec)
 
 void Core::killGame()
 {
-    std::cout << "KILL GAME" << std::endl;
     if (_game)
         delete _game;
     if (_map)
@@ -217,11 +214,9 @@ void Core::killGame()
 
 void Core::startGame()
 {
-    std::cout << "START" << std::endl;
     sortPlayerChoices(_charSelec);
-    std::cout << "STAR11111T" << std::endl;
     _window->clearDrawables();
     _map = std::make_shared<RL::Map>(_saveManager->getMappath(), _saveManager->getWallTexture(), _saveManager->getFloorTexture(), _saveManager->getCrateTexture(), _saveManager->getLoading());
     _game = new Bomberman(_window, _inputManager, _map, _soundManager, _saveManager, _charSelec->_playerChoice);
-    std::cout << "Stsart DONE" << std::endl;
+    std::cout << "Game started" << std::endl;
 }
